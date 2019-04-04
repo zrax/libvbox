@@ -168,12 +168,12 @@ namespace VBox
         COM_WRAPPED(::IVetoEvent)
 
         // Methods
-        void addApproval(/* in */ const std::wstring &reason);
         void addVeto(/* in */ const std::wstring &reason);
-        std::vector<std::wstring> getApprovals();
-        std::vector<std::wstring> getVetos();
-        bool isApproved();
         bool isVetoed();
+        std::vector<std::wstring> getVetos();
+        void addApproval(/* in */ const std::wstring &reason);
+        bool isApproved();
+        std::vector<std::wstring> getApprovals();
     };
 
     class IMachine : public COMWrapBase
@@ -188,11 +188,11 @@ namespace VBox
         VBox_PROPERTY_RO(COMPtr<IVirtualBoxErrorInfo>, accessError)
         VBox_PROPERTY_RW_R(std::wstring, name)
         VBox_PROPERTY_RW_R(std::wstring, description)
-        //TODO: VBox_PROPERTY_RO(uuid, id)
+        VBox_PROPERTY_RO(std::wstring, id)
         VBox_PROPERTY_RW_R(std::vector<std::wstring>, groups)
         VBox_PROPERTY_RW_R(std::wstring, OSTypeId)
         VBox_PROPERTY_RW_R(std::wstring, hardwareVersion)
-        //TODO: VBox_PROPERTY_RW_R(uuid, hardwareUUID)
+        VBox_PROPERTY_RW_R(std::wstring, hardwareUUID)
         VBox_PROPERTY_RW_V(uint32_t, CPUCount)
         VBox_PROPERTY_RW_V(bool, CPUHotPlugEnabled)
         VBox_PROPERTY_RW_V(uint32_t, CPUExecutionCap)
@@ -205,8 +205,22 @@ namespace VBox
         VBox_PROPERTY_RW_V(bool, accelerate3DEnabled)
         VBox_PROPERTY_RW_V(bool, accelerate2DVideoEnabled)
         VBox_PROPERTY_RW_V(uint32_t, monitorCount)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
+        VBox_PROPERTY_RW_V(bool, videoCaptureEnabled)
+        VBox_PROPERTY_RW_R(std::vector<bool>, videoCaptureScreens)
+        VBox_PROPERTY_RW_R(std::wstring, videoCaptureFile)
+        VBox_PROPERTY_RW_V(uint32_t, videoCaptureWidth)
+        VBox_PROPERTY_RW_V(uint32_t, videoCaptureHeight)
+        VBox_PROPERTY_RW_V(uint32_t, videoCaptureRate)
+        VBox_PROPERTY_RW_V(uint32_t, videoCaptureFPS)
+        VBox_PROPERTY_RW_V(uint32_t, videoCaptureMaxTime)
+        VBox_PROPERTY_RW_V(uint32_t, videoCaptureMaxFileSize)
+        VBox_PROPERTY_RW_R(std::wstring, videoCaptureOptions)
+#endif
         VBox_PROPERTY_RW_R(COMPtr<IBIOSSettings>, BIOSSettings)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         VBox_PROPERTY_RW_R(COMPtr<IRecordingSettings>, recordingSettings)
+#endif
         VBox_PROPERTY_RW_V(FirmwareType, firmwareType)
         VBox_PROPERTY_RW_V(PointingHIDType, pointingHIDType)
         VBox_PROPERTY_RW_V(KeyboardHIDType, keyboardHIDType)
@@ -260,8 +274,10 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::wstring, defaultFrontend)
         VBox_PROPERTY_RO(bool, USBProxyAvailable)
         VBox_PROPERTY_RW_R(std::wstring, VMProcessPriority)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
         VBox_PROPERTY_RW_R(std::wstring, paravirtDebug)
         VBox_PROPERTY_RW_R(std::wstring, CPUProfile)
+#endif
 
         // TODO: Methods
     };
@@ -297,77 +313,81 @@ namespace VBox
         VBox_PROPERTY_RO(COMPtr<IExtPackManager>, extensionPackManager)
         VBox_PROPERTY_RO(std::vector<std::wstring>, internalNetworks)
         VBox_PROPERTY_RO(std::vector<std::wstring>, genericNetworkDrivers)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         VBox_PROPERTY_RO(COMPtr<ICloudProviderManager>, cloudProviderManager)
+#endif
 
         // Methods
-        bool checkFirmwarePresent(
-                /* in */  FirmwareType firmwareType,
-                /* in */  const std::wstring &version,
-                /* out */ std::wstring &url,
-                /* out */ std::wstring &file);
         std::wstring composeMachineFilename(
                 /* in */ const std::wstring &name,
                 /* in */ const std::wstring &group,
                 /* in */ const std::wstring &createFlags,
                 /* in */ const std::wstring &baseFolder);
-        COMPtr<IAppliance> createAppliance();
-        COMPtr<IDHCPServer> createDHCPServer(
-                /* in */ const std::wstring &name);
         COMPtr<IMachine> createMachine(
                 /* in */ const std::wstring &settingsFile,
                 /* in */ const std::wstring &name,
                 /* in */ const std::vector<std::wstring> &groups,
                 /* in */ const std::wstring &osTypeId,
                 /* in */ const std::wstring &flags);
+        COMPtr<IMachine> openMachine(
+                /* in */ const std::wstring &settingsFile);
+        void registerMachine(
+                /* in */ const COMPtr<IMachine> &machine);
+        COMPtr<IMachine> findMachine(
+                /* in */ const std::wstring &nameOrId);
+        std::vector<COMPtr<IMachine>> getMachinesByGroups(
+                /* in */ const std::vector<std::wstring> &groups);
+        std::vector<MachineState> getMachineStates(
+                /* in */ const std::vector<COMPtr<IMachine>> &machines);
+        COMPtr<IAppliance> createAppliance();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
+        COMPtr<IUnattended> createUnattendedInstaller();
+#endif
         COMPtr<IMedium> createMedium(
                 /* in */ const std::wstring &format,
                 /* in */ const std::wstring &location,
                 /* in */ AccessMode accessMode,
                 /* in */ DeviceType aDeviceTypeType);
-        COMPtr<INATNetwork> createNATNetwork(
-                /* in */ const std::wstring &networkName);
+        COMPtr<IMedium> openMedium(
+                /* in */ const std::wstring &location,
+                /* in */ DeviceType deviceType,
+                /* in */ AccessMode accessMode,
+                /* in */ bool forceNewUuid);
+        COMPtr<IGuestOSType> getGuestOSType(
+                /* in */ const std::wstring &id);
         void createSharedFolder(
                 /* in */ const std::wstring &name,
                 /* in */ const std::wstring &hostPath,
                 /* in */ bool writable,
                 /* in */ bool automount,
                 /* in */ const std::wstring &autoMountPoint);
-        COMPtr<IUnattended> createUnattendedInstaller();
-        COMPtr<IDHCPServer> findDHCPServerByNetworkName(
-                /* in */ const std::wstring &name);
-        COMPtr<IMachine> findMachine(
-                /* in */ const std::wstring &nameOrId);
-        COMPtr<INATNetwork> findNATNetworkByName(
-                /* in */ const std::wstring &networkName);
-        std::wstring getExtraData(
-                /* in */ const std::wstring &key);
-        std::vector<std::wstring> getExtraDataKeys();
-        COMPtr<IGuestOSType> getGuestOSType(
-                /* in */ const std::wstring &id);
-        std::vector<MachineState> getMachineStates(
-                /* in */ const std::vector<COMPtr<IMachine>> &machines);
-        std::vector<COMPtr<IMachine>> getMachinesByGroups(
-                /* in */ const std::vector<std::wstring> &groups);
-        COMPtr<IMachine> openMachine(
-                /* in */ const std::wstring &settingsFile);
-        COMPtr<IMedium> openMedium(
-                /* in */ const std::wstring &location,
-                /* in */ DeviceType deviceType,
-                /* in */ AccessMode accessMode,
-                /* in */ bool forceNewUuid);
-        void registerMachine(
-                /* in */ const COMPtr<IMachine> &machine);
-        void removeDHCPServer(
-                /* in */ const COMPtr<IDHCPServer> &server);
-        void removeNATNetwork(
-                /* in */ const COMPtr<INATNetwork> &network);
         void removeSharedFolder(
                 /* in */ const std::wstring &name);
+        std::vector<std::wstring> getExtraDataKeys();
+        std::wstring getExtraData(
+                /* in */ const std::wstring &key);
         void setExtraData(
                 /* in */ const std::wstring &key,
                 /* in */ const std::wstring &value);
         void setSettingsSecret(
                 /* in */ const std::wstring &password);
+        COMPtr<IDHCPServer> createDHCPServer(
+                /* in */ const std::wstring &name);
+        COMPtr<IDHCPServer> findDHCPServerByNetworkName(
+                /* in */ const std::wstring &name);
+        void removeDHCPServer(
+                /* in */ const COMPtr<IDHCPServer> &server);
+        COMPtr<INATNetwork> createNATNetwork(
+                /* in */ const std::wstring &networkName);
+        COMPtr<INATNetwork> findNATNetworkByName(
+                /* in */ const std::wstring &networkName);
+        void removeNATNetwork(
+                /* in */ const COMPtr<INATNetwork> &network);
+        bool checkFirmwarePresent(
+                /* in */  FirmwareType firmwareType,
+                /* in */  const std::wstring &version,
+                /* out */ std::wstring &url,
+                /* out */ std::wstring &file);
     };
 
     class ISession : public COMWrapBase
@@ -392,24 +412,24 @@ namespace VBox
         COM_WRAPPED(::IEventSource)
 
         // Methods
+        COMPtr<IEventListener> createListener();
         COMPtr<IEventSource> createAggregator(
                 /* in */ const std::vector<COMPtr<IEventSource>> &subordinates);
-        COMPtr<IEventListener> createListener();
-        void eventProcessed(
-                /* in */ const COMPtr<IEventListener> &listener,
-                /* in */ const COMPtr<IEvent> &event);
-        bool fireEvent(
-                /* in */ const COMPtr<IEvent> &event,
-                /* in */ int32_t timeout);
-        COMPtr<IEvent> getEvent(
-                /* in */ const COMPtr<IEventListener> &listener,
-                /* in */ int32_t timeout);
         void registerListener(
                 /* in */ const COMPtr<IEventListener> &listener,
                 /* in */ const std::vector<VBoxEventType> &interesting,
                 /* in */ bool active);
         void unregisterListener(
                 /* in */ const COMPtr<IEventListener> &listener);
+        bool fireEvent(
+                /* in */ const COMPtr<IEvent> &event,
+                /* in */ int32_t timeout);
+        COMPtr<IEvent> getEvent(
+                /* in */ const COMPtr<IEventListener> &listener,
+                /* in */ int32_t timeout);
+        void eventProcessed(
+                /* in */ const COMPtr<IEventListener> &listener,
+                /* in */ const COMPtr<IEvent> &event);
     };
 
     class IVirtualBoxClient : public COMWrapBase
