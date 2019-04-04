@@ -1,0 +1,67 @@
+# This file is part of libvbox
+# Copyright (C) 2019  Michael Hansen
+#
+# libvbox is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# libvbox is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with libvbox; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+cmake_minimum_required(VERSION 3.1)
+project(libvbox)
+
+include(FeatureSummary)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+find_package(VirtualBoxSDK REQUIRED)
+set_package_properties(VirtualBoxSDK PROPERTIES
+    URL "https://www.virtualbox.org/wiki/Downloads"
+    TYPE REQUIRED
+)
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif()
+
+add_library(vboxwrap SHARED lib/vboxwrap.cpp)
+
+target_include_directories(vboxwrap
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${CMAKE_CURRENT_BINARY_DIR}/include"
+)
+
+target_sources(vboxwrap
+    PRIVATE
+        include/libvbox.h
+        include/libvbox_vboxsdk_types.h
+        lib/libvbox_p.h
+        lib/machine.cpp
+        lib/vetoevent.cpp
+        lib/virtualboxclient.cpp
+        lib/virtualbox.cpp
+        ${VirtualBoxSDK_IID_LIB}
+)
+
+target_link_libraries(vboxwrap PUBLIC VirtualBox::SDK)
+if(WIN32)
+    target_link_libraries(vboxwrap PUBLIC Uuid Ole32 OleAut32)
+else()
+    target_link_libraries(vboxwrap PUBLIC VirtualBox::XPCOM)
+endif()
