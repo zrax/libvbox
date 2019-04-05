@@ -81,10 +81,64 @@
         return result;
     }
 
+    template <typename WcType>
+    typename std::enable_if<sizeof(WcType) == sizeof(PRUnichar), PRUnichar *>::type
+    nsFromWString(const std::wstring &string)
+    {
+        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc(string.size() + 1));
+        std::char_traits<WcType>::copy(buffer, string.data(), string.size());
+        buffer[string.size()] = PRUnichar(0);
+        return buffer;
+    }
+
+    template <typename WcType>
+    typename std::enable_if<sizeof(WcType) >= sizeof(uint32_t), PRUnichar *>::type
+    nsFromWString(const std::wstring &string)
+    {
+        // C++11 provides a way to convert std::wstring UTF-16, but
+        // it's cumbersome to use and is deprecated in C++17 with no
+        // obvious replacement.
+        size_t utf16_length = 0;
+        for (wchar_t wch : string) {
+            if (static_cast<uint32_t>(wch) >= 0x10000) {
+                // Encode with surrogate pair
+                utf16_length += 2;
+            } else {
+                utf16_length += 1;
+            }
+        }
+
+        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc(utf16_length + 1));
+        PRUnichar *bufp = buffer;
+        for (wchar_t wch : string) {
+            auto uch = static_cast<uint32_t>(wch);
+            if (uch >= 0x10000) {
+                *bufp++ = static_cast<PRUnichar>(0xD800 | ((uch >> 10) & 0x3FF));
+                *bufp++ = static_cast<PRUnichar>(0xDC00 | ((uch      ) & 0x3FF));
+            } else {
+                *bufp++ = static_cast<PRUnichar>(uch);
+            }
+        }
+        buffer[utf16_length] = PRUnichar(0);
+
+        return buffer;
+    }
+
+#   define COM_ToWString(text)      nsToWString<wchar_t>(text)
+#   define COM_FromWString(string)  nsFromWString<wchar_t>(string)
+#   define COM_FreeString(text)     nsMemory::Free(reinterpret_cast<void *>(text))
+
 #   define COM_GetValue(obj, name, result)                              \
         do {                                                            \
             auto rc = obj->Get##name(&result);                          \
-            if (NS_FAILED(rc))                                          \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+        } while (0)
+
+#   define COM_SetValue(obj, name, value)                               \
+        do {                                                            \
+            auto rc = obj->Set##name(value);                            \
+            if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
         } while (0)
 
@@ -93,19 +147,35 @@
             typedef decltype(result) Ptr;                               \
             Ptr::element_type::COM_Ifc *pValue;                         \
             auto rc = obj->Get##name(&pValue);                          \
-            if (NS_FAILED(rc))                                          \
+            if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
             result = Ptr::wrap(pValue);                                 \
+        } while (0)
+
+#   define COM_SetValue_Wrap(obj, name, value)                          \
+        do {                                                            \
+            auto rc = obj->Set##name(value->get_IFC());                 \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
         } while (0)
 
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
             PRUnichar *buffer;                                          \
             auto rc = obj->Get##name(&buffer);                          \
-            if (NS_FAILED(rc))                                          \
+            if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
             result = nsToWString<wchar_t>(buffer);                      \
-            nsMemory::Free(reinterpret_cast<void *>(buffer));           \
+            COM_FreeString(buffer);                                     \
+        } while (0)
+
+#   define COM_SetString(obj, name, value)                              \
+        do {                                                            \
+            PRUnichar *buffer = nsFromWString<wchar_t>(value);          \
+            auto rc = obj->Set##name(buffer);                           \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            COM_FreeString(buffer);                                     \
         } while (0)
 
 #   define COM_GetArray_Wrap(obj, name, result)                         \
@@ -114,7 +184,7 @@
             typedef decltype(result)::value_type Ptr;                   \
             Ptr::element_type::COM_Ifc **pArray;                        \
             auto rc = obj->Get##name(&count, &pArray);                  \
-            if (NS_FAILED(rc))                                          \
+            if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
             result.resize(count);                                       \
             for (PRUint32 i = 0; i < count; ++i)                        \
@@ -122,19 +192,45 @@
             nsMemory::Free(reinterpret_cast<void *>(pArray));           \
         } while (0)
 
+#   define COM_SetArray_Wrap(obj, name, value)                          \
+        do {                                                            \
+            typedef decltype(result)::value_type Ptr;                   \
+            std::vector<Ptr::element_type::COM_Ifc *> array;            \
+            array.resize(value.size());                                 \
+            for (size_t i = 0; i < value.size(); ++i)                   \
+                array[i] = value[i]->get_IFC());                        \
+            auto rc = obj->Set##name(array.size(), array.data());       \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+        } while (0)
+
 #   define COM_GetStringArray(obj, name, result)                        \
         do {                                                            \
             PRUint32 count;                                             \
             PRUnichar **buffer;                                         \
             auto rc = obj->Get##name(&count, &buffer);                  \
-            if (NS_FAILED(rc))                                          \
+            if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
             result.resize(count);                                       \
             for (PRUint32 i = 0; i < count; ++i) {                      \
                 result[i] = nsToWString<wchar_t>(buffer[i]);            \
-                nsMemory::Free(reinterpret_cast<void *>(buffer[i]));    \
+                COM_FreeString(buffer[i]);                              \
             }                                                           \
             nsMemory::Free(reinterpret_cast<void *>(buffer));           \
+        } while (0)
+
+#   define COM_SetStringArray(obj, name, value)                         \
+        do {                                                            \
+            std::vector<PRUnichar *> buffer;                            \
+            buffer.resize(value.size());                                \
+            for (size_t i = 0; i < value.size(); ++i)                   \
+                buffer[i] = nsFromWString<wchar_t>(value[i]);           \
+            auto rc = obj->Set##name(buffer.size(),                     \
+                        const_cast<const PRUnichar **>(buffer.data())); \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            for (size_t i = 0; i < value.size(); ++i)                   \
+                COM_FreeString(buffer[i]);                              \
         } while (0)
 
 #elif defined(VBOX_MSCOM)
@@ -149,6 +245,90 @@
     typedef ULONG       COM_ULong;
     typedef LONG64      COM_Long64;
     typedef ULONG64     COM_ULong64;
+
+    inline std::wstring BSTRToWString(BSTR text)
+    {
+        return std::wstring(text, SysStringLen(text));
+    }
+
+    inline BSTR BSTRFromWString(const std::wstring &string)
+    {
+        return SysAllocStringLen(string.data(), string.size());
+    }
+
+#   define COM_ToWString(text)      BSTRToWString(text)
+#   define COM_FromWString(string)  BSTRFromWString(string)
+#   define COM_FreeString(text)     SysFreeString(text)
+
+#   define COM_GetValue(obj, name, result)                              \
+        do {                                                            \
+            auto rc = obj->get_##name(&result);                         \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+        } while (0)
+
+#   define COM_SetValue(obj, name, value)                               \
+        do {                                                            \
+            auto rc = obj->put_##name(value);                           \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+        } while (0)
+
+#   define COM_GetValue_Wrap(obj, name, result)                         \
+        do {                                                            \
+            typedef decltype(result) Ptr;                               \
+            Ptr::element_type::COM_Ifc *pValue;                         \
+            auto rc = obj->get_##name(&pValue);                         \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            result = Ptr::wrap(pValue);                                 \
+        } while (0)
+
+#   define COM_SetValue_Wrap(obj, name, value)                          \
+        do {                                                            \
+            auto rc = obj->put_##name(value->get_IFC());                \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+        } while (0)
+
+#   define COM_GetString(obj, name, result)                             \
+        do {                                                            \
+            BSTR buffer;                                                \
+            auto rc = obj->get_##name(&buffer);                         \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            result = BSTRToWString(buffer);                             \
+            COM_FreeString(buffer);                                     \
+        } while (0)
+
+#   define COM_SetString(obj, name, value)                              \
+        do {                                                            \
+            BSTR buffer = BStrFromWString(value);                       \
+            auto rc = obj->put_##name(buffer);                          \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            COM_FreeString(buffer);                                     \
+        } while (0)
+
+#   define COM_GetArray_Wrap(obj, name, result)                         \
+        do {                                                            \
+            SAFEARRAY array;                                            \
+            auto rc = obj->get_##name(&array);                          \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            typedef decltype(result)::value_type Ptr;                   \
+            Ptr::element_type::COM_Ifc **pArray;                        \
+            rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
+            if (COM_FAILED(rc)) {                                       \
+                SafeArrayDestroy(array);                                \
+                throw COMError(rc);                                     \
+            }                                                           \
+            result.resize(array->rgsabound[0].cElements);               \
+            for (size_t i = 0; i < result.size(); ++i)                  \
+                result[i] = Ptr::wrap(pArray[i]);                       \
+            SafeArrayUnaccessData(array);                               \
+            SafeArrayDestroy(array);                                    \
+        } while (0)
 
 #else
 #   error Unsupported COM configuration

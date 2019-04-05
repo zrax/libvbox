@@ -16,12 +16,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef _LIBVBOX_VBOXSDK_VERSION_H
-#define _LIBVBOX_VBOXSDK_VERSION_H
+#include "libvbox_p.h"
 
-#define VBox_MAKE_VERSION(major, minor, patch) \
-            ((major) << 16 | (minor) << 8 | (patch))
+std::wstring VBox::IMachine::name() const
+{
+    std::wstring result;
+    COM_GetString(get_IFC(), Name, result);
+    return result;
+}
 
-#define VirtualBoxSDK_VERSION VBox_MAKE_VERSION(@VirtualBoxSDK_VERSION_MAJOR@, @VirtualBoxSDK_VERSION_MINOR@, @VirtualBoxSDK_VERSION_PATCH@)
+void VBox::IMachine::set_name(const std::wstring &value)
+{
+    COM_SetString(get_IFC(), Name, value);
+}
 
-#endif /* _LIBVBOX_VBOXSDK_VERSION_H */
+std::vector<std::wstring> VBox::IMachine::groups() const
+{
+    std::vector<std::wstring> result;
+    COM_GetStringArray(get_IFC(), Groups, result);
+    return result;
+}
+
+void VBox::IMachine::set_groups(const std::vector<std::wstring> &value)
+{
+    COM_SetStringArray(get_IFC(), Groups, value);
+}

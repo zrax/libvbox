@@ -39,7 +39,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
 endif()
 
 # TODO: Determine the actual version from the SDK
-set(VirtualBoxSDK_VERSION 0x060004)
+set(VirtualBoxSDK_VERSION_MAJOR 6)
+set(VirtualBoxSDK_VERSION_MINOR 0)
+set(VirtualBoxSDK_VERSION_PATCH 4)
 configure_file(
     include/libvbox_vboxsdk_version.h.in
     include/libvbox_vboxsdk_version.h
@@ -60,6 +62,7 @@ target_sources(vboxwrap
         include/libvbox.h
         include/libvbox_vboxsdk_types.h
         lib/libvbox_p.h
+        lib/event.cpp
         lib/machine.cpp
         lib/vetoevent.cpp
         lib/virtualboxclient.cpp
