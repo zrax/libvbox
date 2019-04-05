@@ -22,7 +22,7 @@ void VBox::IVetoEvent::addVeto(const std::wstring &reason)
 {
     auto reasonText = COM_FromWString(reason);
     auto rc = get_IFC()->AddVeto(reasonText);
-    if (NS_FAILED(rc))
+    if (COM_FAILED(rc))
         throw COMError(rc);
     COM_FreeString(reasonText);
 }
@@ -77,7 +77,7 @@ void VBox::IVetoEvent::addApproval(const std::wstring &reason)
 {
     auto reasonText = COM_FromWString(reason);
     auto rc = get_IFC()->AddApproval(reasonText);
-    if (NS_FAILED(rc))
+    if (COM_FAILED(rc))
         throw COMError(rc);
     COM_FreeString(reasonText);
 }

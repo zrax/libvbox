@@ -76,7 +76,7 @@ namespace VBox
                 throw COMError(rc);
 #elif defined(VBOX_MSCOM)
             HRESULT rc = CoCreateInstance(CLSID_VirtualBoxClient, nullptr,
-                            CLSCTX_INPROC_SERVER, IID_VirtualBoxClient,
+                            CLSCTX_INPROC_SERVER, IID_IVirtualBoxClient,
                             reinterpret_cast<void **>(&vboxClient));
 
             if (FAILED(rc))

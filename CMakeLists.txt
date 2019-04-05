@@ -57,6 +57,11 @@ target_include_directories(vboxwrap
         "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
 
+target_compile_definitions(vboxwrap
+    PRIVATE
+        BUILDING_LIBVBOX
+)
+
 target_sources(vboxwrap
     PRIVATE
         include/libvbox.h

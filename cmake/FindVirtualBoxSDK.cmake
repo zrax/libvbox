@@ -44,7 +44,7 @@ if(WIN32)
     set(VirtualBoxSDK_RT_PLATFORM RT_OS_WINDOWS)
 
     if(VirtualBoxSDK_FOUND)
-        set(VirtualBoxSDK_DEFINITIONS VBOX_MSCOM)
+        set(VirtualBoxSDK_COM_FLAVOR MSCOM)
         list(APPEND VirtualBoxSDK_DEFINITIONS ${VirtualBoxSDK_RT_PLATFORM})
 
         set(VirtualBoxSDK_INCLUDE_DIRS
@@ -125,7 +125,7 @@ else()
     endif()
 
     if(VirtualBoxSDK_FOUND)
-        set(VirtualBoxSDK_DEFINITIONS VBOX_XPCOM)
+        set(VirtualBoxSDK_COM_FLAVOR XPCOM)
         list(APPEND VirtualBoxSDK_DEFINITIONS ${VirtualBoxSDK_RT_PLATFORM})
 
         set(VirtualBoxSDK_INCLUDE_DIRS

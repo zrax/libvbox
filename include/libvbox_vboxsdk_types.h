@@ -1432,9 +1432,17 @@ namespace VBox
 }
 
 // Forward Declarations for interface classes
-#define VBox_FORWARD_DECL_IFC(ifc) \
-    class ifc; \
-    namespace VBox { class ifc; }
+#if defined(VBOX_XPCOM)
+#   define VBox_FORWARD_DECL_IFC(ifc) \
+        class ifc; \
+        namespace VBox { class ifc; }
+#elif defined(VBOX_MSCOM)
+#   define VBox_FORWARD_DECL_IFC(ifc) \
+        struct ifc; \
+        namespace VBox { class ifc; }
+#else
+#   error Unsupported COM configuration
+#endif
 
 VBox_FORWARD_DECL_IFC(IAdditionsFacility);
 VBox_FORWARD_DECL_IFC(IAdditionsStateChangedEvent);

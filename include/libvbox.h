@@ -36,6 +36,16 @@
     type name() const;                          \
     void set_##name(const type &value);
 
+#ifdef _WIN32
+#   ifdef BUILDING_LIBVBOX
+#       define LIBVBOX_API __declspec(dllexport)
+#   else
+#       define LIBVBOX_API __declspec(dllimport)
+#   endif
+#else
+#   define LIBVBOX_API
+#endif
+
 namespace VBox
 {
     class COMError : public std::runtime_error
@@ -46,13 +56,13 @@ namespace VBox
 
         uint32_t error_code() const { return m_rc; }
 
-        static std::string error_message(uint32_t rc);
+        static LIBVBOX_API std::string error_message(uint32_t rc);
 
     private:
         uint32_t m_rc;
     };
 
-    class COMWrapBase
+    class LIBVBOX_API COMWrapBase
     {
     public:
         template <class Ifc>
@@ -147,7 +157,7 @@ namespace VBox
         Wrapped m_wrap;
     };
 
-    class IEvent : public COMWrapBase
+    class LIBVBOX_API IEvent : public COMWrapBase
     {
     public:
         COM_WRAPPED(::IEvent)
@@ -162,7 +172,7 @@ namespace VBox
         bool waitProcessed(/* in */ int32_t timeout);
     };
 
-    class IVetoEvent : public IEvent
+    class LIBVBOX_API IVetoEvent : public IEvent
     {
     public:
         COM_WRAPPED(::IVetoEvent)
@@ -176,7 +186,7 @@ namespace VBox
         std::vector<std::wstring> getApprovals();
     };
 
-    class IMachine : public COMWrapBase
+    class LIBVBOX_API IMachine : public COMWrapBase
     {
     public:
         COM_WRAPPED(::IMachine)
@@ -282,7 +292,7 @@ namespace VBox
         // TODO: Methods
     };
 
-    class IVirtualBox : public COMWrapBase
+    class LIBVBOX_API IVirtualBox : public COMWrapBase
     {
     public:
         COM_WRAPPED(::IVirtualBox)
@@ -390,7 +400,7 @@ namespace VBox
                 /* out */ std::wstring &file);
     };
 
-    class ISession : public COMWrapBase
+    class LIBVBOX_API ISession : public COMWrapBase
     {
     public:
         COM_WRAPPED(::ISession)
@@ -406,7 +416,7 @@ namespace VBox
         void unlockMachine();
     };
 
-    class IEventSource : public COMWrapBase
+    class LIBVBOX_API IEventSource : public COMWrapBase
     {
     public:
         COM_WRAPPED(::IEventSource)
@@ -432,7 +442,7 @@ namespace VBox
                 /* in */ const COMPtr<IEvent> &event);
     };
 
-    class IVirtualBoxClient : public COMWrapBase
+    class LIBVBOX_API IVirtualBoxClient : public COMWrapBase
     {
     public:
         COM_WRAPPED(::IVirtualBoxClient)
@@ -448,7 +458,7 @@ namespace VBox
 
     namespace API
     {
-        COMPtr<IVirtualBoxClient> virtualBoxClient();
+        LIBVBOX_API COMPtr<IVirtualBoxClient> virtualBoxClient();
     }
 }
 

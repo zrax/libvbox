@@ -34,7 +34,7 @@ std::wstring VBox::IVirtualBox::versionNormalized() const
 
 uint32_t VBox::IVirtualBox::revision() const
 {
-    uint32_t result;
+    COM_ULong result;
     COM_GetValue(get_IFC(), Revision, result);
     return result;
 }

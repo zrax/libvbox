@@ -24,4 +24,6 @@
 
 #define VirtualBoxSDK_VERSION VBox_MAKE_VERSION(@VirtualBoxSDK_VERSION_MAJOR@, @VirtualBoxSDK_VERSION_MINOR@, @VirtualBoxSDK_VERSION_PATCH@)
 
+#define VBOX_@VirtualBoxSDK_COM_FLAVOR@
+
 #endif /* _LIBVBOX_VBOXSDK_VERSION_H */

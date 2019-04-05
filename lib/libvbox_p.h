@@ -253,7 +253,7 @@
 
     inline BSTR BSTRFromWString(const std::wstring &string)
     {
-        return SysAllocStringLen(string.data(), string.size());
+        return SysAllocStringLen(string.data(), static_cast<UINT>(string.size()));
     }
 
 #   define COM_ToWString(text)      BSTRToWString(text)
@@ -303,7 +303,7 @@
 
 #   define COM_SetString(obj, name, value)                              \
         do {                                                            \
-            BSTR buffer = BStrFromWString(value);                       \
+            BSTR buffer = BSTRFromWString(value);                       \
             auto rc = obj->put_##name(buffer);                          \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
@@ -312,7 +312,7 @@
 
 #   define COM_GetArray_Wrap(obj, name, result)                         \
         do {                                                            \
-            SAFEARRAY array;                                            \
+            SAFEARRAY *array;                                           \
             auto rc = obj->get_##name(&array);                          \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
@@ -328,6 +328,74 @@
                 result[i] = Ptr::wrap(pArray[i]);                       \
             SafeArrayUnaccessData(array);                               \
             SafeArrayDestroy(array);                                    \
+        } while (0)
+
+#   define COM_SetArray_Wrap(obj, name, value)                          \
+        do {                                                            \
+            SAFEARRAY *array = SafeArrayCreateVector(VT_UNKNOWN, 0,     \
+                                    static_cast<ULONG>(value.size()));  \
+            typedef decltype(result)::value_type Ptr;                   \
+            Ptr::element_type::COM_Ifc **pArray;                        \
+            HRESULT rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
+            if (COM_FAILED(rc)) {                                       \
+                SafeArrayDestroy(array);                                \
+                throw COMError(rc);                                     \
+            }                                                           \
+            for (size_t i = 0; i < value.size(); ++i)                   \
+                pArray[i] = value[i]->get_IFC());                       \
+            SafeArrayUnaccessData(array);                               \
+            auto result = obj->put_##name(array);                       \
+            SafeArrayDestroy(array);                                    \
+            if (COM_FAILED(result))                                     \
+                throw COMError(result);                                 \
+        } while (0)
+
+#   define COM_GetStringArray(obj, name, result)                        \
+        do {                                                            \
+            SAFEARRAY *array;                                           \
+            auto rc = obj->get_##name(&array);                          \
+            if (COM_FAILED(rc))                                         \
+                throw COMError(rc);                                     \
+            BSTR *pArray;                                               \
+            rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
+            if (COM_FAILED(rc)) {                                       \
+                SafeArrayDestroy(array);                                \
+                throw COMError(rc);                                     \
+            }                                                           \
+            result.resize(array->rgsabound[0].cElements);               \
+            for (size_t i = 0; i < result.size(); ++i) {                \
+                result[i] = BSTRToWString(pArray[i]);                   \
+                COM_FreeString(pArray[i]);                              \
+            }                                                           \
+            SafeArrayUnaccessData(array);                               \
+            SafeArrayDestroy(array);                                    \
+        } while (0)
+
+#   define COM_SetStringArray(obj, name, value)                         \
+        do {                                                            \
+            SAFEARRAY *array = SafeArrayCreateVector(VT_BSTR, 0,        \
+                                    static_cast<ULONG>(value.size()));  \
+            BSTR *pArray;                                               \
+            HRESULT rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
+            if (COM_FAILED(rc)) {                                       \
+                SafeArrayDestroy(array);                                \
+                throw COMError(rc);                                     \
+            }                                                           \
+            for (size_t i = 0; i < value.size(); ++i)                   \
+                pArray[i] = BSTRFromWString(value[i]);                  \
+            SafeArrayUnaccessData(array);                               \
+            auto result = obj->put_##name(array);                       \
+            rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
+            if (COM_FAILED(rc)) {                                       \
+                SafeArrayDestroy(array);                                \
+                throw COMError(rc);                                     \
+            }                                                           \
+            for (size_t i = 0; i < value.size(); ++i)                   \
+                COM_FreeString(pArray[i]);                              \
+            SafeArrayUnaccessData(array);                               \
+            SafeArrayDestroy(array);                                    \
+            if (COM_FAILED(result))                                     \
+                throw COMError(result);                                 \
         } while (0)
 
 #else
