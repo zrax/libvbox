@@ -87,7 +87,7 @@
     typename std::enable_if<sizeof(WcType) == sizeof(PRUnichar), PRUnichar *>::type
     nsFromWString(const std::wstring &string)
     {
-        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc(string.size() + 1));
+        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc((string.size() + 1) * sizeof(PRUnichar)));
         std::char_traits<WcType>::copy(buffer, string.data(), string.size());
         buffer[string.size()] = PRUnichar(0);
         return buffer;
@@ -110,7 +110,7 @@
             }
         }
 
-        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc(utf16_length + 1));
+        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc((utf16_length + 1) * sizeof(PRUnichar)));
         PRUnichar *bufp = buffer;
         for (wchar_t wch : string) {
             auto uch = static_cast<uint32_t>(wch);
@@ -184,24 +184,22 @@
         do {                                                            \
             PRUint32 count;                                             \
             typedef decltype(result)::value_type Ptr;                   \
-            Ptr::element_type::COM_Ifc **pArray;                        \
+            typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
+            COM_Ifc **pArray;                                           \
             auto rc = obj->Get##name(&count, &pArray);                  \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
-            result.resize(count);                                       \
-            for (PRUint32 i = 0; i < count; ++i)                        \
-                result[i] = Ptr::wrap(pArray[i]);                       \
-            nsMemory::Free(reinterpret_cast<void *>(pArray));           \
+            COM_ArrayProxy<COM_Ifc *> proxy(count, pArray);             \
+            proxy.toVector(result);                                     \
         } while (0)
 
 #   define COM_SetArray_Wrap(obj, name, value)                          \
         do {                                                            \
             typedef decltype(result)::value_type Ptr;                   \
-            std::vector<Ptr::element_type::COM_Ifc *> array;            \
-            array.resize(value.size());                                 \
-            for (size_t i = 0; i < value.size(); ++i)                   \
-                array[i] = value[i]->get_IFC());                        \
-            auto rc = obj->Set##name(array.size(), array.data());       \
+            typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
+            COM_ArrayProxy<COM_Ifc *> proxy;                            \
+            proxy.fromVector(value);                                    \
+            auto rc = obj->Set##name(proxy.m_count, proxy.m_array);     \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
         } while (0)
@@ -213,27 +211,26 @@
             auto rc = obj->Get##name(&count, &buffer);                  \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
-            result.resize(count);                                       \
-            for (PRUint32 i = 0; i < count; ++i) {                      \
-                result[i] = nsToWString<wchar_t>(buffer[i]);            \
-                COM_FreeString(buffer[i]);                              \
-            }                                                           \
-            nsMemory::Free(reinterpret_cast<void *>(buffer));           \
+            COM_StringArrayProxy proxy(count, buffer);                  \
+            proxy.toVector(result);                                     \
         } while (0)
 
 #   define COM_SetStringArray(obj, name, value)                         \
         do {                                                            \
-            std::vector<PRUnichar *> buffer;                            \
-            buffer.resize(value.size());                                \
-            for (size_t i = 0; i < value.size(); ++i)                   \
-                buffer[i] = nsFromWString<wchar_t>(value[i]);           \
-            auto rc = obj->Set##name(buffer.size(),                     \
-                        const_cast<const PRUnichar **>(buffer.data())); \
+            COM_StringArrayProxy proxy;                                 \
+            proxy.fromVector(value);                                    \
+            auto rc = obj->Set##name(proxy.m_count,                     \
+                        const_cast<const PRUnichar **>(proxy.m_array)); \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
-            for (size_t i = 0; i < value.size(); ++i)                   \
-                COM_FreeString(buffer[i]);                              \
         } while (0)
+
+#   define COM_DeclareArray(XPCOM_Type, name)                           \
+        PRUint32 name##Count;                                           \
+        XPCOM_Type *name##Array
+
+#   define COM_ArrayParameterOut(name)  name##Count, name##Array
+#   define COM_ArrayParameterIn(name)   &name##Count, &name##Array
 
 #elif defined(VBOX_MSCOM)
 #   define WIN32_LEAN_AND_MEAN
@@ -320,42 +317,21 @@
             auto rc = obj->get_##name(&array);                          \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
-            if (!array)                                                 \
-                break;                                                  \
             typedef decltype(result)::value_type Ptr;                   \
-            Ptr::element_type::COM_Ifc **pArray;                        \
-            rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
-            if (COM_FAILED(rc)) {                                       \
-                SafeArrayDestroy(array);                                \
-                throw COMError(rc);                                     \
-            }                                                           \
-            result.resize(array->rgsabound[0].cElements);               \
-            for (size_t i = 0; i < result.size(); ++i) {                \
-                pArray[i]->AddRef();                                    \
-                result[i] = Ptr::wrap(pArray[i]);                       \
-            }                                                           \
-            SafeArrayUnaccessData(array);                               \
-            SafeArrayDestroy(array);                                    \
+            typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
+            COM_ArrayProxy<COM_Ifc *> proxy(array);                     \
+            proxy.toVector(result);                                     \
         } while (0)
 
 #   define COM_SetArray_Wrap(obj, name, value)                          \
         do {                                                            \
-            SAFEARRAY *array = SafeArrayCreateVector(VT_UNKNOWN, 0,     \
-                                    static_cast<ULONG>(value.size()));  \
             typedef decltype(result)::value_type Ptr;                   \
-            Ptr::element_type::COM_Ifc **pArray;                        \
-            HRESULT rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
-            if (COM_FAILED(rc)) {                                       \
-                SafeArrayDestroy(array);                                \
+            typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
+            COM_ArrayProxy<COM_Ifc *> proxy;                            \
+            proxy.fromVector(value);                                    \
+            auto rc = obj->put_##name(proxy.m_array);                   \
+            if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
-            }                                                           \
-            for (size_t i = 0; i < value.size(); ++i)                   \
-                pArray[i] = value[i]->get_IFC());                       \
-            SafeArrayUnaccessData(array);                               \
-            auto result = obj->put_##name(array);                       \
-            SafeArrayDestroy(array);                                    \
-            if (COM_FAILED(result))                                     \
-                throw COMError(result);                                 \
         } while (0)
 
 #   define COM_GetStringArray(obj, name, result)                        \
@@ -364,40 +340,204 @@
             auto rc = obj->get_##name(&array);                          \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
-            if (!array)                                                 \
-                break;                                                  \
-            BSTR *pArray;                                               \
-            rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
-            if (COM_FAILED(rc)) {                                       \
-                SafeArrayDestroy(array);                                \
-                throw COMError(rc);                                     \
-            }                                                           \
-            result.resize(array->rgsabound[0].cElements);               \
-            for (size_t i = 0; i < result.size(); ++i)                  \
-                result[i] = BSTRToWString(pArray[i]);                   \
-            SafeArrayUnaccessData(array);                               \
-            SafeArrayDestroy(array);                                    \
+            COM_StringArrayProxy proxy(array);                          \
+            proxy.toVector(result);                                     \
         } while (0)
 
 #   define COM_SetStringArray(obj, name, value)                         \
         do {                                                            \
-            SAFEARRAY *array = SafeArrayCreateVector(VT_BSTR, 0,        \
-                                    static_cast<ULONG>(value.size()));  \
-            BSTR *pArray;                                               \
-            HRESULT rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
-            if (COM_FAILED(rc)) {                                       \
-                SafeArrayDestroy(array);                                \
-                throw COMError(rc);                                     \
-            }                                                           \
-            for (size_t i = 0; i < value.size(); ++i)                   \
-                pArray[i] = BSTRFromWString(value[i]);                  \
-            SafeArrayUnaccessData(array);                               \
-            auto result = obj->put_##name(array);                       \
-            SafeArrayDestroy(array);                                    \
+            COM_StringArrayProxy proxy;                                 \
+            proxy.fromVector(value);                                    \
+            auto result = obj->put_##name(proxy.m_array);               \
             if (COM_FAILED(result))                                     \
                 throw COMError(result);                                 \
         } while (0)
 
+#   define COM_DeclareArray(XPCOM_Type, name)                           \
+        SAFEARRAY *name;
+
+#   define COM_ArrayParameterOut(name)  name
+#   define COM_ArrayParameterIn(name)   &name
+
 #else
 #   error Unsupported COM configuration
 #endif
+
+namespace VBox
+{
+    template <typename Element>
+    class COM_ArrayProxy
+    {
+    public:
+#if defined(VBOX_XPCOM)
+        COM_ArrayProxy() : m_count(), m_array() { }
+
+        COM_ArrayProxy(PRUint32 count, Element *array)
+            : m_count(count), m_array(array) { }
+#elif defined(VBOX_MSCOM)
+        COM_ArrayProxy() : m_array() { }
+
+        COM_ArrayProxy(SAFEARRAY *array)
+            : m_array(array) { }
+#endif
+
+        ~COM_ArrayProxy() { Release(); }
+
+        void Release()
+        {
+#if defined(VBOX_XPCOM)
+            if (m_array)
+                nsMemory::Free(reinterpret_cast<void *>(m_array));
+#elif defined(VBOX_MSCOM)
+            if (m_array)
+                SafeArrayDestroy(m_array);
+#endif
+
+            m_array = nullptr;
+        }
+
+        template <typename Wrap>
+        void toVector(std::vector<COMPtr<Wrap>> &result)
+        {
+            if (!m_array) {
+                result.resize(0);
+                return;
+            }
+
+#if defined(VBOX_XPCOM)
+            result.resize(m_count);
+            for (PRUint32 i = 0; i < m_count; ++i)
+                result[i] = COMPtr<Wrap>::wrap(m_array[i]);
+#elif defined(VBOX_MSCOM)
+            COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
+            auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
+            if (COM_FAILED(rc))
+                throw COMError(rc);
+            result.resize(m_array->rgsabound[0].cElements);
+            for (size_t i = 0; i < result.size(); ++i) {
+                pArray[i]->AddRef();
+                result[i] = COMPtr<Wrap>::wrap(pArray[i]);
+            }
+            SafeArrayUnaccessData(m_array);
+#endif
+        }
+
+        template <typename Wrap>
+        void fromVector(const std::vector<COMPtr<Wrap>> &vector)
+        {
+            Release();
+
+#if defined(VBOX_XPCOM)
+            m_count = vector.size();
+            m_array = reinterpret_cast<Element *>(nsMemory::Alloc(m_count * sizeof(Element)));
+            for (size_t i = 0; i < vector.size(); ++i)
+                m_array[i] = vector[i]->get_IFC();
+#elif defined(VBOX_MSCOM)
+            m_array = SafeArrayCreateVector(VT_UNKNOWN, 0, static_cast<ULONG>(vector.size()));
+            COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
+            HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
+            if (COM_FAILED(rc))
+                throw COMError(rc);
+            for (size_t i = 0; i < vector.size(); ++i) {
+                pArray[i] = vector[i]->get_IFC();
+                pArray[i]->AddRef();
+            }
+            SafeArrayUnaccessData(array);
+#endif
+        }
+
+    private:
+#if defined(VBOX_XPCOM)
+        PRUint32 m_count;
+        Element *m_array;
+#elif defined (VBOX_MSCOM)
+        SAFEARRAY *m_array;
+#endif
+    };
+
+    class COM_StringArrayProxy
+    {
+    public:
+#if defined(VBOX_XPCOM)
+        COM_StringArrayProxy() : m_count(), m_array() { }
+
+        COM_StringArrayProxy(PRUint32 count, PRUnichar **array)
+            : m_count(count), m_array(array) { }
+#elif defined(VBOX_MSCOM)
+        COM_StringArrayProxy() : m_array() { }
+
+        COM_StringArrayProxy(SAFEARRAY *array)
+            : m_array(array) { }
+#endif
+
+        ~COM_StringArrayProxy() { Release(); }
+
+        void Release()
+        {
+#if defined(VBOX_XPCOM)
+            if (m_array) {
+                for (PRUint32 i = 0; i < m_count; ++i)
+                    nsMemory::Free(reinterpret_cast<void *>(m_array[i]));
+                nsMemory::Free(reinterpret_cast<void *>(m_array));
+            }
+#elif defined(VBOX_MSCOM)
+            if (m_array)
+                SafeArrayDestroy(m_array);
+#endif
+
+            m_array = nullptr;
+        }
+
+        void toVector(std::vector<std::wstring> &result)
+        {
+            if (!m_array) {
+                result.resize(0);
+                return;
+            }
+
+#if defined(VBOX_XPCOM)
+            result.resize(m_count);
+            for (PRUint32 i = 0; i < m_count; ++i)
+                result[i] = nsToWString<wchar_t>(m_array[i]);
+#elif defined(VBOX_MSCOM)
+            BSTR *pArray = nullptr;
+            auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
+            if (COM_FAILED(rc))
+                throw COMError(rc);
+            result.resize(m_array->rgsabound[0].cElements);
+            for (size_t i = 0; i < result.size(); ++i)
+                result[i] = BSTRToWString(pArray[i]);
+            SafeArrayUnaccessData(m_array);
+#endif
+        }
+
+        void fromVector(const std::vector<std::wstring> &vector)
+        {
+            Release();
+
+#if defined(VBOX_XPCOM)
+            m_count = vector.size();
+            m_array = reinterpret_cast<PRUnichar **>(nsMemory::Alloc(m_count * sizeof(PRUnichar *)));
+            for (size_t i = 0; i < vector.size(); ++i)
+                m_array[i] = nsFromWString<wchar_t>(vector[i]);
+#elif defined(VBOX_MSCOM)
+            m_array = SafeArrayCreateVector(VT_BSTR, 0, static_cast<ULONG>(vector.size()));
+            BSTR *pArray = nullptr;
+            HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
+            if (COM_FAILED(rc))
+                throw COMError(rc);
+            for (size_t i = 0; i < vector.size(); ++i)
+                pArray[i] = BSTRFromWString(vector[i]);
+            SafeArrayUnaccessData(m_array);
+#endif
+        }
+
+    public:
+#if defined(VBOX_XPCOM)
+        PRUint32 m_count;
+        PRUnichar **m_array;
+#elif defined (VBOX_MSCOM)
+        SAFEARRAY *m_array;
+#endif
+    };
+}

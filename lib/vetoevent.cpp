@@ -38,38 +38,14 @@ bool VBox::IVetoEvent::isVetoed()
 
 std::vector<std::wstring> VBox::IVetoEvent::getVetos()
 {
+    COM_DeclareArray(PRUnichar *, vetoTexts);
+    auto rc = get_IFC()->GetVetos(COM_ArrayParameterIn(vetoTexts));
+    if (COM_FAILED(rc))
+        throw COMError(rc);
+
+    COM_StringArrayProxy proxy(COM_ArrayParameterOut(vetoTexts));
     std::vector<std::wstring> result;
-#if defined(VBOX_XPCOM)
-    PRUint32 vetoCount;
-    PRUnichar **vetoTexts;
-    auto rc = get_IFC()->GetVetos(&vetoCount, &vetoTexts);
-    if (COM_FAILED(rc))
-        throw COMError(rc);
-    result.resize(vetoCount);
-    for (PRUint32 i = 0; i < vetoCount; ++i) {
-        result[i] = nsToWString<wchar_t>(vetoTexts[i]);
-        COM_FreeString(vetoTexts[i]);
-    }
-    nsMemory::Free(reinterpret_cast<void *>(vetoTexts));
-#elif defined(VBOX_MSCOM)
-    SAFEARRAY *vetoTextsSA = nullptr;
-    HRESULT rc = get_IFC()->GetVetos(&vetoTextsSA);
-    if (COM_FAILED(rc))
-        throw COMError(rc);
-    BSTR *vetoTexts;
-    rc = SafeArrayAccessData(vetoTextsSA, reinterpret_cast<void **>(&vetoTexts));
-    if (COM_FAILED(rc)) {
-        SafeArrayDestroy(vetoTextsSA);
-        throw COMError(rc);
-    }
-    result.resize(vetoTextsSA->rgsabound[0].cElements);
-    for (size_t i = 0; i < result.size(); ++i) {
-        result[i] = std::wstring(vetoTexts[i], SysStringLen(vetoTexts[i]));
-        COM_FreeString(vetoTexts[i]);
-    }
-    SafeArrayUnaccessData(vetoTextsSA);
-    SafeArrayDestroy(vetoTextsSA);
-#endif
+    proxy.toVector(result);
     return result;
 }
 
@@ -93,37 +69,13 @@ bool VBox::IVetoEvent::isApproved()
 
 std::vector<std::wstring> VBox::IVetoEvent::getApprovals()
 {
+    COM_DeclareArray(PRUnichar *, approvalTexts);
+    auto rc = get_IFC()->GetApprovals(COM_ArrayParameterIn(approvalTexts));
+    if (COM_FAILED(rc))
+        throw COMError(rc);
+
+    COM_StringArrayProxy proxy(COM_ArrayParameterOut(approvalTexts));
     std::vector<std::wstring> result;
-#if defined(VBOX_XPCOM)
-    PRUint32 approvalCount;
-    PRUnichar **approvalTexts;
-    auto rc = get_IFC()->GetApprovals(&approvalCount, &approvalTexts);
-    if (COM_FAILED(rc))
-        throw COMError(rc);
-    result.resize(approvalCount);
-    for (PRUint32 i = 0; i < approvalCount; ++i) {
-        result[i] = nsToWString<wchar_t>(approvalTexts[i]);
-        COM_FreeString(approvalTexts[i]);
-    }
-    nsMemory::Free(reinterpret_cast<void *>(approvalTexts));
-#elif defined(VBOX_MSCOM)
-    SAFEARRAY *approvalTextsSA = nullptr;
-    HRESULT rc = get_IFC()->GetApprovals(&approvalTextsSA);
-    if (COM_FAILED(rc))
-        throw COMError(rc);
-    BSTR *approvalTexts;
-    rc = SafeArrayAccessData(approvalTextsSA, reinterpret_cast<void **>(&approvalTexts));
-    if (COM_FAILED(rc)) {
-        SafeArrayDestroy(approvalTextsSA);
-        throw COMError(rc);
-    }
-    result.resize(approvalTextsSA->rgsabound[0].cElements);
-    for (size_t i = 0; i < result.size(); ++i) {
-        result[i] = std::wstring(approvalTexts[i], SysStringLen(approvalTexts[i]));
-        COM_FreeString(approvalTexts[i]);
-    }
-    SafeArrayUnaccessData(approvalTextsSA);
-    SafeArrayDestroy(approvalTextsSA);
-#endif
+    proxy.toVector(result);
     return result;
 }
