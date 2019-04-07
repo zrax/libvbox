@@ -45,3 +45,10 @@ std::vector<VBox::COMPtr<VBox::IMachine>> VBox::IVirtualBox::machines() const
     COM_GetArray_Wrap(get_IFC(), Machines, result);
     return result;
 }
+
+std::vector<std::wstring> VBox::IVirtualBox::machineGroups() const
+{
+    std::vector<std::wstring> result;
+    COM_GetStringArray(get_IFC(), MachineGroups, result);
+    return result;
+}

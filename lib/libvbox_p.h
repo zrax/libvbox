@@ -35,6 +35,8 @@
     typedef PRInt64     COM_Long64;
     typedef PRUint64    COM_ULong64;
 
+#   define COM_Type(XPCOM_Type, MSCOM_Type)  XPCOM_Type
+
     template <typename WcType>
     typename std::enable_if<sizeof(WcType) == sizeof(PRUnichar), std::wstring>::type
     nsToWString(const PRUnichar *text)
@@ -246,6 +248,8 @@
     typedef LONG64      COM_Long64;
     typedef ULONG64     COM_ULong64;
 
+#   define COM_Type(XPCOM_Type, MSCOM_Type)  MSCOM_Type
+
     inline std::wstring BSTRToWString(BSTR text)
     {
         return std::wstring(text, SysStringLen(text));
@@ -312,10 +316,12 @@
 
 #   define COM_GetArray_Wrap(obj, name, result)                         \
         do {                                                            \
-            SAFEARRAY *array;                                           \
+            SAFEARRAY *array = nullptr;                                 \
             auto rc = obj->get_##name(&array);                          \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
+            if (!array)                                                 \
+                break;                                                  \
             typedef decltype(result)::value_type Ptr;                   \
             Ptr::element_type::COM_Ifc **pArray;                        \
             rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
@@ -324,8 +330,10 @@
                 throw COMError(rc);                                     \
             }                                                           \
             result.resize(array->rgsabound[0].cElements);               \
-            for (size_t i = 0; i < result.size(); ++i)                  \
+            for (size_t i = 0; i < result.size(); ++i) {                \
+                pArray[i]->AddRef();                                    \
                 result[i] = Ptr::wrap(pArray[i]);                       \
+            }                                                           \
             SafeArrayUnaccessData(array);                               \
             SafeArrayDestroy(array);                                    \
         } while (0)
@@ -352,10 +360,12 @@
 
 #   define COM_GetStringArray(obj, name, result)                        \
         do {                                                            \
-            SAFEARRAY *array;                                           \
+            SAFEARRAY *array = nullptr;                                 \
             auto rc = obj->get_##name(&array);                          \
             if (COM_FAILED(rc))                                         \
                 throw COMError(rc);                                     \
+            if (!array)                                                 \
+                break;                                                  \
             BSTR *pArray;                                               \
             rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
             if (COM_FAILED(rc)) {                                       \
@@ -363,10 +373,8 @@
                 throw COMError(rc);                                     \
             }                                                           \
             result.resize(array->rgsabound[0].cElements);               \
-            for (size_t i = 0; i < result.size(); ++i) {                \
+            for (size_t i = 0; i < result.size(); ++i)                  \
                 result[i] = BSTRToWString(pArray[i]);                   \
-                COM_FreeString(pArray[i]);                              \
-            }                                                           \
             SafeArrayUnaccessData(array);                               \
             SafeArrayDestroy(array);                                    \
         } while (0)
@@ -385,14 +393,6 @@
                 pArray[i] = BSTRFromWString(value[i]);                  \
             SafeArrayUnaccessData(array);                               \
             auto result = obj->put_##name(array);                       \
-            rc = SafeArrayAccessData(array, reinterpret_cast<void **>(&pArray)); \
-            if (COM_FAILED(rc)) {                                       \
-                SafeArrayDestroy(array);                                \
-                throw COMError(rc);                                     \
-            }                                                           \
-            for (size_t i = 0; i < value.size(); ++i)                   \
-                COM_FreeString(pArray[i]);                              \
-            SafeArrayUnaccessData(array);                               \
             SafeArrayDestroy(array);                                    \
             if (COM_FAILED(result))                                     \
                 throw COMError(result);                                 \
