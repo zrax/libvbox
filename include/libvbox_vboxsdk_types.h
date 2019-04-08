@@ -1492,7 +1492,7 @@ VBox_FORWARD_DECL_IFC(IExtPack);
 VBox_FORWARD_DECL_IFC(IExtPackBase);
 VBox_FORWARD_DECL_IFC(IExtPackFile);
 VBox_FORWARD_DECL_IFC(IExtPackManager);
-VBox_FORWARD_DECL_IFC(IExtPackPlugin);
+VBox_FORWARD_DECL_IFC(IExtPackPlugIn);
 VBox_FORWARD_DECL_IFC(IExtraDataCanChangeEvent);
 VBox_FORWARD_DECL_IFC(IExtraDataChangedEvent);
 VBox_FORWARD_DECL_IFC(IFile);
@@ -1521,10 +1521,10 @@ VBox_FORWARD_DECL_IFC(IGuestProcess);
 VBox_FORWARD_DECL_IFC(IGuestProcessEvent);
 VBox_FORWARD_DECL_IFC(IGuestProcessIOEvent);
 VBox_FORWARD_DECL_IFC(IGuestProcessInputNotifyEvent);
-VBox_FORWARD_DECL_IFC(IGuestProcessOutputNotifyEvent);
+VBox_FORWARD_DECL_IFC(IGuestProcessOutputEvent);
 VBox_FORWARD_DECL_IFC(IGuestProcessRegisteredEvent);
 VBox_FORWARD_DECL_IFC(IGuestProcessStateChangedEvent);
-VBox_FORWARD_DECL_IFC(IGuestPropertyStateChangedEvent);
+VBox_FORWARD_DECL_IFC(IGuestPropertyChangedEvent);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
 VBox_FORWARD_DECL_IFC(IGuestScreenInfo);
 #endif
@@ -1564,7 +1564,7 @@ VBox_FORWARD_DECL_IFC(IMediumIO);
 #endif
 VBox_FORWARD_DECL_IFC(IMediumRegisteredEvent);
 VBox_FORWARD_DECL_IFC(IMouse);
-VBox_FORWARD_DECL_IFC(IMouseCompatibilityChangedEvent);
+VBox_FORWARD_DECL_IFC(IMouseCapabilityChangedEvent);
 VBox_FORWARD_DECL_IFC(IMousePointerShape);
 VBox_FORWARD_DECL_IFC(IMousePointerShapeChangedEvent);
 VBox_FORWARD_DECL_IFC(INATEngine);

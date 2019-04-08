@@ -65,7 +65,10 @@ target_compile_definitions(vboxwrap
 target_sources(vboxwrap
     PRIVATE
         include/libvbox.h
+        include/libvbox_interfaces.h
         include/libvbox_vboxsdk_types.h
+        include/libvbox_vboxsdk_version.h
+        include/libvbox_wrap.h
         lib/libvbox_p.h
         lib/event.cpp
         lib/machine.cpp
