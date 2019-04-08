@@ -1651,6 +1651,12 @@ namespace VBox
 {
     enum
     {
+        // Some standard error codes that VirtualBox may report.
+        E_POINTER = 0x80004003,
+        E_ACCESSDENIED = 0x80070005,
+        E_OUTOFMEMORY = 0x8007000E,
+        E_INVALIDARG = 0x80070057,
+
         // VirtualBox-specific error codes.
         E_OBJECT_NOT_FOUND = 0x80BB0001,
         E_INVALID_VM_STATE = 0x80BB0002,

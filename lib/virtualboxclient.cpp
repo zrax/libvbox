@@ -47,6 +47,5 @@ VBox::COMPtr<VBox::IEventSource> VBox::IVirtualBoxClient::eventSource() const
 void VBox::IVirtualBoxClient::checkMachineError(const COMPtr<IMachine> &machine)
 {
     auto rc = get_IFC()->CheckMachineError(machine->get_IFC());
-    if (COM_FAILED(rc))
-        throw COMError(rc);
+    COM_ERROR_CHECK(rc);
 }

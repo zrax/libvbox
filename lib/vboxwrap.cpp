@@ -32,16 +32,13 @@ namespace VBox
         {
 #if defined(VBOX_XPCOM)
             nsresult rc = NS_InitXPCOM2(getter_AddRefs(m_serviceManager), nullptr, nullptr);
-            if (NS_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);
 
             rc = NS_GetMainEventQ(getter_AddRefs(m_eventQueue));
-            if (NS_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);
 
             rc = NS_GetComponentManager(getter_AddRefs(m_componentManager));
-            if (NS_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);
 #elif defined(VBOX_MSCOM)
             CoInitialize(nullptr);
 #endif
@@ -71,16 +68,12 @@ namespace VBox
                             NS_VIRTUALBOXCLIENT_CONTRACTID,
                             nullptr, IID_IVirtualBoxClient,
                             reinterpret_cast<void **>(&vboxClient));
-
-            if (NS_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);
 #elif defined(VBOX_MSCOM)
             HRESULT rc = CoCreateInstance(CLSID_VirtualBoxClient, nullptr,
                             CLSCTX_INPROC_SERVER, IID_IVirtualBoxClient,
                             reinterpret_cast<void **>(&vboxClient));
-
-            if (FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);
 #endif
 
             return COMPtr<IVirtualBoxClient>::wrap(vboxClient);
@@ -137,8 +130,12 @@ void VBox::COMWrapBase::_QueryInterface(const void *iid, void **pContainer)
     REFIID riid = *reinterpret_cast<const IID *>(iid);
     auto rc = _get_IFC<::IUnknown>()->QueryInterface(riid, pContainer);
 #endif
-    if (COM_FAILED(rc))
-        throw COMError(rc);
+
+    if (rc == E_NOINTERFACE) {
+        *pContainer = nullptr;
+        return;
+    }
+    COM_ERROR_CHECK(rc);
 }
 
 VBox::COMPtr<VBox::IVirtualBoxClient> VBox::API::virtualBoxClient()

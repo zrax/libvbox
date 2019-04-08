@@ -47,15 +47,13 @@ bool VBox::IEvent::waitable() const
 void VBox::IEvent::setProcessed()
 {
     auto rc = get_IFC()->SetProcessed();
-    if (COM_FAILED(rc))
-        throw COMError(rc);
+    COM_ERROR_CHECK(rc);
 }
 
 bool VBox::IEvent::waitProcessed(int32_t timeout)
 {
     COM_Bool result;
     auto rc = get_IFC()->WaitProcessed(timeout, &result);
-    if (COM_FAILED(rc))
-        throw COMError(rc);
+    COM_ERROR_CHECK(rc);
     return result;
 }

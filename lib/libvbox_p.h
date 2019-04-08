@@ -26,8 +26,11 @@
 #   include <nsMemory.h>
 #   include <VirtualBox_XPCOM.h>
 
-#   define COM_FAILED(x)    NS_FAILED(x)
-#   define COM_SUCCEEDED(x) NS_SUCCEEDED(x)
+#   define COM_ERROR_CHECK(rc)                                          \
+        do {                                                            \
+            if (NS_FAILED(rc))                                          \
+                throw COMError(rc);                                     \
+        } while (0)
 
     typedef PRBool      COM_Bool;
     typedef PRInt32     COM_Long;
@@ -133,15 +136,13 @@
 #   define COM_GetValue(obj, name, result)                              \
         do {                                                            \
             auto rc = obj->Get##name(&result);                          \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_SetValue(obj, name, value)                               \
         do {                                                            \
             auto rc = obj->Set##name(value);                            \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetValue_Wrap(obj, name, result)                         \
@@ -149,24 +150,21 @@
             typedef decltype(result) Ptr;                               \
             Ptr::element_type::COM_Ifc *pValue;                         \
             auto rc = obj->Get##name(&pValue);                          \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             result = Ptr::wrap(pValue);                                 \
         } while (0)
 
 #   define COM_SetValue_Wrap(obj, name, value)                          \
         do {                                                            \
             auto rc = obj->Set##name(value->get_IFC());                 \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
             PRUnichar *buffer;                                          \
             auto rc = obj->Get##name(&buffer);                          \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             result = nsToWString<wchar_t>(buffer);                      \
             COM_FreeString(buffer);                                     \
         } while (0)
@@ -175,8 +173,7 @@
         do {                                                            \
             PRUnichar *buffer = nsFromWString<wchar_t>(value);          \
             auto rc = obj->Set##name(buffer);                           \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             COM_FreeString(buffer);                                     \
         } while (0)
 
@@ -187,8 +184,7 @@
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
             COM_Ifc **pArray;                                           \
             auto rc = obj->Get##name(&count, &pArray);                  \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             COM_ArrayProxy<COM_Ifc *> proxy(count, pArray);             \
             proxy.toVector(result);                                     \
         } while (0)
@@ -200,8 +196,7 @@
             COM_ArrayProxy<COM_Ifc *> proxy;                            \
             proxy.fromVector(value);                                    \
             auto rc = obj->Set##name(proxy.m_count, proxy.m_array);     \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetStringArray(obj, name, result)                        \
@@ -209,8 +204,7 @@
             PRUint32 count;                                             \
             PRUnichar **buffer;                                         \
             auto rc = obj->Get##name(&count, &buffer);                  \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             COM_StringArrayProxy proxy(count, buffer);                  \
             proxy.toVector(result);                                     \
         } while (0)
@@ -221,8 +215,7 @@
             proxy.fromVector(value);                                    \
             auto rc = obj->Set##name(proxy.m_count,                     \
                         const_cast<const PRUnichar **>(proxy.m_array)); \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_DeclareArray(XPCOM_Type, name)                           \
@@ -232,12 +225,18 @@
 #   define COM_ArrayParameterOut(name)  name##Count, name##Array
 #   define COM_ArrayParameterIn(name)   &name##Count, &name##Array
 
+    // Error code compatibility with MSCOM
+#   define E_NOINTERFACE    NS_NOINTERFACE
+
 #elif defined(VBOX_MSCOM)
 #   define WIN32_LEAN_AND_MEAN
 #   include <VirtualBox.h>
 
-#   define COM_FAILED(x)    FAILED(x)
-#   define COM_SUCCEEDED(x) SUCCEEDED(x)
+#   define COM_ERROR_CHECK(rc)                                          \
+        do {                                                            \
+            if (FAILED(rc))                                             \
+                throw COMError(rc);                                     \
+        } while (0)
 
     typedef BOOL        COM_Bool;
     typedef LONG        COM_Long;
@@ -264,15 +263,13 @@
 #   define COM_GetValue(obj, name, result)                              \
         do {                                                            \
             auto rc = obj->get_##name(&result);                         \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_SetValue(obj, name, value)                               \
         do {                                                            \
             auto rc = obj->put_##name(value);                           \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetValue_Wrap(obj, name, result)                         \
@@ -280,24 +277,21 @@
             typedef decltype(result) Ptr;                               \
             Ptr::element_type::COM_Ifc *pValue;                         \
             auto rc = obj->get_##name(&pValue);                         \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             result = Ptr::wrap(pValue);                                 \
         } while (0)
 
 #   define COM_SetValue_Wrap(obj, name, value)                          \
         do {                                                            \
             auto rc = obj->put_##name(value->get_IFC());                \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
             BSTR buffer;                                                \
             auto rc = obj->get_##name(&buffer);                         \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             result = BSTRToWString(buffer);                             \
             COM_FreeString(buffer);                                     \
         } while (0)
@@ -306,8 +300,7 @@
         do {                                                            \
             BSTR buffer = BSTRFromWString(value);                       \
             auto rc = obj->put_##name(buffer);                          \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             COM_FreeString(buffer);                                     \
         } while (0)
 
@@ -315,8 +308,7 @@
         do {                                                            \
             SAFEARRAY *array = nullptr;                                 \
             auto rc = obj->get_##name(&array);                          \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             typedef decltype(result)::value_type Ptr;                   \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
             COM_ArrayProxy<COM_Ifc *> proxy(array);                     \
@@ -330,16 +322,14 @@
             COM_ArrayProxy<COM_Ifc *> proxy;                            \
             proxy.fromVector(value);                                    \
             auto rc = obj->put_##name(proxy.m_array);                   \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetStringArray(obj, name, result)                        \
         do {                                                            \
             SAFEARRAY *array = nullptr;                                 \
             auto rc = obj->get_##name(&array);                          \
-            if (COM_FAILED(rc))                                         \
-                throw COMError(rc);                                     \
+            COM_ERROR_CHECK(rc);                                        \
             COM_StringArrayProxy proxy(array);                          \
             proxy.toVector(result);                                     \
         } while (0)
@@ -348,9 +338,8 @@
         do {                                                            \
             COM_StringArrayProxy proxy;                                 \
             proxy.fromVector(value);                                    \
-            auto result = obj->put_##name(proxy.m_array);               \
-            if (COM_FAILED(result))                                     \
-                throw COMError(result);                                 \
+            auto rc = obj->put_##name(proxy.m_array);                   \
+            COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_DeclareArray(XPCOM_Type, name)                           \
@@ -411,8 +400,7 @@ namespace VBox
 #elif defined(VBOX_MSCOM)
             COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            if (COM_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);                                        \
             result.resize(m_array->rgsabound[0].cElements);
             for (size_t i = 0; i < result.size(); ++i) {
                 pArray[i]->AddRef();
@@ -436,8 +424,7 @@ namespace VBox
             m_array = SafeArrayCreateVector(VT_UNKNOWN, 0, static_cast<ULONG>(vector.size()));
             COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
             HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            if (COM_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);                                        \
             for (size_t i = 0; i < vector.size(); ++i) {
                 pArray[i] = vector[i]->get_IFC();
                 pArray[i]->AddRef();
@@ -502,8 +489,7 @@ namespace VBox
 #elif defined(VBOX_MSCOM)
             BSTR *pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            if (COM_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);                                        \
             result.resize(m_array->rgsabound[0].cElements);
             for (size_t i = 0; i < result.size(); ++i)
                 result[i] = BSTRToWString(pArray[i]);
@@ -524,8 +510,7 @@ namespace VBox
             m_array = SafeArrayCreateVector(VT_BSTR, 0, static_cast<ULONG>(vector.size()));
             BSTR *pArray = nullptr;
             HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            if (COM_FAILED(rc))
-                throw COMError(rc);
+            COM_ERROR_CHECK(rc);                                        \
             for (size_t i = 0; i < vector.size(); ++i)
                 pArray[i] = BSTRFromWString(vector[i]);
             SafeArrayUnaccessData(m_array);
