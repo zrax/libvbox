@@ -18,6 +18,11 @@
 
 #include "libvbox_p.h"
 
+const void *VBox::IVirtualBoxClient::get_IID()
+{
+    return reinterpret_cast<const void *>(&IID_IVirtualBoxClient);
+}
+
 VBox::COMPtr<VBox::IVirtualBox> VBox::IVirtualBoxClient::virtualBox() const
 {
     COMPtr<IVirtualBox> result;

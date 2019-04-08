@@ -18,6 +18,11 @@
 
 #include "libvbox_p.h"
 
+const void *VBox::IMachine::get_IID()
+{
+    return reinterpret_cast<const void *>(&IID_IMachine);
+}
+
 std::wstring VBox::IMachine::name() const
 {
     std::wstring result;

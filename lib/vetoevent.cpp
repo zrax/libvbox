@@ -18,6 +18,11 @@
 
 #include "libvbox_p.h"
 
+const void *VBox::IVetoEvent::get_IID()
+{
+    return reinterpret_cast<const void *>(&IID_IVetoEvent);
+}
+
 void VBox::IVetoEvent::addVeto(const std::wstring &reason)
 {
     auto reasonText = COM_FromWString(reason);

@@ -128,6 +128,19 @@ uint32_t VBox::COMWrapBase::Release()
 #endif
 }
 
+void VBox::COMWrapBase::_QueryInterface(const void *iid, void **pContainer)
+{
+#if defined(VBOX_XPCOM)
+    REFNSIID riid = *reinterpret_cast<const nsIID *>(iid);
+    auto rc = _get_IFC<nsISupports>()->QueryInterface(riid, pContainer);
+#elif defined(VBOX_MSCOM)
+    REFIID riid = *reinterpret_cast<const IID *>(iid);
+    auto rc = _get_IFC<::IUnknown>()->QueryInterface(riid, pContainer);
+#endif
+    if (COM_FAILED(rc))
+        throw COMError(rc);
+}
+
 VBox::COMPtr<VBox::IVirtualBoxClient> VBox::API::virtualBoxClient()
 {
     return get_API()->createVirtualBoxClient();

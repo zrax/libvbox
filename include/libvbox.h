@@ -62,30 +62,6 @@ namespace VBox
         uint32_t m_rc;
     };
 
-    class LIBVBOX_API COMWrapBase
-    {
-    public:
-        template <class Ifc>
-        Ifc *_get_IFC() const { return reinterpret_cast<Ifc *>(m_ifc); }
-
-        template <class Ifc>
-        void _set_IFC(Ifc *ifc) { m_ifc = reinterpret_cast<void *>(ifc); }
-
-        bool _have_IFC() const { return m_ifc != nullptr; }
-        void _reset() { m_ifc = nullptr; }
-
-        uint32_t AddRef();
-        uint32_t Release();
-
-    private:
-        void *m_ifc;
-    };
-
-    #define COM_WRAPPED(COMType) \
-                typedef COMType COM_Ifc; \
-                COMType *get_IFC() const { return _get_IFC<COMType>(); } \
-                void set_IFC(COMType *ifc) { _set_IFC(ifc); }
-
     template <class Wrapped>
     class COMPtr
     {
@@ -97,28 +73,28 @@ namespace VBox
 
         COMPtr(const COMPtr<Wrapped> &other) : m_wrap(other.m_wrap)
         {
-            if (m_wrap._have_IFC())
+            if (m_wrap.have_IFC())
                 m_wrap.AddRef();
         }
 
         COMPtr(COMPtr<Wrapped> &&other) : m_wrap(other.m_wrap)
         {
-            other.m_wrap._reset();
+            other.m_wrap.clear_IFC();
         }
 
         COMPtr<Wrapped> &operator=(std::nullptr_t)
         {
-            if (m_wrap._have_IFC())
+            if (m_wrap.have_IFC())
                 m_wrap.Release();
-            m_wrap._reset();
+            m_wrap.clear_IFC();
             return *this;
         }
 
         COMPtr<Wrapped> &operator=(const COMPtr<Wrapped> &other)
         {
-            if (other.m_wrap._have_IFC())
+            if (other.m_wrap.have_IFC())
                 other.m_wrap.AddRef();
-            if (m_wrap._have_IFC())
+            if (m_wrap.have_IFC())
                 m_wrap.Release();
             m_wrap = other.m_wrap;
             return *this;
@@ -127,13 +103,13 @@ namespace VBox
         COMPtr<Wrapped> &operator=(COMPtr<Wrapped> &&other)
         {
             m_wrap = other.m_wrap;
-            other.m_wrap._reset();
+            other.m_wrap.clear_IFC();
             return *this;
         }
 
         ~COMPtr()
         {
-            if (m_wrap._have_IFC())
+            if (m_wrap.have_IFC())
                 m_wrap.Release();
         }
 
@@ -156,6 +132,41 @@ namespace VBox
     private:
         Wrapped m_wrap;
     };
+
+    class LIBVBOX_API COMWrapBase
+    {
+    public:
+        template <class Ifc>
+        Ifc *_get_IFC() const { return reinterpret_cast<Ifc *>(m_ifc); }
+
+        template <class Ifc>
+        void _set_IFC(Ifc *ifc) { m_ifc = reinterpret_cast<void *>(ifc); }
+
+        bool have_IFC() const { return m_ifc != nullptr; }
+        void clear_IFC() { m_ifc = nullptr; }
+
+        uint32_t AddRef();
+        uint32_t Release();
+
+        void _QueryInterface(const void *iid, void **pContainer);
+
+        template <class QIfc>
+        COMPtr<QIfc> QueryInterface()
+        {
+            typename QIfc::COM_Ifc *pResult;
+            _QueryInterface(QIfc::get_IID(), reinterpret_cast<void **>(&pResult));
+            return COMPtr<QIfc>::wrap(pResult);
+        }
+
+    private:
+        void *m_ifc;
+    };
+
+    #define COM_WRAPPED(COMType)                                        \
+                typedef COMType COM_Ifc;                                \
+                static const void *get_IID();                           \
+                COMType *get_IFC() const { return _get_IFC<COMType>(); } \
+                void set_IFC(COMType *ifc) { _set_IFC(ifc); }
 
     class LIBVBOX_API IEvent : public COMWrapBase
     {

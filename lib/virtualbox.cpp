@@ -18,6 +18,11 @@
 
 #include "libvbox_p.h"
 
+const void *VBox::IVirtualBox::get_IID()
+{
+    return reinterpret_cast<const void *>(&IID_IVirtualBox);
+}
+
 std::wstring VBox::IVirtualBox::version() const
 {
     std::wstring result;
