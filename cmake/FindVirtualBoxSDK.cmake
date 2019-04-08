@@ -15,17 +15,22 @@
 # License along with libvbox; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
+set(VirtualBoxSDK_DIR "" CACHE STRING "Path to the VirtualBox SDK")
+
 if(WIN32)
 
     # Use MSCOM
     find_path(VirtualBoxSDK_INCLUDE_DIR
         NAMES VirtualBox.h
+        HINTS "${VirtualBoxSDK_DIR}/bindings/mscom/include"
     )
     find_path(VirtualBoxSDK_IDL_DIR
         NAMES VirtualBox.idl
+        HINTS "${VirtualBoxSDK_DIR}/bindings/mscom/idl"
     )
     find_file(VirtualBoxSDK_IID_LIB
         NAMES VirtualBox_i.c
+        HINTS "${VirtualBoxSDK_DIR}/bindings/mscom/lib"
     )
 
     mark_as_advanced(
@@ -65,18 +70,15 @@ else()
     # Use XPCOM
     find_path(VirtualBoxSDK_INCLUDE_DIR
         NAMES VirtualBox_XPCOM.h
-        HINTS /usr/lib/virtualbox/sdk/bindings/xpcom/include
-              /opt/VirtualBox/sdk/bindings/xpcom/include
+        HINTS "${VirtualBoxSDK_DIR}/bindings/xpcom/include"
     )
     find_path(VirtualBoxSDK_IDL_DIR
         NAMES VirtualBox_XPCOM.idl
-        HINTS /usr/lib/virtualbox/sdk/bindings/xpcom/idl
-              /opt/VirtualBox/sdk/bindings/xpcom/idl
+        HINTS "${VirtualBoxSDK_DIR}/bindings/xpcom/idl"
     )
     find_file(VirtualBoxSDK_IID_LIB
         NAMES VirtualBox_i.c
-        HINTS /usr/lib/virtualbox/sdk/bindings/xpcom/lib
-              /opt/VirtualBox/sdk/bindings/xpcom/lib
+        HINTS "${VirtualBoxSDK_DIR}/bindings/xpcom/lib"
     )
 
     find_library(VirtualBox_XPCOM_LIB
@@ -170,3 +172,15 @@ else()
     endif()
 
 endif()
+
+# This isn't available anywhere in the SDK, and won't necessarily match
+# the VirtualBox version.  Therefore, we must ask the user to correctly
+# identify the SDK version :(
+set(VirtualBoxSDK_VERSION "6.0.4" CACHE STRING "VirtualBox SDK Version")
+set(VirtualBoxSDK_VERSION_REGEX "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
+if(NOT (VirtualBoxSDK_VERSION MATCHES "${VirtualBoxSDK_VERSION_REGEX}"))
+    message(FATAL_ERROR "VirtualBoxSDK_VERSION Must be specified as Major.Minor.Patch")
+endif()
+string(REGEX REPLACE "${VirtualBoxSDK_VERSION_REGEX}" "\\1" VirtualBoxSDK_VERSION_MAJOR "${VirtualBoxSDK_VERSION}")
+string(REGEX REPLACE "${VirtualBoxSDK_VERSION_REGEX}" "\\2" VirtualBoxSDK_VERSION_MINOR "${VirtualBoxSDK_VERSION}")
+string(REGEX REPLACE "${VirtualBoxSDK_VERSION_REGEX}" "\\3" VirtualBoxSDK_VERSION_PATCH "${VirtualBoxSDK_VERSION}")

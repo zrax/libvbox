@@ -38,10 +38,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif()
 
-# TODO: Determine the actual version from the SDK
-set(VirtualBoxSDK_VERSION_MAJOR 6)
-set(VirtualBoxSDK_VERSION_MINOR 0)
-set(VirtualBoxSDK_VERSION_PATCH 4)
 configure_file(
     include/libvbox_vboxsdk_version.h.in
     include/libvbox_vboxsdk_version.h
