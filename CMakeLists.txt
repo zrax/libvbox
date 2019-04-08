@@ -76,8 +76,9 @@ target_sources(vbox
         lib/event.cpp
         lib/machine.cpp
         lib/vetoevent.cpp
-        lib/virtualboxclient.cpp
         lib/virtualbox.cpp
+        lib/virtualboxclient.cpp
+        lib/virtualboxerrorinfo.cpp
         ${VirtualBoxSDK_IID_LIB}
 )
 

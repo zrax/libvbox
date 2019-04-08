@@ -167,4 +167,28 @@ namespace VBox
             COMType *get_IFC() const { return _get_IFC<COMType>(); }    \
             void set_IFC(COMType *ifc) { _set_IFC(ifc); }
 
+#if defined(VBOX_XPCOM)
+class nsIException;
+#elif defined(VBOX_MSCOM)
+struct IErrorInfo;
+#endif
+
+namespace VBox
+{
+    class LIBVBOX_API WrapErrorInfo : public COMWrapBase
+    {
+    public:
+#if defined(VBOX_XPCOM)
+        COM_WRAPPED(::nsIException)
+#elif defined(VBOX_MSCOM)
+        COM_WRAPPED(::IErrorInfo)
+#endif
+
+        // XPCOM and MSCOM are completely incompatible for their base
+        // error type.  However, both seem to have the concept of a
+        // description or message, so that's what we wrap here.
+        std::wstring message() const;
+    };
+}
+
 #endif /* _LIBVBOX_WRAP_H */

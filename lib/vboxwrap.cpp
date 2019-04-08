@@ -21,6 +21,7 @@
 #if defined(VBOX_XPCOM)
 #   include <nsIServiceManager.h>
 #   include <nsEventQueueUtils.h>
+#   include <nsIExceptionService.h>
 #endif
 
 namespace VBox
@@ -138,7 +139,70 @@ void VBox::COMWrapBase::_QueryInterface(const void *iid, void **pContainer)
     COM_ERROR_CHECK(rc);
 }
 
+const void *VBox::WrapErrorInfo::get_IID()
+{
+#if defined(VBOX_XPCOM)
+    return reinterpret_cast<const void *>(&nsIException::GetIID());
+#elif defined(VBOX_MSCOM)
+    return reinterpret_cast<const void *>(&IID_IErrorInfo);
+#endif
+}
+
+std::wstring VBox::WrapErrorInfo::message() const
+{
+    std::wstring result;
+
+#if defined(VBOX_XPCOM)
+    char *messageText = nullptr;
+    auto rc = get_IFC()->GetMessage(&messageText);
+    COM_ERROR_CHECK(rc);
+    size_t length = std::mbstowcs(nullptr, messageText, 0);
+    result.resize(length);
+    std::mbstowcs(&result[0], messageText, length);
+    nsMemory::Free(reinterpret_cast<void *>(messageText));
+#elif defined(VBOX_MSCOM)
+    BSTR messageText;
+    auto rc = get_IFC()->GetDescription(&messageText);
+    COM_ERROR_CHECK(rc);
+    result = BSTRToWString(messageText);
+    COM_FreeString(messageText);
+#endif
+
+    return result;
+}
+
 VBox::COMPtr<VBox::IVirtualBoxClient> VBox::API::virtualBoxClient()
 {
     return get_API()->createVirtualBoxClient();
+}
+
+VBox::COMPtr<VBox::WrapErrorInfo> VBox::API::currentError()
+{
+#if defined(VBOX_XPCOM)
+    nsresult rc;
+    nsCOMPtr<nsIExceptionService> esvc = do_GetService(NS_EXCEPTIONSERVICE_CONTRACTID, &rc);
+    if (NS_FAILED(rc))
+        return nullptr;
+
+    nsCOMPtr<nsIExceptionManager> emgr;
+    rc = esvc->GetCurrentExceptionManager(getter_AddRefs(emgr));
+    if (NS_FAILED(rc))
+        return nullptr;
+
+    nsIException *ex = nullptr;
+    rc = emgr->GetCurrentException(&ex);
+    if (NS_FAILED(rc) || !ex)
+        return nullptr;
+
+    auto result = VBox::COMPtr<VBox::WrapErrorInfo>::wrap(ex);
+    emgr->SetCurrentException(nullptr);
+    return result;
+#elif defined(VBOX_MSCOM)
+    IErrorInfo *err = nullptr;
+    auto rc = GetErrorInfo(0, &err);
+    if (FAILED(rc) || !err)
+        return nullptr;
+
+    return VBox::COMPtr<VBox::WrapErrorInfo>::wrap(err);
+#endif
 }

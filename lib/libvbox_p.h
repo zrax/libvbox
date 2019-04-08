@@ -37,6 +37,7 @@
     typedef PRUint32    COM_ULong;
     typedef PRInt64     COM_Long64;
     typedef PRUint64    COM_ULong64;
+    typedef PRUnichar  *COM_String;
 
 #   define COM_Type(XPCOM_Type, MSCOM_Type)  XPCOM_Type
 
@@ -243,6 +244,7 @@
     typedef ULONG       COM_ULong;
     typedef LONG64      COM_Long64;
     typedef ULONG64     COM_ULong64;
+    typedef BSTR        COM_String;
 
 #   define COM_Type(XPCOM_Type, MSCOM_Type)  MSCOM_Type
 
@@ -400,7 +402,7 @@ namespace VBox
 #elif defined(VBOX_MSCOM)
             COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            COM_ERROR_CHECK(rc);                                        \
+            COM_ERROR_CHECK(rc);
             result.resize(m_array->rgsabound[0].cElements);
             for (size_t i = 0; i < result.size(); ++i) {
                 pArray[i]->AddRef();
@@ -424,7 +426,7 @@ namespace VBox
             m_array = SafeArrayCreateVector(VT_UNKNOWN, 0, static_cast<ULONG>(vector.size()));
             COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
             HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            COM_ERROR_CHECK(rc);                                        \
+            COM_ERROR_CHECK(rc);
             for (size_t i = 0; i < vector.size(); ++i) {
                 pArray[i] = vector[i]->get_IFC();
                 pArray[i]->AddRef();
@@ -489,7 +491,7 @@ namespace VBox
 #elif defined(VBOX_MSCOM)
             BSTR *pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            COM_ERROR_CHECK(rc);                                        \
+            COM_ERROR_CHECK(rc);
             result.resize(m_array->rgsabound[0].cElements);
             for (size_t i = 0; i < result.size(); ++i)
                 result[i] = BSTRToWString(pArray[i]);
@@ -510,7 +512,7 @@ namespace VBox
             m_array = SafeArrayCreateVector(VT_BSTR, 0, static_cast<ULONG>(vector.size()));
             BSTR *pArray = nullptr;
             HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            COM_ERROR_CHECK(rc);                                        \
+            COM_ERROR_CHECK(rc);
             for (size_t i = 0; i < vector.size(); ++i)
                 pArray[i] = BSTRFromWString(vector[i]);
             SafeArrayUnaccessData(m_array);

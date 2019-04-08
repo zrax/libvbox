@@ -24,12 +24,18 @@
 
 namespace VBox
 {
-    class LIBVBOX_API IVirtualBoxErrorInfo : public COMWrapBase
+    class LIBVBOX_API IVirtualBoxErrorInfo : public WrapErrorInfo
     {
     public:
         COM_WRAPPED(::IVirtualBoxErrorInfo)
 
-        // TODO
+        // Attributes
+        VBox_PROPERTY_RO(int32_t, resultCode);
+        VBox_PROPERTY_RO(int32_t, resultDetail);
+        VBox_PROPERTY_RO(std::wstring, interfaceID);
+        VBox_PROPERTY_RO(std::wstring, component);
+        VBox_PROPERTY_RO(std::wstring, text);
+        VBox_PROPERTY_RO(COMPtr<IVirtualBoxErrorInfo>, next);
     };
 
     class LIBVBOX_API INATNetwork : public COMWrapBase
