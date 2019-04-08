@@ -52,9 +52,11 @@ if(MSVC)
 endif()
 
 target_include_directories(vbox
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include"
         "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
 
@@ -79,7 +81,7 @@ target_sources(vbox
         ${VirtualBoxSDK_IID_LIB}
 )
 
-target_link_libraries(vbox PUBLIC VirtualBox::SDK)
+target_link_libraries(vbox PRIVATE VirtualBox::SDK)
 if(WIN32)
     target_link_libraries(vbox PUBLIC Uuid Ole32 OleAut32)
 else()
@@ -87,6 +89,7 @@ else()
 endif()
 
 install(TARGETS vbox
+    EXPORT vbox-targets
     RUNTIME DESTINATION bin COMPONENT shlib
     LIBRARY DESTINATION lib COMPONENT shlib
 )
@@ -98,5 +101,29 @@ install(
         include/libvbox_wrap.h
         "${CMAKE_CURRENT_BINARY_DIR}/include/libvbox_vboxsdk_version.h"
     DESTINATION include
+    COMPONENT devel
+)
+
+export(TARGETS vbox
+    NAMESPACE libvbox::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/vbox-targets.cmake"
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(libvbox-config-version.cmake
+    VERSION 1.0
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(
+    FILES
+        libvbox-config.cmake
+        "${CMAKE_CURRENT_BINARY_DIR}/libvbox-config-version.cmake"
+    DESTINATION lib/cmake/libvbox
+    COMPONENT devel
+)
+install(EXPORT vbox-targets
+    DESTINATION lib/cmake/libvbox
+    NAMESPACE libvbox::
     COMPONENT devel
 )
