@@ -44,21 +44,26 @@ configure_file(
     @ONLY
 )
 
-add_library(vboxwrap SHARED lib/vboxwrap.cpp)
+add_library(vbox SHARED lib/vboxwrap.cpp)
 
-target_include_directories(vboxwrap
+if(MSVC)
+    # Keep the "libvbox" name even on MSVC
+    set_target_properties(vbox PROPERTIES PREFIX "lib")
+endif()
+
+target_include_directories(vbox
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
         "${CMAKE_CURRENT_BINARY_DIR}/include"
 )
 
-target_compile_definitions(vboxwrap
+target_compile_definitions(vbox
     PRIVATE
         BUILDING_LIBVBOX
 )
 
-target_sources(vboxwrap
+target_sources(vbox
     PRIVATE
         include/libvbox.h
         include/libvbox_interfaces.h
@@ -74,9 +79,24 @@ target_sources(vboxwrap
         ${VirtualBoxSDK_IID_LIB}
 )
 
-target_link_libraries(vboxwrap PUBLIC VirtualBox::SDK)
+target_link_libraries(vbox PUBLIC VirtualBox::SDK)
 if(WIN32)
-    target_link_libraries(vboxwrap PUBLIC Uuid Ole32 OleAut32)
+    target_link_libraries(vbox PUBLIC Uuid Ole32 OleAut32)
 else()
-    target_link_libraries(vboxwrap PUBLIC VirtualBox::XPCOM)
+    target_link_libraries(vbox PUBLIC VirtualBox::XPCOM)
 endif()
+
+install(TARGETS vbox
+    RUNTIME DESTINATION bin COMPONENT shlib
+    LIBRARY DESTINATION lib COMPONENT shlib
+)
+install(
+    FILES
+        include/libvbox.h
+        include/libvbox_interfaces.h
+        include/libvbox_vboxsdk_types.h
+        include/libvbox_wrap.h
+        "${CMAKE_CURRENT_BINARY_DIR}/include/libvbox_vboxsdk_version.h"
+    DESTINATION include
+    COMPONENT devel
+)
