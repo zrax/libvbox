@@ -206,3 +206,41 @@ VBox::COMPtr<VBox::ICloudProviderManager> VBox::IVirtualBox::cloudProviderManage
     return result;
 }
 #endif
+
+std::wstring VBox::IVirtualBox::composeMachineFilename(
+        const std::wstring &name, const std::wstring &group,
+        const std::wstring &createFlags, const std::wstring &baseFolder)
+{
+    COM_StringProxy result;
+    COM_StringProxy pName(name);
+    COM_StringProxy pGroup(group);
+    COM_StringProxy pCreateFlags(createFlags);
+    COM_StringProxy pBaseFolder(baseFolder);
+
+    auto rc = get_IFC()->ComposeMachineFilename(pName.m_string, pGroup.m_string,
+                                                pCreateFlags.m_string,
+                                                pBaseFolder.m_string,
+                                                &result.m_string);
+    COM_ERROR_CHECK(rc);
+    return result.toWString();
+}
+
+VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
+        const std::wstring &settingsFile, const std::wstring &name,
+        const std::vector<std::wstring> &groups, const std::wstring &osTypeId,
+        const std::wstring &flags)
+{
+    ::IMachine *cResult = nullptr;
+    COM_StringProxy pSettingsFile(settingsFile);
+    COM_StringProxy pName(name);
+    COM_StringArrayProxy pGroups(groups);
+    COM_StringProxy pOsTypeId(osTypeId);
+    COM_StringProxy pFlags(flags);
+
+    auto rc = get_IFC()->CreateMachine(pSettingsFile.m_string, pName.m_string,
+                                       COM_ArrayParameter(pGroups),
+                                       pOsTypeId.m_string, pFlags.m_string,
+                                       &cResult);
+    COM_ERROR_CHECK(rc);
+    return VBox::COMPtr<VBox::IMachine>::wrap(cResult);
+}

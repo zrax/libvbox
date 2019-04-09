@@ -163,30 +163,26 @@
 
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
-            PRUnichar *buffer;                                          \
-            auto rc = obj->Get##name(&buffer);                          \
+            COM_StringProxy proxy;                                      \
+            auto rc = obj->Get##name(&proxy.m_string);                  \
             COM_ERROR_CHECK(rc);                                        \
-            result = nsToWString<wchar_t>(buffer);                      \
-            COM_FreeString(buffer);                                     \
+            return proxy.toWString();                                   \
         } while (0)
 
 #   define COM_SetString(obj, name, value)                              \
         do {                                                            \
-            PRUnichar *buffer = nsFromWString<wchar_t>(value);          \
-            auto rc = obj->Set##name(buffer);                           \
+            COM_StringProxy proxy(value);                               \
+            auto rc = obj->Set##name(proxy.m_string);                   \
             COM_ERROR_CHECK(rc);                                        \
-            COM_FreeString(buffer);                                     \
         } while (0)
 
 #   define COM_GetArray_Wrap(obj, name, result)                         \
         do {                                                            \
-            PRUint32 count;                                             \
             typedef decltype(result)::value_type Ptr;                   \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
-            COM_Ifc **pArray;                                           \
-            auto rc = obj->Get##name(&count, &pArray);                  \
+            COM_ArrayProxy<COM_Ifc *> proxy;                            \
+            auto rc = obj->Get##name(&proxy.m_count, &proxy.m_array);   \
             COM_ERROR_CHECK(rc);                                        \
-            COM_ArrayProxy<COM_Ifc *> proxy(count, pArray);             \
             proxy.toVector(result);                                     \
         } while (0)
 
@@ -194,37 +190,28 @@
         do {                                                            \
             typedef decltype(result)::value_type Ptr;                   \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
-            COM_ArrayProxy<COM_Ifc *> proxy;                            \
-            proxy.fromVector(value);                                    \
+            COM_ArrayProxy<COM_Ifc *> proxy(value);                     \
             auto rc = obj->Set##name(proxy.m_count, proxy.m_array);     \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetStringArray(obj, name, result)                        \
         do {                                                            \
-            PRUint32 count;                                             \
-            PRUnichar **buffer;                                         \
-            auto rc = obj->Get##name(&count, &buffer);                  \
+            COM_StringArrayProxy proxy;                                 \
+            auto rc = obj->Get##name(&proxy.m_count, &proxy.m_array);   \
             COM_ERROR_CHECK(rc);                                        \
-            COM_StringArrayProxy proxy(count, buffer);                  \
             proxy.toVector(result);                                     \
         } while (0)
 
 #   define COM_SetStringArray(obj, name, value)                         \
         do {                                                            \
-            COM_StringArrayProxy proxy;                                 \
-            proxy.fromVector(value);                                    \
-            auto rc = obj->Set##name(proxy.m_count,                     \
-                        const_cast<const PRUnichar **>(proxy.m_array)); \
+            COM_StringArrayProxy proxy(value);                          \
+            auto rc = obj->Set##name(proxy.m_count, proxy.constArray()); \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
-#   define COM_DeclareArray(XPCOM_Type, name)                           \
-        PRUint32 name##Count;                                           \
-        XPCOM_Type *name##Array
-
-#   define COM_ArrayParameterOut(name)  name##Count, name##Array
-#   define COM_ArrayParameterIn(name)   &name##Count, &name##Array
+#   define COM_ArrayParameter(proxy)    proxy.m_count, proxy.constArray()
+#   define COM_ArrayParameterRef(proxy) &proxy.m_count, &proxy.m_array
 
     // Error code compatibility with MSCOM
 #   define E_NOINTERFACE    NS_NOINTERFACE
@@ -291,29 +278,26 @@
 
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
-            BSTR buffer;                                                \
-            auto rc = obj->get_##name(&buffer);                         \
+            COM_StringProxy proxy;                                      \
+            auto rc = obj->get_##name(&proxy.m_string);                 \
             COM_ERROR_CHECK(rc);                                        \
-            result = BSTRToWString(buffer);                             \
-            COM_FreeString(buffer);                                     \
+            return proxy.toWString();                                   \
         } while (0)
 
 #   define COM_SetString(obj, name, value)                              \
         do {                                                            \
-            BSTR buffer = BSTRFromWString(value);                       \
-            auto rc = obj->put_##name(buffer);                          \
+            COM_StringProxy proxy(value);                               \
+            auto rc = obj->put_##name(proxy.m_string);                  \
             COM_ERROR_CHECK(rc);                                        \
-            COM_FreeString(buffer);                                     \
         } while (0)
 
 #   define COM_GetArray_Wrap(obj, name, result)                         \
         do {                                                            \
-            SAFEARRAY *array = nullptr;                                 \
-            auto rc = obj->get_##name(&array);                          \
-            COM_ERROR_CHECK(rc);                                        \
             typedef decltype(result)::value_type Ptr;                   \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
-            COM_ArrayProxy<COM_Ifc *> proxy(array);                     \
+            COM_ArrayProxy<COM_Ifc *> proxy;                            \
+            auto rc = obj->get_##name(&proxy.m_array);                  \
+            COM_ERROR_CHECK(rc);                                        \
             proxy.toVector(result);                                     \
         } while (0)
 
@@ -321,34 +305,28 @@
         do {                                                            \
             typedef decltype(result)::value_type Ptr;                   \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
-            COM_ArrayProxy<COM_Ifc *> proxy;                            \
-            proxy.fromVector(value);                                    \
+            COM_ArrayProxy<COM_Ifc *> proxy(value);                     \
             auto rc = obj->put_##name(proxy.m_array);                   \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
 #   define COM_GetStringArray(obj, name, result)                        \
         do {                                                            \
-            SAFEARRAY *array = nullptr;                                 \
-            auto rc = obj->get_##name(&array);                          \
+            COM_StringArrayProxy proxy;                                 \
+            auto rc = obj->get_##name(&proxy.m_array);                  \
             COM_ERROR_CHECK(rc);                                        \
-            COM_StringArrayProxy proxy(array);                          \
             proxy.toVector(result);                                     \
         } while (0)
 
 #   define COM_SetStringArray(obj, name, value)                         \
         do {                                                            \
-            COM_StringArrayProxy proxy;                                 \
-            proxy.fromVector(value);                                    \
+            COM_StringArrayProxy proxy(value);                          \
             auto rc = obj->put_##name(proxy.m_array);                   \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
-#   define COM_DeclareArray(XPCOM_Type, name)                           \
-        SAFEARRAY *name;
-
-#   define COM_ArrayParameterOut(name)  name
-#   define COM_ArrayParameterIn(name)   &name
+#   define COM_ArrayParameter(proxy)    proxy.m_array
+#   define COM_ArrayParameterRef(proxy) &proxy.m_array
 
 #else
 #   error Unsupported COM configuration
@@ -356,21 +334,52 @@
 
 namespace VBox
 {
+    class COM_StringProxy
+    {
+    public:
+        COM_StringProxy() : m_string() { }
+
+        COM_StringProxy(const std::wstring &value)
+        {
+            fromWString(value);
+        }
+
+        ~COM_StringProxy()
+        {
+            if (m_string)
+                COM_FreeString(m_string);
+        }
+
+        void fromWString(const std::wstring &string)
+        {
+            m_string = COM_FromWString(string);
+        }
+
+        std::wstring toWString()
+        {
+            return COM_ToWString(m_string);
+        }
+
+    public:
+        COM_String m_string;
+    };
+
     template <typename Element>
     class COM_ArrayProxy
     {
     public:
 #if defined(VBOX_XPCOM)
         COM_ArrayProxy() : m_count(), m_array() { }
-
-        COM_ArrayProxy(PRUint32 count, Element *array)
-            : m_count(count), m_array(array) { }
 #elif defined(VBOX_MSCOM)
         COM_ArrayProxy() : m_array() { }
-
-        COM_ArrayProxy(SAFEARRAY *array)
-            : m_array(array) { }
 #endif
+
+        template <typename Wrap>
+        COM_ArrayProxy(const std::vector<COMPtr<Wrap>> &vector)
+            : COM_ArrayProxy()
+        {
+            fromVector(vector);
+        }
 
         ~COM_ArrayProxy() { Release(); }
 
@@ -435,7 +444,11 @@ namespace VBox
 #endif
         }
 
-    private:
+#if defined(VBOX_XPCOM)
+        Element *constArray() const { return m_array; }
+#endif
+
+    public:
 #if defined(VBOX_XPCOM)
         PRUint32 m_count;
         Element *m_array;
@@ -449,15 +462,15 @@ namespace VBox
     public:
 #if defined(VBOX_XPCOM)
         COM_StringArrayProxy() : m_count(), m_array() { }
-
-        COM_StringArrayProxy(PRUint32 count, PRUnichar **array)
-            : m_count(count), m_array(array) { }
 #elif defined(VBOX_MSCOM)
         COM_StringArrayProxy() : m_array() { }
-
-        COM_StringArrayProxy(SAFEARRAY *array)
-            : m_array(array) { }
 #endif
+
+        COM_StringArrayProxy(const std::vector<std::wstring> &vector)
+            : COM_StringArrayProxy()
+        {
+            fromVector(vector);
+        }
 
         ~COM_StringArrayProxy() { Release(); }
 
@@ -518,6 +531,10 @@ namespace VBox
             SafeArrayUnaccessData(m_array);
 #endif
         }
+
+#if defined(VBOX_XPCOM)
+        const PRUnichar **constArray() const { return const_cast<const PRUnichar **>(m_array); }
+#endif
 
     public:
 #if defined(VBOX_XPCOM)

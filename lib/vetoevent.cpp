@@ -25,10 +25,9 @@ const void *VBox::IVetoEvent::get_IID()
 
 void VBox::IVetoEvent::addVeto(const std::wstring &reason)
 {
-    auto reasonText = COM_FromWString(reason);
-    auto rc = get_IFC()->AddVeto(reasonText);
+    COM_StringProxy pReason(reason);
+    auto rc = get_IFC()->AddVeto(pReason.m_string);
     COM_ERROR_CHECK(rc);
-    COM_FreeString(reasonText);
 }
 
 bool VBox::IVetoEvent::isVetoed()
@@ -41,22 +40,21 @@ bool VBox::IVetoEvent::isVetoed()
 
 std::vector<std::wstring> VBox::IVetoEvent::getVetos()
 {
-    COM_DeclareArray(PRUnichar *, vetoTexts);
-    auto rc = get_IFC()->GetVetos(COM_ArrayParameterIn(vetoTexts));
+    COM_StringArrayProxy pResult;
+    auto rc = get_IFC()->GetVetos(COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
 
-    COM_StringArrayProxy proxy(COM_ArrayParameterOut(vetoTexts));
     std::vector<std::wstring> result;
-    proxy.toVector(result);
+    pResult.toVector(result);
     return result;
 }
 
 void VBox::IVetoEvent::addApproval(const std::wstring &reason)
 {
-    auto reasonText = COM_FromWString(reason);
-    auto rc = get_IFC()->AddApproval(reasonText);
+    auto cReason = COM_FromWString(reason);
+    auto rc = get_IFC()->AddApproval(cReason);
     COM_ERROR_CHECK(rc);
-    COM_FreeString(reasonText);
+    COM_FreeString(cReason);
 }
 
 bool VBox::IVetoEvent::isApproved()
@@ -69,12 +67,11 @@ bool VBox::IVetoEvent::isApproved()
 
 std::vector<std::wstring> VBox::IVetoEvent::getApprovals()
 {
-    COM_DeclareArray(PRUnichar *, approvalTexts);
-    auto rc = get_IFC()->GetApprovals(COM_ArrayParameterIn(approvalTexts));
+    COM_StringArrayProxy pResult;
+    auto rc = get_IFC()->GetApprovals(COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
 
-    COM_StringArrayProxy proxy(COM_ArrayParameterOut(approvalTexts));
     std::vector<std::wstring> result;
-    proxy.toVector(result);
+    pResult.toVector(result);
     return result;
 }
