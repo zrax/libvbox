@@ -23,6 +23,39 @@ const void *VBox::IMachine::get_IID()
     return reinterpret_cast<const void *>(&IID_IMachine);
 }
 
+VBox::COMPtr<VBox::IVirtualBox> VBox::IMachine::parent() const
+{
+    COMPtr<IVirtualBox> result;
+    COM_GetValue_Wrap(get_IFC(), Parent, result);
+    return result;
+}
+
+std::vector<uint8_t> VBox::IMachine::icon() const
+{
+    std::vector<uint8_t> result;
+    COM_GetArray(get_IFC(), Icon, result);
+    return result;
+}
+
+void VBox::IMachine::set_icon(const std::vector<uint8_t> &value)
+{
+    COM_SetArray(get_IFC(), Icon, value);
+}
+
+bool VBox::IMachine::accessible() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), Accessible, result);
+    return static_cast<bool>(result);
+}
+
+VBox::COMPtr<VBox::IVirtualBoxErrorInfo> VBox::IMachine::accessError() const
+{
+    COMPtr<IVirtualBoxErrorInfo> result;
+    COM_GetValue_Wrap(get_IFC(), AccessError, result);
+    return result;
+}
+
 std::wstring VBox::IMachine::name() const
 {
     std::wstring result;
@@ -33,6 +66,25 @@ std::wstring VBox::IMachine::name() const
 void VBox::IMachine::set_name(const std::wstring &value)
 {
     COM_SetString(get_IFC(), Name, value);
+}
+
+std::wstring VBox::IMachine::description() const
+{
+    std::wstring result;
+    COM_GetString(get_IFC(), Description, result);
+    return result;
+}
+
+void VBox::IMachine::set_description(const std::wstring &value)
+{
+    COM_SetString(get_IFC(), Description, value);
+}
+
+std::wstring VBox::IMachine::id() const
+{
+    std::wstring result;
+    COM_GetString(get_IFC(), Id, result);
+    return result;
 }
 
 std::vector<std::wstring> VBox::IMachine::groups() const

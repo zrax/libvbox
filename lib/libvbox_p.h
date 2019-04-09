@@ -18,6 +18,7 @@
 
 #include "libvbox.h"
 
+#include <cstring>
 #include <type_traits>
 
 #define BADCHAR_SUBSTITUTE  wchar_t(0xFFFD)
@@ -176,6 +177,23 @@
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
+#   define COM_GetArray(obj, name, result)                              \
+        do {                                                            \
+            typedef decltype(result)::value_type Element;               \
+            COM_ArrayProxy<Element> proxy;                              \
+            auto rc = obj->Get##name(&proxy.m_count, &proxy.m_array);   \
+            COM_ERROR_CHECK(rc);                                        \
+            proxy.toVector(result);                                     \
+        } while (0)
+
+#   define COM_SetArray(obj, name, value)                               \
+        do {                                                            \
+            typedef std::remove_reference<decltype(value)>::type::value_type Element; \
+            COM_ArrayProxy<Element> proxy(value);                       \
+            auto rc = obj->Set##name(proxy.m_count, proxy.m_array);     \
+            COM_ERROR_CHECK(rc);                                        \
+        } while (0)
+
 #   define COM_GetArray_Wrap(obj, name, result)                         \
         do {                                                            \
             typedef decltype(result)::value_type Ptr;                   \
@@ -188,7 +206,7 @@
 
 #   define COM_SetArray_Wrap(obj, name, value)                          \
         do {                                                            \
-            typedef decltype(result)::value_type Ptr;                   \
+            typedef decltype(value)::value_type Ptr;                    \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
             COM_ArrayProxy<COM_Ifc *> proxy(value);                     \
             auto rc = obj->Set##name(proxy.m_count, proxy.m_array);     \
@@ -291,6 +309,23 @@
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
+#   define COM_GetArray(obj, name, result)                              \
+        do {                                                            \
+            typedef decltype(result)::value_type Element;               \
+            COM_ArrayProxy<Element> proxy;                              \
+            auto rc = obj->get_##name(&proxy.m_array);                  \
+            COM_ERROR_CHECK(rc);                                        \
+            proxy.toVector(result);                                     \
+        } while (0)
+
+#   define COM_SetArray(obj, name, value)                               \
+        do {                                                            \
+            typedef std::remove_reference<decltype(value)>::type::value_type Element; \
+            COM_ArrayProxy<Element> proxy(value);                       \
+            auto rc = obj->put_##name(proxy.m_array);                   \
+            COM_ERROR_CHECK(rc);                                        \
+        } while (0)
+
 #   define COM_GetArray_Wrap(obj, name, result)                         \
         do {                                                            \
             typedef decltype(result)::value_type Ptr;                   \
@@ -303,7 +338,7 @@
 
 #   define COM_SetArray_Wrap(obj, name, value)                          \
         do {                                                            \
-            typedef decltype(result)::value_type Ptr;                   \
+            typedef decltype(value)::value_type Ptr;                    \
             typedef Ptr::element_type::COM_Ifc COM_Ifc;                 \
             COM_ArrayProxy<COM_Ifc *> proxy(value);                     \
             auto rc = obj->put_##name(proxy.m_array);                   \
@@ -374,6 +409,13 @@ namespace VBox
         COM_ArrayProxy() : m_array() { }
 #endif
 
+        template <typename Type>
+        COM_ArrayProxy(const std::vector<Type> &vector)
+            : COM_ArrayProxy()
+        {
+            fromVector(vector);
+        }
+
         template <typename Wrap>
         COM_ArrayProxy(const std::vector<COMPtr<Wrap>> &vector)
             : COM_ArrayProxy()
@@ -406,15 +448,23 @@ namespace VBox
 
 #if defined(VBOX_XPCOM)
             result.resize(m_count);
-            for (PRUint32 i = 0; i < m_count; ++i)
-                result[i] = static_cast<Type>(m_array[i]);
+            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
+                std::memcpy(&result[0], &m_array[0], m_count * sizeof(Type));
+            } else {
+                for (PRUint32 i = 0; i < m_count; ++i)
+                    result[i] = static_cast<Type>(m_array[i]);
+            }
 #elif defined(VBOX_MSCOM)
-            Type *pArray = nullptr;
+            Element *pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
             COM_ERROR_CHECK(rc);
             result.resize(m_array->rgsabound[0].cElements);
-            for (size_t i = 0; i < result.size(); ++i)
-                result[i] = pArray[i];
+            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
+                std::memcpy(&result[0], &pArray[0], result.size() * sizeof(Type));
+            } else {
+                for (size_t i = 0; i < result.size(); ++i)
+                    result[i] = static_cast<Type>(pArray[i]);
+            }
             SafeArrayUnaccessData(m_array);
 #endif
         }
@@ -439,6 +489,35 @@ namespace VBox
             for (size_t i = 0; i < result.size(); ++i) {
                 pArray[i]->AddRef();
                 result[i] = COMPtr<Wrap>::wrap(pArray[i]);
+            }
+            SafeArrayUnaccessData(m_array);
+#endif
+        }
+
+        template <typename Type>
+        void fromVector(const std::vector<Type> &vector)
+        {
+            Release();
+
+#if defined(VBOX_XPCOM)
+            m_count = vector.size();
+            m_array = reinterpret_cast<Element *>(nsMemory::Alloc(m_count * sizeof(Element)));
+            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
+                std::memcpy(&m_array[0], &vector[0], m_count * sizeof(Type));
+            } else {
+                for (PRUint32 i = 0; i < m_count; ++i)
+                    m_array[i] = static_cast<Element>(vector[i]);
+            }
+#elif defined(VBOX_MSCOM)
+            m_array = SafeArrayCreateVector(VT_UNKNOWN, 0, static_cast<ULONG>(vector.size()));
+            Element *pArray = nullptr;
+            HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
+            COM_ERROR_CHECK(rc);
+            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
+                std::memcpy(&pArray[0], &vector[0], vector.size() * sizeof(Type));
+            } else {
+                for (size_t i = 0; i < vector.size(); ++i)
+                    pArray[i] = static_cast<Element>(vector[i]);
             }
             SafeArrayUnaccessData(m_array);
 #endif
