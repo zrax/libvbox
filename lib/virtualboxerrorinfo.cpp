@@ -60,7 +60,6 @@ std::wstring VBox::IVirtualBoxErrorInfo::text() const
     return result;
 }
 
-
 VBox::COMPtr<VBox::IVirtualBoxErrorInfo> VBox::IVirtualBoxErrorInfo::next() const
 {
     COMPtr<IVirtualBoxErrorInfo> result;

@@ -242,5 +242,264 @@ VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
                                        pOsTypeId.m_string, pFlags.m_string,
                                        &cResult);
     COM_ERROR_CHECK(rc);
-    return VBox::COMPtr<VBox::IMachine>::wrap(cResult);
+    return COMPtr<IMachine>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::openMachine(
+        const std::wstring &settingsFile)
+{
+    ::IMachine *cResult = nullptr;
+    COM_StringProxy pSettingsFile(settingsFile);
+
+    auto rc = get_IFC()->OpenMachine(pSettingsFile.m_string, &cResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IMachine>::wrap(cResult);
+}
+
+void VBox::IVirtualBox::registerMachine(const COMPtr<IMachine> &machine)
+{
+    auto rc = get_IFC()->RegisterMachine(machine->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+
+VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::findMachine(
+        const std::wstring &nameOrId)
+{
+    ::IMachine *cResult = nullptr;
+    COM_StringProxy pNameOrId(nameOrId);
+
+    auto rc = get_IFC()->FindMachine(pNameOrId.m_string, &cResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IMachine>::wrap(cResult);
+}
+
+std::vector<VBox::COMPtr<VBox::IMachine>> VBox::IVirtualBox::getMachinesByGroups(
+        const std::vector<std::wstring> &groups)
+{
+    COM_ArrayProxy<::IMachine *> pResult;
+    COM_StringArrayProxy pGroups(groups);
+
+    auto rc = get_IFC()->GetMachinesByGroups(COM_ArrayParameter(pGroups),
+                                             COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<VBox::COMPtr<VBox::IMachine>> result;
+    pResult.toVector(result);
+    return result;
+}
+
+std::vector<VBox::MachineState> VBox::IVirtualBox::getMachineStates(
+        const std::vector<COMPtr<IMachine>> &machines)
+{
+    COM_ArrayProxy<COM_Type(PRUint32, ::MachineState)> pResult;
+    COM_ArrayProxy<::IMachine *> pMachines(machines);
+
+    auto rc = get_IFC()->GetMachineStates(COM_ArrayParameter(pMachines),
+                                          COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<VBox::MachineState> result;
+    pResult.toVector(result);
+    return result;
+}
+
+VBox::COMPtr<VBox::IAppliance> VBox::IVirtualBox::createAppliance()
+{
+    ::IAppliance *pResult;
+    auto rc = get_IFC()->CreateAppliance(&pResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IAppliance>::wrap(pResult);
+}
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
+VBox::COMPtr<VBox::IUnattended> VBox::IVirtualBox::createUnattendedInstaller()
+{
+    ::IUnattended *pResult;
+    auto rc = get_IFC()->CreateUnattendedInstaller(&pResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IUnattended>::wrap(pResult);
+}
+#endif
+
+VBox::COMPtr<VBox::IMedium> VBox::IVirtualBox::createMedium(
+        const std::wstring &format, const std::wstring &location,
+        AccessMode accessMode, DeviceType aADeviceTypeType)
+{
+    ::IMedium *pResult;
+    COM_StringProxy pFormat(format);
+    COM_StringProxy pLocation(location);
+    auto cAccessMode = static_cast<COM_Type(PRUint32, ::AccessMode)>(accessMode);
+    auto cDeviceType = static_cast<COM_Type(PRUint32, ::DeviceType)>(aADeviceTypeType);
+
+    auto rc = get_IFC()->CreateMedium(pFormat.m_string, pLocation.m_string,
+                                      cAccessMode, cDeviceType, &pResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IMedium>::wrap(pResult);
+}
+
+VBox::COMPtr<VBox::IMedium> VBox::IVirtualBox::openMedium(
+        const std::wstring &location, DeviceType deviceType,
+        AccessMode accessMode, bool forceNewUuid)
+{
+    ::IMedium *pResult;
+    COM_StringProxy pLocation(location);
+    auto cDeviceType = static_cast<COM_Type(PRUint32, ::DeviceType)>(deviceType);
+    auto cAccessMode = static_cast<COM_Type(PRUint32, ::AccessMode)>(accessMode);
+    auto cForceNewUuid = static_cast<COM_Bool>(forceNewUuid);
+
+    auto rc = get_IFC()->OpenMedium(pLocation.m_string, cDeviceType, cAccessMode,
+                                    cForceNewUuid, &pResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IMedium>::wrap(pResult);
+}
+
+VBox::COMPtr<VBox::IGuestOSType> VBox::IVirtualBox::getGuestOSType(
+        const std::wstring &id)
+{
+    ::IGuestOSType *pResult;
+    COM_StringProxy pId(id);
+
+    auto rc = get_IFC()->GetGuestOSType(pId.m_string, &pResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IGuestOSType>::wrap(pResult);
+}
+
+void VBox::IVirtualBox::createSharedFolder(const std::wstring &name,
+        const std::wstring &hostPath, bool writable, bool automount,
+        const std::wstring &autoMountPoint)
+{
+    COM_StringProxy pName(name);
+    COM_StringProxy pHostPath(hostPath);
+    auto cWritable = static_cast<COM_Bool>(writable);
+    auto cAutomount = static_cast<COM_Bool>(automount);
+    COM_StringProxy pAutoMountPoint(autoMountPoint);
+
+    auto rc = get_IFC()->CreateSharedFolder(pName.m_string, pHostPath.m_string,
+                                            cWritable, cAutomount,
+                                            pAutoMountPoint.m_string);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IVirtualBox::removeSharedFolder(const std::wstring &name)
+{
+    COM_StringProxy pName(name);
+    auto rc = get_IFC()->RemoveSharedFolder(pName.m_string);
+    COM_ERROR_CHECK(rc);
+}
+
+std::vector<std::wstring> VBox::IVirtualBox::getExtraDataKeys()
+{
+    COM_StringArrayProxy pResult;
+    auto rc = get_IFC()->GetExtraDataKeys(COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<std::wstring> result;
+    pResult.toVector(result);
+    return result;
+}
+
+std::wstring VBox::IVirtualBox::getExtraData(const std::wstring &key)
+{
+    COM_StringProxy pResult;
+    COM_StringProxy pKey(key);
+
+    auto rc = get_IFC()->GetExtraData(pKey.m_string, &pResult.m_string);
+    COM_ERROR_CHECK(rc);
+
+    return pResult.toWString();
+}
+
+void VBox::IVirtualBox::setExtraData(const std::wstring &key,
+        const std::wstring &value)
+{
+    COM_StringProxy pKey(key);
+    COM_StringProxy pValue(value);
+
+    auto rc = get_IFC()->SetExtraData(pKey.m_string, pValue.m_string);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IVirtualBox::setSettingsSecret(const std::wstring &password)
+{
+    COM_StringProxy pPassword(password);
+    auto rc = get_IFC()->SetSettingsSecret(pPassword.m_string);
+    COM_ERROR_CHECK(rc);
+}
+
+VBox::COMPtr<VBox::IDHCPServer> VBox::IVirtualBox::createDHCPServer(
+        const std::wstring &name)
+{
+    ::IDHCPServer *pResult;
+    COM_StringProxy pName(name);
+
+    auto rc = get_IFC()->CreateDHCPServer(pName.m_string, &pResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IDHCPServer>::wrap(pResult);
+}
+
+VBox::COMPtr<VBox::IDHCPServer> VBox::IVirtualBox::findDHCPServerByNetworkName(
+        const std::wstring &name)
+{
+    ::IDHCPServer *pResult;
+    COM_StringProxy pName(name);
+
+    auto rc = get_IFC()->FindDHCPServerByNetworkName(pName.m_string, &pResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IDHCPServer>::wrap(pResult);
+}
+
+void VBox::IVirtualBox::removeDHCPServer(const COMPtr<IDHCPServer> &server)
+{
+    auto rc = get_IFC()->RemoveDHCPServer(server->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+
+VBox::COMPtr<VBox::INATNetwork> VBox::IVirtualBox::createNATNetwork(
+        const std::wstring &networkName)
+{
+    ::INATNetwork *pResult;
+    COM_StringProxy pNetworkName(networkName);
+
+    auto rc = get_IFC()->CreateNATNetwork(pNetworkName.m_string, &pResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<INATNetwork>::wrap(pResult);
+}
+
+VBox::COMPtr<VBox::INATNetwork> VBox::IVirtualBox::findNATNetworkByName(
+        const std::wstring &networkName)
+{
+    ::INATNetwork *pResult;
+    COM_StringProxy pNetworkName(networkName);
+
+    auto rc = get_IFC()->FindNATNetworkByName(pNetworkName.m_string, &pResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<INATNetwork>::wrap(pResult);
+}
+
+void VBox::IVirtualBox::removeNATNetwork(const COMPtr<INATNetwork> &network)
+{
+    auto rc = get_IFC()->RemoveNATNetwork(network->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+
+bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
+        const std::wstring &version, std::wstring &url, std::wstring &file)
+{
+    COM_Bool cResult;
+    auto cFirmwareType = static_cast<COM_Type(PRUint32, ::FirmwareType)>(firmwareType);
+    COM_StringProxy pVersion(version);
+    COM_StringProxy pUrl;
+    COM_StringProxy pFile;
+
+    auto rc = get_IFC()->CheckFirmwarePresent(cFirmwareType, pVersion.m_string,
+                                              &pUrl.m_string, &pFile.m_string,
+                                              &cResult);
+    COM_ERROR_CHECK(rc);
+
+    url = pUrl.toWString();
+    file = pFile.toWString();
+    return static_cast<bool>(cResult);
 }

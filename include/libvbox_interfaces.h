@@ -119,7 +119,7 @@ namespace VBox
                 /* in */ const std::wstring &format,
                 /* in */ const std::wstring &location,
                 /* in */ AccessMode accessMode,
-                /* in */ DeviceType aDeviceTypeType);
+                /* in */ DeviceType aADeviceTypeType);
         COMPtr<IMedium> openMedium(
                 /* in */ const std::wstring &location,
                 /* in */ DeviceType deviceType,

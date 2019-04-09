@@ -396,6 +396,29 @@ namespace VBox
             m_array = nullptr;
         }
 
+        template <typename Type>
+        void toVector(std::vector<Type> &result)
+        {
+            if (!m_array) {
+                result.resize(0);
+                return;
+            }
+
+#if defined(VBOX_XPCOM)
+            result.resize(m_count);
+            for (PRUint32 i = 0; i < m_count; ++i)
+                result[i] = static_cast<Type>(m_array[i]);
+#elif defined(VBOX_MSCOM)
+            Type *pArray = nullptr;
+            auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
+            COM_ERROR_CHECK(rc);
+            result.resize(m_array->rgsabound[0].cElements);
+            for (size_t i = 0; i < result.size(); ++i)
+                result[i] = pArray[i];
+            SafeArrayUnaccessData(m_array);
+#endif
+        }
+
         template <typename Wrap>
         void toVector(std::vector<COMPtr<Wrap>> &result)
         {
@@ -440,7 +463,7 @@ namespace VBox
                 pArray[i] = vector[i]->get_IFC();
                 pArray[i]->AddRef();
             }
-            SafeArrayUnaccessData(array);
+            SafeArrayUnaccessData(m_array);
 #endif
         }
 
