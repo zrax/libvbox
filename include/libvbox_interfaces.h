@@ -131,8 +131,11 @@ namespace VBox
                 /* in */ const std::wstring &name,
                 /* in */ const std::wstring &hostPath,
                 /* in */ bool writable,
-                /* in */ bool automount,
-                /* in */ const std::wstring &autoMountPoint);
+                /* in */ bool automount
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+              , /* in */ const std::wstring &autoMountPoint
+#endif
+                );
         void removeSharedFolder(
                 /* in */ const std::wstring &name);
         std::vector<std::wstring> getExtraDataKeys();
@@ -315,7 +318,9 @@ namespace VBox
         VBox_PROPERTY_RO(COMPtr<IAudioAdapter>, audioAdapter)
         VBox_PROPERTY_RO(std::vector<COMPtr<IStorageController>>, storageControllers)
         VBox_PROPERTY_RO(std::wstring, settingsFilePath)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
         VBox_PROPERTY_RO(std::wstring, settingsAuxFilePath)
+#endif
         VBox_PROPERTY_RO(bool, settingsModified)
         VBox_PROPERTY_RO(SessionState, sessionState)
         VBox_PROPERTY_RO(std::wstring, sessionName)
@@ -359,7 +364,288 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::wstring, CPUProfile)
 #endif
 
-        // TODO: Methods
+        // Methods
+        void lockMachine(
+                /* in */ const COMPtr<ISession> &session,
+                /* in */ LockType lockType);
+        COMPtr<IProgress> launchVMProcess(
+                /* in */ const COMPtr<ISession> &session,
+                /* in */ const std::wstring &name,
+                /* in */ const std::wstring &environment);
+        void setBootOrder(
+                /* in */ uint32_t position,
+                /* in */ DeviceType device);
+        DeviceType getBootOrder(
+                /* in */ uint32_t position);
+        void attachDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ DeviceType type,
+                /* in */ const COMPtr<IMedium> &medium);
+        void attachDeviceWithoutMedium(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ DeviceType type);
+        void detachDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device);
+        void passthroughDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ bool passthrough);
+        void temporaryEjectDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ bool temporaryEject);
+        void nonRotationalDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ bool nonRotational);
+        void setAutoDiscardForDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ bool discard);
+        void setHotPluggableForDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ bool hotPluggable);
+        void setBandwidthGroupForDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ const COMPtr<IBandwidthGroup> &bandwidthGroup);
+        void setNoBandwidthGroupForDevice(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device);
+        void unmountMedium(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ bool force);
+        void mountMedium(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device,
+                /* in */ const COMPtr<IMedium> &medium,
+                /* in */ bool force);
+        COMPtr<IMedium> getMedium(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device);
+        std::vector<COMPtr<IMediumAttachment>> getMediumAttachmentsOfController(
+                /* in */ const std::wstring &name);
+        COMPtr<IMediumAttachment> getMediumAttachment(
+                /* in */ const std::wstring &name,
+                /* in */ int32_t controllerPort,
+                /* in */ int32_t device);
+        void attachHostPCIDevice(
+                /* in */ int32_t hostAddress,
+                /* in */ int32_t desiredGuestAddress,
+                /* in */ bool tryToUnbind);
+        void detachHostPCIDevice(
+                /* in */ int32_t hostAddress);
+        COMPtr<INetworkAdapter> getNetworkAdapter(
+                /* in */ uint32_t slot);
+        COMPtr<IStorageController> addStorageController(
+                /* in */ const std::wstring &name,
+                /* in */ StorageBus connectionType);
+        COMPtr<IStorageController> getStorageControllerByName(
+                /* in */ const std::wstring &name);
+        COMPtr<IStorageController> getStorageControllerByInstance(
+                /* in */ StorageBus connectionType,
+                /* in */ uint32_t instance);
+        void removeStorageController(
+                /* in */ const std::wstring &name);
+        void setStorageControllerBootable(
+                /* in */ const std::wstring &name,
+                /* in */ bool bootable);
+        COMPtr<IUSBController> addUSBController(
+                /* in */ const std::wstring &name,
+                /* in */ USBControllerType type);
+        void removeUSBController(
+                /* in */ const std::wstring &name);
+        COMPtr<IUSBController> getUSBControllerByName(
+                /* in */ const std::wstring &name);
+        uint32_t getUSBControllerCountByType(
+                /* in */ USBControllerType type);
+        COMPtr<ISerialPort> getSerialPort(
+                /* in */ uint32_t slot);
+        COMPtr<IParallelPort> getParallelPort(
+                /* in */ uint32_t slot);
+        std::vector<std::wstring> getExtraDataKeys();
+        std::wstring getExtraData(
+                /* in */ const std::wstring &key);
+        void setExtraData(
+                /* in */ const std::wstring &key,
+                /* in */ const std::wstring &value);
+        bool getCPUProperty(
+                /* in */ CPUPropertyType property);
+        void setCPUProperty(
+                /* in */ CPUPropertyType property,
+                /* in */ bool value);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
+        void getCPUIDLeafByOrdinal(
+                /* in  */ uint32_t ordinal,
+                /* out */ uint32_t &idx,
+                /* out */ uint32_t &idxSub,
+                /* out */ uint32_t &valEax,
+                /* out */ uint32_t &valEbx,
+                /* out */ uint32_t &valEcx,
+                /* out */ uint32_t &valEdx);
+#endif
+        void getCPUIDLeaf(
+                /* in  */ uint32_t idx,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
+                /* in  */ uint32_t idxSub,
+#endif
+                /* out */ uint32_t &valEax,
+                /* out */ uint32_t &valEbx,
+                /* out */ uint32_t &valEcx,
+                /* out */ uint32_t &valEdx);
+        void setCPUIDLeaf(
+                /* in  */ uint32_t idx,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
+                /* in  */ uint32_t idxSub,
+#endif
+                /* out */ uint32_t &valEax,
+                /* out */ uint32_t &valEbx,
+                /* out */ uint32_t &valEcx,
+                /* out */ uint32_t &valEdx);
+        void removeCPUIDLeaf(
+                /* in */ uint32_t idx
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
+              , /* in */ uint32_t idxSub
+#endif
+                );
+        void removeAllCPUIDLeaves();
+        bool getHWVirtExProperty(
+                /* in */ HWVirtExPropertyType property);
+        void setHWVirtExProperty(
+                /* in */ HWVirtExPropertyType property,
+                /* in */ bool value);
+        COMPtr<IProgress> setSettingsFilePath(
+                /* in */ const std::wstring &settingsFilePath);
+        void saveSettings();
+        void discardSettings();
+        std::vector<COMPtr<IMedium>> unregister(
+                /* in */ CleanupMode cleanupMode);
+        COMPtr<IProgress> deleteConfig(
+                /* in */ const std::vector<COMPtr<IMedium>> &media);
+        COMPtr<IVirtualSystemDescription> exportTo(
+                /* in */ const COMPtr<IAppliance> &appliance,
+                /* in */ const std::wstring &location);
+        COMPtr<ISnapshot> findSnapshot(
+                /* in */ const std::wstring &nameOrId);
+        void createSharedFolder(
+                /* in */ const std::wstring &name,
+                /* in */ const std::wstring &hostPath,
+                /* in */ bool writable,
+                /* in */ bool automount
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+              , /* in */ const std::wstring &autoMountPoint
+#endif
+                );
+        void removeSharedFolder(
+                /* in */ const std::wstring &name);
+        bool canShowConsoleWindow();
+        int64_t showConsoleWindow();
+        void getGuestProperty(
+                /* in  */ const std::wstring &name,
+                /* out */ std::wstring &value,
+                /* out */ int64_t &timestamp,
+                /* out */ std::wstring &flags);
+        std::wstring getGuestPropertyValue(
+                /* in */ const std::wstring &property);
+        int64_t getGuestPropertyTimestamp(
+                /* in */ const std::wstring &property);
+        void setGuestProperty(
+                /* in */ const std::wstring &property,
+                /* in */ const std::wstring &value,
+                /* in */ const std::wstring &flags);
+        void setGuestPropertyValue(
+                /* in */ const std::wstring &property,
+                /* in */ const std::wstring &value);
+        void deleteGuestProperty(
+                /* in */ const std::wstring &name);
+        void enumerateGuestProperties(
+                /* in  */ const std::wstring &patterns,
+                /* out */ std::vector<std::wstring> &names,
+                /* out */ std::vector<std::wstring> &values,
+                /* out */ std::vector<int64_t> &timestamps,
+                /* out */ std::vector<std::wstring> &flags);
+        void querySavedGuestScreenInfo(
+                /* in  */ uint32_t screenId,
+                /* out */ uint32_t &originX,
+                /* out */ uint32_t &originY,
+                /* out */ uint32_t &width,
+                /* out */ uint32_t &height,
+                /* out */ bool &enabled);
+        std::vector<uint8_t> readSavedThumbnailToArray(
+                /* in  */ uint32_t screenId,
+                /* in  */ BitmapFormat bitmapFormat,
+                /* out */ uint32_t &width,
+                /* out */ uint32_t &height);
+        std::vector<BitmapFormat> querySavedScreenshotInfo(
+                /* in  */ uint32_t screenId,
+                /* out */ uint32_t &width,
+                /* out */ uint32_t &height);
+        std::vector<uint8_t> readSavedScreenshotToArray(
+                /* in  */ uint32_t screenId,
+                /* in  */ BitmapFormat bitmapFormat,
+                /* out */ uint32_t &width,
+                /* out */ uint32_t &height);
+        void hotPlugCPU(
+                /* in */ uint32_t cpu);
+        void hotUnplugCPU(
+                /* in */ uint32_t cpu);
+        bool getCPUStatus(
+                /* in */ uint32_t cpu);
+        ParavirtProvider getEffectiveParavirtProvider();
+        std::wstring queryLogFilename(
+                /* in */ uint32_t idx);
+        std::vector<uint8_t> readLog(
+                /* in */ uint32_t idx,
+                /* in */ int64_t offset,
+                /* in */ int64_t size);
+        COMPtr<IProgress> cloneTo(
+                /* in */ const COMPtr<IMachine> &target,
+                /* in */ CloneMode mode,
+                /* in */ const std::vector<CloneOptions> &options);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+        COMPtr<IProgress> moveTo(
+                /* in */ const std::wstring &folder,
+                /* in */ const std::wstring &type);
+#endif
+        COMPtr<IProgress> saveState();
+        void adoptSavedState(
+                /* in */ const std::wstring &savedStateFile);
+        void discardSavedState(
+                /* in */ bool fRemoveFile);
+        COMPtr<IProgress> takeSnapshot(
+                /* in  */ const std::wstring &name,
+                /* in  */ const std::wstring &description,
+                /* in  */ bool pause,
+                /* out */ std::wstring &id);
+        COMPtr<IProgress> deleteSnapshot(
+                /* in */ const std::wstring &id);
+        COMPtr<IProgress> deleteSnapshotAndAllChildren(
+                /* in */ const std::wstring &id);
+        COMPtr<IProgress> deleteSnapshotRange(
+                /* in */ const std::wstring &startId,
+                /* in */ const std::wstring &endId);
+        COMPtr<IProgress> restoreSnapshot(
+                /* in */ const COMPtr<ISnapshot> &snapshot);
+        void applyDefaults(
+                /* in */ const std::wstring &flags);
     };
 
     class LIBVBOX_API IEmulatedUSB : public COMWrapBase

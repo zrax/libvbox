@@ -368,18 +368,26 @@ VBox::COMPtr<VBox::IGuestOSType> VBox::IVirtualBox::getGuestOSType(
 }
 
 void VBox::IVirtualBox::createSharedFolder(const std::wstring &name,
-        const std::wstring &hostPath, bool writable, bool automount,
-        const std::wstring &autoMountPoint)
+        const std::wstring &hostPath, bool writable, bool automount
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+      , const std::wstring &autoMountPoint
+#endif
+        )
 {
     COM_StringProxy pName(name);
     COM_StringProxy pHostPath(hostPath);
     auto cWritable = static_cast<COM_Bool>(writable);
     auto cAutomount = static_cast<COM_Bool>(automount);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     COM_StringProxy pAutoMountPoint(autoMountPoint);
+#endif
 
     auto rc = get_IFC()->CreateSharedFolder(pName.m_string, pHostPath.m_string,
-                                            cWritable, cAutomount,
-                                            pAutoMountPoint.m_string);
+                                            cWritable, cAutomount
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+                                          , pAutoMountPoint.m_string
+#endif
+                                            );
     COM_ERROR_CHECK(rc);
 }
 
