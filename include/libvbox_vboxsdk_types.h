@@ -1054,26 +1054,20 @@ namespace VBox
         WavPCM = 1,
         Opus = 2,
     };
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     enum class RecordingDestination
     {
         None = 0,
         File = 1,
     };
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     enum class RecordingFeature
     {
         None = 0,
         Video = 1,
         Audio = 2,
     };
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     enum class RecordingVideoCodec
     {
         None = 0,
@@ -1081,17 +1075,13 @@ namespace VBox
         VP9 = 2,
         AV1 = 3,
     };
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     enum class RecordingVideoRateControlMode
     {
         CBR = 0,
         VBR = 1,
     };
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     enum class RecordingVideoScalingMethod
     {
         None = 0,
@@ -1630,7 +1620,9 @@ VBox_FORWARD_DECL_IFC(IUSBDeviceStateChangedEvent);
 VBox_FORWARD_DECL_IFC(IUSBProxyBackend);
 #endif
 VBox_FORWARD_DECL_IFC(IVBoxSVCAvailabilityChangedEvent);
+#if defined(VBOX_MSCOM) && (VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0))
 VBox_FORWARD_DECL_IFC(IVBoxSVCRegistration);
+#endif
 VBox_FORWARD_DECL_IFC(IVetoEvent);
 VBox_FORWARD_DECL_IFC(IVFSExplorer);
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
@@ -1639,7 +1631,9 @@ VBox_FORWARD_DECL_IFC(IVideoCaptureChangedEvent);
 VBox_FORWARD_DECL_IFC(IVirtualBox);
 VBox_FORWARD_DECL_IFC(IVirtualBoxClient);
 VBox_FORWARD_DECL_IFC(IVirtualBoxErrorInfo);
+#if defined(VBOX_MSCOM) && (VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0))
 VBox_FORWARD_DECL_IFC(IVirtualBoxSDS);
+#endif
 VBox_FORWARD_DECL_IFC(IVirtualSystemDescription);
 VBox_FORWARD_DECL_IFC(IVRDEServer);
 VBox_FORWARD_DECL_IFC(IVRDEServerChangedEvent);
