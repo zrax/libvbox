@@ -27,7 +27,7 @@ VBox::VBoxEventType VBox::IEvent::type() const
 {
     COM_Type(PRUint32, ::VBoxEventType) result;
     COM_GetValue(get_IFC(), Type, result);
-    return static_cast<VBox::VBoxEventType>(result);
+    return static_cast<VBoxEventType>(result);
 }
 
 VBox::COMPtr<VBox::IEventSource> VBox::IEvent::source() const

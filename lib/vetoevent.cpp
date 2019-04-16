@@ -51,10 +51,9 @@ std::vector<std::wstring> VBox::IVetoEvent::getVetos()
 
 void VBox::IVetoEvent::addApproval(const std::wstring &reason)
 {
-    auto cReason = COM_FromWString(reason);
-    auto rc = get_IFC()->AddApproval(cReason);
+    COM_StringProxy pReason(reason);
+    auto rc = get_IFC()->AddApproval(pReason.m_string);
     COM_ERROR_CHECK(rc);
-    COM_FreeString(cReason);
 }
 
 bool VBox::IVetoEvent::isApproved()

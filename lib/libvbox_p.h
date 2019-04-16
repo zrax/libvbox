@@ -34,6 +34,7 @@
         } while (0)
 
     typedef PRBool      COM_Bool;
+    typedef PRUint8     COM_Byte;
     typedef PRInt32     COM_Long;
     typedef PRUint32    COM_ULong;
     typedef PRInt64     COM_Long64;
@@ -245,6 +246,7 @@
         } while (0)
 
     typedef BOOL        COM_Bool;
+    typedef BYTE        COM_Byte;
     typedef LONG        COM_Long;
     typedef ULONG       COM_ULong;
     typedef LONG64      COM_Long64;

@@ -62,7 +62,7 @@ namespace VBox
 
         COMPtr<IVirtualBoxClient> createVirtualBoxClient()
         {
-            ::IVirtualBoxClient *vboxClient;
+            ::IVirtualBoxClient *vboxClient = nullptr;
 
 #if defined(VBOX_XPCOM)
             nsresult rc = m_componentManager->CreateInstanceByContractID(

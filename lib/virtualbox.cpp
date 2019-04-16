@@ -305,19 +305,19 @@ std::vector<VBox::MachineState> VBox::IVirtualBox::getMachineStates(
 
 VBox::COMPtr<VBox::IAppliance> VBox::IVirtualBox::createAppliance()
 {
-    ::IAppliance *pResult;
-    auto rc = get_IFC()->CreateAppliance(&pResult);
+    ::IAppliance *cResult = nullptr;
+    auto rc = get_IFC()->CreateAppliance(&cResult);
     COM_ERROR_CHECK(rc);
-    return COMPtr<IAppliance>::wrap(pResult);
+    return COMPtr<IAppliance>::wrap(cResult);
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
 VBox::COMPtr<VBox::IUnattended> VBox::IVirtualBox::createUnattendedInstaller()
 {
-    ::IUnattended *pResult;
-    auto rc = get_IFC()->CreateUnattendedInstaller(&pResult);
+    ::IUnattended *cResult = nullptr;
+    auto rc = get_IFC()->CreateUnattendedInstaller(&cResult);
     COM_ERROR_CHECK(rc);
-    return COMPtr<IUnattended>::wrap(pResult);
+    return COMPtr<IUnattended>::wrap(cResult);
 }
 #endif
 
@@ -325,46 +325,46 @@ VBox::COMPtr<VBox::IMedium> VBox::IVirtualBox::createMedium(
         const std::wstring &format, const std::wstring &location,
         AccessMode accessMode, DeviceType aADeviceTypeType)
 {
-    ::IMedium *pResult;
+    ::IMedium *cResult = nullptr;
     COM_StringProxy pFormat(format);
     COM_StringProxy pLocation(location);
     auto cAccessMode = static_cast<COM_Type(PRUint32, ::AccessMode)>(accessMode);
     auto cDeviceType = static_cast<COM_Type(PRUint32, ::DeviceType)>(aADeviceTypeType);
 
     auto rc = get_IFC()->CreateMedium(pFormat.m_string, pLocation.m_string,
-                                      cAccessMode, cDeviceType, &pResult);
+                                      cAccessMode, cDeviceType, &cResult);
     COM_ERROR_CHECK(rc);
 
-    return COMPtr<IMedium>::wrap(pResult);
+    return COMPtr<IMedium>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IMedium> VBox::IVirtualBox::openMedium(
         const std::wstring &location, DeviceType deviceType,
         AccessMode accessMode, bool forceNewUuid)
 {
-    ::IMedium *pResult;
+    ::IMedium *cResult = nullptr;
     COM_StringProxy pLocation(location);
     auto cDeviceType = static_cast<COM_Type(PRUint32, ::DeviceType)>(deviceType);
     auto cAccessMode = static_cast<COM_Type(PRUint32, ::AccessMode)>(accessMode);
     auto cForceNewUuid = static_cast<COM_Bool>(forceNewUuid);
 
     auto rc = get_IFC()->OpenMedium(pLocation.m_string, cDeviceType, cAccessMode,
-                                    cForceNewUuid, &pResult);
+                                    cForceNewUuid, &cResult);
     COM_ERROR_CHECK(rc);
 
-    return COMPtr<IMedium>::wrap(pResult);
+    return COMPtr<IMedium>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IGuestOSType> VBox::IVirtualBox::getGuestOSType(
         const std::wstring &id)
 {
-    ::IGuestOSType *pResult;
+    ::IGuestOSType *cResult = nullptr;
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->GetGuestOSType(pId.m_string, &pResult);
+    auto rc = get_IFC()->GetGuestOSType(pId.m_string, &cResult);
     COM_ERROR_CHECK(rc);
 
-    return COMPtr<IGuestOSType>::wrap(pResult);
+    return COMPtr<IGuestOSType>::wrap(cResult);
 }
 
 void VBox::IVirtualBox::createSharedFolder(const std::wstring &name,
@@ -440,23 +440,23 @@ void VBox::IVirtualBox::setSettingsSecret(const std::wstring &password)
 VBox::COMPtr<VBox::IDHCPServer> VBox::IVirtualBox::createDHCPServer(
         const std::wstring &name)
 {
-    ::IDHCPServer *pResult;
+    ::IDHCPServer *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->CreateDHCPServer(pName.m_string, &pResult);
+    auto rc = get_IFC()->CreateDHCPServer(pName.m_string, &cResult);
     COM_ERROR_CHECK(rc);
-    return COMPtr<IDHCPServer>::wrap(pResult);
+    return COMPtr<IDHCPServer>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IDHCPServer> VBox::IVirtualBox::findDHCPServerByNetworkName(
         const std::wstring &name)
 {
-    ::IDHCPServer *pResult;
+    ::IDHCPServer *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->FindDHCPServerByNetworkName(pName.m_string, &pResult);
+    auto rc = get_IFC()->FindDHCPServerByNetworkName(pName.m_string, &cResult);
     COM_ERROR_CHECK(rc);
-    return COMPtr<IDHCPServer>::wrap(pResult);
+    return COMPtr<IDHCPServer>::wrap(cResult);
 }
 
 void VBox::IVirtualBox::removeDHCPServer(const COMPtr<IDHCPServer> &server)
@@ -468,23 +468,23 @@ void VBox::IVirtualBox::removeDHCPServer(const COMPtr<IDHCPServer> &server)
 VBox::COMPtr<VBox::INATNetwork> VBox::IVirtualBox::createNATNetwork(
         const std::wstring &networkName)
 {
-    ::INATNetwork *pResult;
+    ::INATNetwork *cResult = nullptr;
     COM_StringProxy pNetworkName(networkName);
 
-    auto rc = get_IFC()->CreateNATNetwork(pNetworkName.m_string, &pResult);
+    auto rc = get_IFC()->CreateNATNetwork(pNetworkName.m_string, &cResult);
     COM_ERROR_CHECK(rc);
-    return COMPtr<INATNetwork>::wrap(pResult);
+    return COMPtr<INATNetwork>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::INATNetwork> VBox::IVirtualBox::findNATNetworkByName(
         const std::wstring &networkName)
 {
-    ::INATNetwork *pResult;
+    ::INATNetwork *cResult = nullptr;
     COM_StringProxy pNetworkName(networkName);
 
-    auto rc = get_IFC()->FindNATNetworkByName(pNetworkName.m_string, &pResult);
+    auto rc = get_IFC()->FindNATNetworkByName(pNetworkName.m_string, &cResult);
     COM_ERROR_CHECK(rc);
-    return COMPtr<INATNetwork>::wrap(pResult);
+    return COMPtr<INATNetwork>::wrap(cResult);
 }
 
 void VBox::IVirtualBox::removeNATNetwork(const COMPtr<INATNetwork> &network)

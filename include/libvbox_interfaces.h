@@ -636,9 +636,9 @@ namespace VBox
         VBox_PROPERTY_RW_V(uint32_t, videoCaptureMaxFileSize)
         VBox_PROPERTY_RW_R(std::wstring, videoCaptureOptions)
 #endif
-        VBox_PROPERTY_RW_R(COMPtr<IBIOSSettings>, BIOSSettings)
+        VBox_PROPERTY_RO(COMPtr<IBIOSSettings>, BIOSSettings)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-        VBox_PROPERTY_RW_R(COMPtr<IRecordingSettings>, recordingSettings)
+        VBox_PROPERTY_RO(COMPtr<IRecordingSettings>, recordingSettings)
 #endif
         VBox_PROPERTY_RW_V(FirmwareType, firmwareType)
         VBox_PROPERTY_RW_V(PointingHIDType, pointingHIDType)
@@ -688,7 +688,7 @@ namespace VBox
         VBox_PROPERTY_RO(COMPtr<IBandwidthControl>, bandwidthControl)
         VBox_PROPERTY_RW_V(bool, tracingEnabled)
         VBox_PROPERTY_RW_R(std::wstring, tracingConfig)
-        VBox_PROPERTY_RW_V(bool, allowTracingAccessToVM)
+        VBox_PROPERTY_RW_V(bool, allowTracingToAccessVM)
         VBox_PROPERTY_RW_V(bool, autostartEnabled)
         VBox_PROPERTY_RW_V(uint32_t, autostartDelay)
         VBox_PROPERTY_RW_V(AutostopType, autostopType)
@@ -848,14 +848,14 @@ namespace VBox
                 /* out */ uint32_t &valEcx,
                 /* out */ uint32_t &valEdx);
         void setCPUIDLeaf(
-                /* in  */ uint32_t idx,
+                /* in */ uint32_t idx,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-                /* in  */ uint32_t idxSub,
+                /* in */ uint32_t idxSub,
 #endif
-                /* out */ uint32_t &valEax,
-                /* out */ uint32_t &valEbx,
-                /* out */ uint32_t &valEcx,
-                /* out */ uint32_t &valEdx);
+                /* in */ uint32_t valEax,
+                /* in */ uint32_t valEbx,
+                /* in */ uint32_t valEcx,
+                /* in */ uint32_t valEdx);
         void removeCPUIDLeaf(
                 /* in */ uint32_t idx
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
@@ -3921,10 +3921,10 @@ namespace VBox
         // Methods
         COMPtr<COMWrapBase> registerVBoxSVC(
                 /* in */ const COMPtr<IVBoxSVCRegistration> &vboxSVC,
-                /* in */ int32_t, pid);
+                /* in */ int32_t pid);
         void deregisterVBoxSVC(
                 /* in */ const COMPtr<IVBoxSVCRegistration> &vboxSVC,
-                /* in */ int32_t, pid);
+                /* in */ int32_t pid);
     };
 #endif
 
