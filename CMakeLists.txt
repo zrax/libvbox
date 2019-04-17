@@ -74,6 +74,7 @@ target_sources(vbox
         include/libvbox_wrap.h
         lib/libvbox_p.h
         lib/event.cpp
+        lib/host.cpp
         lib/machine.cpp
         lib/vetoevent.cpp
         lib/virtualbox.cpp
