@@ -44,6 +44,20 @@
     type name() const;                          \
     void set_##name(const type &value);
 
+#define COM_WRAPPED(COMType)                                            \
+            typedef COMType COM_Ifc;                                    \
+            static const void *get_IID();                               \
+            COMType *get_IFC() const { return _get_IFC<COMType>(); }    \
+            void set_IFC(COMType *ifc) { _set_IFC(ifc); }
+
+#if defined(VBOX_XPCOM)
+class nsISupports;
+class nsIException;
+#elif defined(VBOX_MSCOM)
+struct IUnknown;
+struct IErrorInfo;
+#endif
+
 namespace VBox
 {
     class COMError : public std::runtime_error
@@ -131,9 +145,15 @@ namespace VBox
         Wrapped m_wrap;
     };
 
-    class LIBVBOX_API COMWrapBase
+    class LIBVBOX_API COMUnknown
     {
     public:
+#if defined(VBOX_XPCOM)
+        COM_WRAPPED(::nsISupports)
+#elif defined(VBOX_MSCOM)
+        COM_WRAPPED(::IUnknown)
+#endif
+
         template <class Ifc>
         Ifc *_get_IFC() const { return reinterpret_cast<Ifc *>(m_ifc); }
 
@@ -159,23 +179,8 @@ namespace VBox
     private:
         void *m_ifc;
     };
-}
 
-#define COM_WRAPPED(COMType)                                            \
-            typedef COMType COM_Ifc;                                    \
-            static const void *get_IID();                               \
-            COMType *get_IFC() const { return _get_IFC<COMType>(); }    \
-            void set_IFC(COMType *ifc) { _set_IFC(ifc); }
-
-#if defined(VBOX_XPCOM)
-class nsIException;
-#elif defined(VBOX_MSCOM)
-struct IErrorInfo;
-#endif
-
-namespace VBox
-{
-    class LIBVBOX_API WrapErrorInfo : public COMWrapBase
+    class LIBVBOX_API COMErrorInfo : public COMUnknown
     {
     public:
 #if defined(VBOX_XPCOM)

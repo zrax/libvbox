@@ -76,6 +76,8 @@ target_sources(vbox
         lib/event.cpp
         lib/host.cpp
         lib/machine.cpp
+        lib/progress.cpp
+        lib/session.cpp
         lib/vetoevent.cpp
         lib/virtualbox.cpp
         lib/virtualboxclient.cpp

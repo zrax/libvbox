@@ -104,32 +104,24 @@ std::string VBox::COMError::error_message(uint32_t rc)
     return buffer;
 }
 
-uint32_t VBox::COMWrapBase::AddRef()
+uint32_t VBox::COMUnknown::AddRef()
 {
-#if defined(VBOX_XPCOM)
-    return _get_IFC<nsISupports>()->AddRef();
-#elif defined(VBOX_MSCOM)
-    return _get_IFC<::IUnknown>()->AddRef();
-#endif
+    return get_IFC()->AddRef();
 }
 
-uint32_t VBox::COMWrapBase::Release()
+uint32_t VBox::COMUnknown::Release()
 {
-#if defined(VBOX_XPCOM)
-    return _get_IFC<nsISupports>()->Release();
-#elif defined(VBOX_MSCOM)
-    return _get_IFC<::IUnknown>()->Release();
-#endif
+    return get_IFC()->Release();
 }
 
-void VBox::COMWrapBase::_QueryInterface(const void *iid, void **pContainer)
+void VBox::COMUnknown::_QueryInterface(const void *iid, void **pContainer)
 {
 #if defined(VBOX_XPCOM)
     REFNSIID riid = *reinterpret_cast<const nsIID *>(iid);
-    auto rc = _get_IFC<nsISupports>()->QueryInterface(riid, pContainer);
+    auto rc = get_IFC()->QueryInterface(riid, pContainer);
 #elif defined(VBOX_MSCOM)
     REFIID riid = *reinterpret_cast<const IID *>(iid);
-    auto rc = _get_IFC<::IUnknown>()->QueryInterface(riid, pContainer);
+    auto rc = get_IFC()->QueryInterface(riid, pContainer);
 #endif
 
     if (rc == E_NOINTERFACE) {
@@ -139,7 +131,7 @@ void VBox::COMWrapBase::_QueryInterface(const void *iid, void **pContainer)
     COM_ERROR_CHECK(rc);
 }
 
-const void *VBox::WrapErrorInfo::get_IID()
+const void *VBox::COMErrorInfo::get_IID()
 {
 #if defined(VBOX_XPCOM)
     return reinterpret_cast<const void *>(&nsIException::GetIID());
@@ -148,7 +140,7 @@ const void *VBox::WrapErrorInfo::get_IID()
 #endif
 }
 
-std::wstring VBox::WrapErrorInfo::message() const
+std::wstring VBox::COMErrorInfo::message() const
 {
     std::wstring result;
 
@@ -176,7 +168,7 @@ VBox::COMPtr<VBox::IVirtualBoxClient> VBox::API::virtualBoxClient()
     return get_API()->createVirtualBoxClient();
 }
 
-VBox::COMPtr<VBox::WrapErrorInfo> VBox::API::currentError()
+VBox::COMPtr<VBox::COMErrorInfo> VBox::API::currentError()
 {
 #if defined(VBOX_XPCOM)
     nsresult rc;
@@ -194,7 +186,7 @@ VBox::COMPtr<VBox::WrapErrorInfo> VBox::API::currentError()
     if (NS_FAILED(rc) || !ex)
         return nullptr;
 
-    auto result = VBox::COMPtr<VBox::WrapErrorInfo>::wrap(ex);
+    auto result = VBox::COMPtr<VBox::COMErrorInfo>::wrap(ex);
     emgr->SetCurrentException(nullptr);
     return result;
 #elif defined(VBOX_MSCOM)
@@ -203,6 +195,6 @@ VBox::COMPtr<VBox::WrapErrorInfo> VBox::API::currentError()
     if (FAILED(rc) || !err)
         return nullptr;
 
-    return VBox::COMPtr<VBox::WrapErrorInfo>::wrap(err);
+    return VBox::COMPtr<VBox::COMErrorInfo>::wrap(err);
 #endif
 }
