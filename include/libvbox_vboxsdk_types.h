@@ -552,6 +552,10 @@ namespace VBox
         UpdateImage = 0x1,
         VHWA = 0x2,
         VisibleRegion = 0x4,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 6)
+        RenderCursor = 0x8,
+        MoveCursor = 0x10,
+#endif
     };
     VBox_ENUM_BITWISE(FramebufferCapabilities)
 
