@@ -712,7 +712,7 @@ namespace VBox
                 /* in */ uint32_t position,
                 /* in */ DeviceType device);
         DeviceType getBootOrder(
-                /* in */ uint32_t position);
+                /* in */ uint32_t position) const;
         void attachDevice(
                 /* in */ const std::wstring &name,
                 /* in */ int32_t controllerPort,
@@ -776,13 +776,13 @@ namespace VBox
         COMPtr<IMedium> getMedium(
                 /* in */ const std::wstring &name,
                 /* in */ int32_t controllerPort,
-                /* in */ int32_t device);
+                /* in */ int32_t device) const;
         std::vector<COMPtr<IMediumAttachment>> getMediumAttachmentsOfController(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         COMPtr<IMediumAttachment> getMediumAttachment(
                 /* in */ const std::wstring &name,
                 /* in */ int32_t controllerPort,
-                /* in */ int32_t device);
+                /* in */ int32_t device) const;
         void attachHostPCIDevice(
                 /* in */ int32_t hostAddress,
                 /* in */ int32_t desiredGuestAddress,
@@ -790,15 +790,15 @@ namespace VBox
         void detachHostPCIDevice(
                 /* in */ int32_t hostAddress);
         COMPtr<INetworkAdapter> getNetworkAdapter(
-                /* in */ uint32_t slot);
+                /* in */ uint32_t slot) const;
         COMPtr<IStorageController> addStorageController(
                 /* in */ const std::wstring &name,
                 /* in */ StorageBus connectionType);
         COMPtr<IStorageController> getStorageControllerByName(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         COMPtr<IStorageController> getStorageControllerByInstance(
                 /* in */ StorageBus connectionType,
-                /* in */ uint32_t instance);
+                /* in */ uint32_t instance) const;
         void removeStorageController(
                 /* in */ const std::wstring &name);
         void setStorageControllerBootable(
@@ -810,13 +810,13 @@ namespace VBox
         void removeUSBController(
                 /* in */ const std::wstring &name);
         COMPtr<IUSBController> getUSBControllerByName(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         uint32_t getUSBControllerCountByType(
-                /* in */ USBControllerType type);
+                /* in */ USBControllerType type) const;
         COMPtr<ISerialPort> getSerialPort(
-                /* in */ uint32_t slot);
+                /* in */ uint32_t slot) const;
         COMPtr<IParallelPort> getParallelPort(
-                /* in */ uint32_t slot);
+                /* in */ uint32_t slot) const;
         std::vector<std::wstring> getExtraDataKeys();
         std::wstring getExtraData(
                 /* in */ const std::wstring &key);
@@ -824,7 +824,7 @@ namespace VBox
                 /* in */ const std::wstring &key,
                 /* in */ const std::wstring &value);
         bool getCPUProperty(
-                /* in */ CPUPropertyType property);
+                /* in */ CPUPropertyType property) const;
         void setCPUProperty(
                 /* in */ CPUPropertyType property,
                 /* in */ bool value);
@@ -836,7 +836,7 @@ namespace VBox
                 /* out */ uint32_t &valEax,
                 /* out */ uint32_t &valEbx,
                 /* out */ uint32_t &valEcx,
-                /* out */ uint32_t &valEdx);
+                /* out */ uint32_t &valEdx) const;
 #endif
         void getCPUIDLeaf(
                 /* in  */ uint32_t idx,
@@ -846,7 +846,7 @@ namespace VBox
                 /* out */ uint32_t &valEax,
                 /* out */ uint32_t &valEbx,
                 /* out */ uint32_t &valEcx,
-                /* out */ uint32_t &valEdx);
+                /* out */ uint32_t &valEdx) const;
         void setCPUIDLeaf(
                 /* in */ uint32_t idx,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
@@ -864,7 +864,7 @@ namespace VBox
                 );
         void removeAllCPUIDLeaves();
         bool getHWVirtExProperty(
-                /* in */ HWVirtExPropertyType property);
+                /* in */ HWVirtExPropertyType property) const;
         void setHWVirtExProperty(
                 /* in */ HWVirtExPropertyType property,
                 /* in */ bool value);
@@ -898,11 +898,11 @@ namespace VBox
                 /* in  */ const std::wstring &name,
                 /* out */ std::wstring &value,
                 /* out */ int64_t &timestamp,
-                /* out */ std::wstring &flags);
+                /* out */ std::wstring &flags) const;
         std::wstring getGuestPropertyValue(
-                /* in */ const std::wstring &property);
+                /* in */ const std::wstring &property) const;
         int64_t getGuestPropertyTimestamp(
-                /* in */ const std::wstring &property);
+                /* in */ const std::wstring &property) const;
         void setGuestProperty(
                 /* in */ const std::wstring &property,
                 /* in */ const std::wstring &value,
@@ -911,20 +911,20 @@ namespace VBox
                 /* in */ const std::wstring &property,
                 /* in */ const std::wstring &value);
         void deleteGuestProperty(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         void enumerateGuestProperties(
                 /* in  */ const std::wstring &patterns,
                 /* out */ std::vector<std::wstring> &names,
                 /* out */ std::vector<std::wstring> &values,
                 /* out */ std::vector<int64_t> &timestamps,
-                /* out */ std::vector<std::wstring> &flags);
+                /* out */ std::vector<std::wstring> &flags) const;
         void querySavedGuestScreenInfo(
                 /* in  */ uint32_t screenId,
                 /* out */ uint32_t &originX,
                 /* out */ uint32_t &originY,
                 /* out */ uint32_t &width,
                 /* out */ uint32_t &height,
-                /* out */ bool &enabled);
+                /* out */ bool &enabled) const;
         std::vector<uint8_t> readSavedThumbnailToArray(
                 /* in  */ uint32_t screenId,
                 /* in  */ BitmapFormat bitmapFormat,
@@ -945,7 +945,7 @@ namespace VBox
                 /* in */ uint32_t cpu);
         bool getCPUStatus(
                 /* in */ uint32_t cpu);
-        ParavirtProvider getEffectiveParavirtProvider();
+        ParavirtProvider getEffectiveParavirtProvider() const;
         std::wstring queryLogFilename(
                 /* in */ uint32_t idx);
         std::vector<uint8_t> readLog(
@@ -1985,13 +1985,13 @@ namespace VBox
         COMPtr<IToken> lockWrite();
         void close();
         std::wstring getProperty(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         void setProperty(
                 /* in */ const std::wstring &name,
                 /* in */ const std::wstring &value);
         std::vector<std::wstring> getProperties(
                 /* in  */ const std::wstring &names,
-                /* out */ std::vector<std::wstring> &returnNames);
+                /* out */ std::vector<std::wstring> &returnNames) const;
         void setProperties(
                 /* in */ const std::vector<std::wstring> &names,
                 /* in */ const std::vector<std::wstring> &values);
@@ -2025,9 +2025,9 @@ namespace VBox
                 /* in */ const std::wstring &newPassword,
                 /* in */ const std::wstring &newPasswordId);
         std::wstring getEncryptionSettings(
-                /* out */ std::wstring &cipher);
+                /* out */ std::wstring &cipher) const;
         void checkEncryptionPassword(
-                /* in */ const std::wstring &password);
+                /* in */ const std::wstring &password) const;
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         COMPtr<IMediumIO> openForIO(
                 /* in */ bool writable,
@@ -2054,7 +2054,7 @@ namespace VBox
                 /* out */ std::vector<std::wstring> &descriptions,
                 /* out */ std::vector<DataType> &types,
                 /* out */ std::vector<uint32_t> &flags,
-                /* out */ std::vector<std::wstring> &defaults);
+                /* out */ std::vector<std::wstring> &defaults) const;
     };
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
@@ -2423,13 +2423,13 @@ namespace VBox
 
         // Methods
         std::wstring getProperty(
-                /* in */ const std::wstring &key);
+                /* in */ const std::wstring &key) const;
         void setProperty(
                 /* in */ const std::wstring &key,
                 /* in */ const std::wstring &value);
         std::vector<std::wstring> getProperties(
                 /* in  */ const std::wstring &names,
-                /* out */ std::vector<std::wstring> &returnNames);
+                /* out */ std::vector<std::wstring> &returnNames) const;
     };
 
     class LIBVBOX_API ISerialPort : public COMWrapBase
@@ -2688,7 +2688,7 @@ namespace VBox
                 /* in */ const std::wstring &key,
                 /* in */ const std::wstring &value);
         std::wstring getProperty(
-                /* in */ const std::wstring &key);
+                /* in */ const std::wstring &key) const;
     };
 
     class LIBVBOX_API IVRDEServer : public COMWrapBase
@@ -2711,7 +2711,7 @@ namespace VBox
                 /* in */ const std::wstring &key,
                 /* in */ const std::wstring &value);
         std::wstring getVRDEProperty(
-                /* in */ const std::wstring &key);
+                /* in */ const std::wstring &key) const;
     };
 
     class LIBVBOX_API ISharedFolder : public COMWrapBase
@@ -2817,7 +2817,7 @@ namespace VBox
                 /* out */ std::vector<std::wstring> &keys,
                 /* out */ std::vector<std::wstring> &values,
                 /* out */ std::vector<int64_t> &timestamps,
-                /* out */ std::vector<std::wstring> &flags);
+                /* out */ std::vector<std::wstring> &flags) const;
         void onlineMergeMedium(
                 /* in */ const COMPtr<IMediumAttachment> &mediumAttachment,
                 /* in */ uint32_t sourceIdx,
@@ -3081,8 +3081,8 @@ namespace VBox
         void deleteBandwidthGroup(
                 /* in */ const std::wstring &name);
         COMPtr<IBandwidthGroup> getBandwidthGroup(
-                /* in */ const std::wstring &name);
-        std::vector<COMPtr<IBandwidthGroup>> getAllBandwidthGroups();
+                /* in */ const std::wstring &name) const;
+        std::vector<COMPtr<IBandwidthGroup>> getAllBandwidthGroups() const;
     };
 
     class LIBVBOX_API IVirtualBoxClient : public COMWrapBase
@@ -3948,7 +3948,7 @@ namespace VBox
         COM_WRAPPED(::ICloudClient)
 
         // Methods
-        std::wstring getExportLaunchParameters();
+        std::wstring getExportLaunchParameters() const;
         void exportLaunchVM(
                 /* in */ const COMPtr<IVirtualSystemDescription> &description,
                 /* in */ const COMPtr<IProgress> &progress,
@@ -3966,13 +3966,13 @@ namespace VBox
 
         // Methods
         std::wstring getProperty(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         void setProperty(
                 /* in */ const std::wstring &name,
-                /* in */ const std::wstring &value);
+                /* in */ const std::wstring &value) const;
         std::vector<std::wstring> getProperties(
                 /* in  */ const std::wstring &names,
-                /* out */ std::vector<std::wstring> &returnNames);
+                /* out */ std::vector<std::wstring> &returnNames) const;
         void setProperties(
                 /* in */ const std::vector<std::wstring> &names,
                 /* in */ const std::vector<std::wstring> &values);
@@ -3995,7 +3995,7 @@ namespace VBox
 
         // Methods
         std::wstring getPropertyDescription(
-                /* in */ const std::wstring &name);
+                /* in */ const std::wstring &name) const;
         void createProfile(
                 /* in */ const std::wstring &profileName,
                 /* in */ const std::vector<std::wstring> &names,

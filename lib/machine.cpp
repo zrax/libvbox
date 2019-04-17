@@ -1013,7 +1013,7 @@ void VBox::IMachine::setBootOrder(uint32_t position, DeviceType device)
     COM_ERROR_CHECK(rc);
 }
 
-VBox::DeviceType VBox::IMachine::getBootOrder(uint32_t position)
+VBox::DeviceType VBox::IMachine::getBootOrder(uint32_t position) const
 {
     COM_Type(PRUint32, ::DeviceType) cResult;
 
@@ -1146,7 +1146,7 @@ void VBox::IMachine::mountMedium(const std::wstring &name, int32_t controllerPor
 }
 
 VBox::COMPtr<VBox::IMedium> VBox::IMachine::getMedium(const std::wstring &name,
-        int32_t controllerPort, int32_t device)
+        int32_t controllerPort, int32_t device) const
 {
     ::IMedium *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1159,7 +1159,7 @@ VBox::COMPtr<VBox::IMedium> VBox::IMachine::getMedium(const std::wstring &name,
 }
 
 std::vector<VBox::COMPtr<VBox::IMediumAttachment>>
-VBox::IMachine::getMediumAttachmentsOfController(const std::wstring &name)
+VBox::IMachine::getMediumAttachmentsOfController(const std::wstring &name) const
 {
     COM_ArrayProxy<::IMediumAttachment *> pResult;
     COM_StringProxy pName(name);
@@ -1174,7 +1174,7 @@ VBox::IMachine::getMediumAttachmentsOfController(const std::wstring &name)
 }
 
 VBox::COMPtr<VBox::IMediumAttachment> VBox::IMachine::getMediumAttachment(
-        const std::wstring &name, int32_t controllerPort, int32_t device)
+        const std::wstring &name, int32_t controllerPort, int32_t device) const
 {
     ::IMediumAttachment *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1200,7 +1200,8 @@ void VBox::IMachine::detachHostPCIDevice(int32_t hostAddress)
     COM_ERROR_CHECK(rc);
 }
 
-VBox::COMPtr<VBox::INetworkAdapter> VBox::IMachine::getNetworkAdapter(uint32_t slot)
+VBox::COMPtr<VBox::INetworkAdapter> VBox::IMachine::getNetworkAdapter(
+        uint32_t slot) const
 {
     ::INetworkAdapter *cResult = nullptr;
 
@@ -1225,7 +1226,7 @@ VBox::COMPtr<VBox::IStorageController> VBox::IMachine::addStorageController(
 }
 
 VBox::COMPtr<VBox::IStorageController> VBox::IMachine::getStorageControllerByName(
-        const std::wstring &name)
+        const std::wstring &name) const
 {
     ::IStorageController *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1237,7 +1238,7 @@ VBox::COMPtr<VBox::IStorageController> VBox::IMachine::getStorageControllerByNam
 }
 
 VBox::COMPtr<VBox::IStorageController> VBox::IMachine::getStorageControllerByInstance(
-        StorageBus connectionType, uint32_t instance)
+        StorageBus connectionType, uint32_t instance) const
 {
     ::IStorageController *cResult = nullptr;
     auto cConnectionType = static_cast<COM_Type(PRUint32, ::StorageBus)>(connectionType);
@@ -1288,7 +1289,7 @@ void VBox::IMachine::removeUSBController(const std::wstring &name)
 }
 
 VBox::COMPtr<VBox::IUSBController> VBox::IMachine::getUSBControllerByName(
-        const std::wstring &name)
+        const std::wstring &name) const
 {
     ::IUSBController *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1299,7 +1300,7 @@ VBox::COMPtr<VBox::IUSBController> VBox::IMachine::getUSBControllerByName(
     return COMPtr<IUSBController>::wrap(cResult);
 }
 
-uint32_t VBox::IMachine::getUSBControllerCountByType(USBControllerType type)
+uint32_t VBox::IMachine::getUSBControllerCountByType(USBControllerType type) const
 {
     COM_ULong cResult;
     auto cType = static_cast<COM_Type(PRUint32, ::USBControllerType)>(type);
@@ -1310,7 +1311,7 @@ uint32_t VBox::IMachine::getUSBControllerCountByType(USBControllerType type)
     return static_cast<uint32_t>(cResult);
 }
 
-VBox::COMPtr<VBox::ISerialPort> VBox::IMachine::getSerialPort(uint32_t slot)
+VBox::COMPtr<VBox::ISerialPort> VBox::IMachine::getSerialPort(uint32_t slot) const
 {
     ::ISerialPort *cResult = nullptr;
 
@@ -1320,7 +1321,8 @@ VBox::COMPtr<VBox::ISerialPort> VBox::IMachine::getSerialPort(uint32_t slot)
     return COMPtr<ISerialPort>::wrap(cResult);
 }
 
-VBox::COMPtr<VBox::IParallelPort> VBox::IMachine::getParallelPort(uint32_t slot)
+VBox::COMPtr<VBox::IParallelPort> VBox::IMachine::getParallelPort(
+        uint32_t slot) const
 {
     ::IParallelPort *cResult = nullptr;
 
@@ -1362,7 +1364,7 @@ void VBox::IMachine::setExtraData(const std::wstring &key, const std::wstring &v
     COM_ERROR_CHECK(rc);
 }
 
-bool VBox::IMachine::getCPUProperty(CPUPropertyType property)
+bool VBox::IMachine::getCPUProperty(CPUPropertyType property) const
 {
     COM_Bool cResult;
     auto cProperty = static_cast<COM_Type(PRUint32, ::CPUPropertyType)>(property);
@@ -1384,7 +1386,7 @@ void VBox::IMachine::setCPUProperty(CPUPropertyType property, bool value)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
 void VBox::IMachine::getCPUIDLeafByOrdinal(uint32_t ordinal, uint32_t &idx,
         uint32_t &idxSub, uint32_t &valEax, uint32_t &valEbx, uint32_t &valEcx,
-        uint32_t &valEdx)
+        uint32_t &valEdx) const
 {
     COM_ULong cIdx;
     COM_ULong cIdxSub;
@@ -1410,7 +1412,7 @@ void VBox::IMachine::getCPUIDLeaf(uint32_t idx,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
         uint32_t idxSub,
 #endif
-        uint32_t &valEax, uint32_t &valEbx, uint32_t &valEcx, uint32_t &valEdx)
+        uint32_t &valEax, uint32_t &valEbx, uint32_t &valEcx, uint32_t &valEdx) const
 {
     COM_ULong cValEax;
     COM_ULong cValEbx;
@@ -1464,7 +1466,7 @@ void VBox::IMachine::removeAllCPUIDLeaves()
     COM_ERROR_CHECK(rc);
 }
 
-bool VBox::IMachine::getHWVirtExProperty(HWVirtExPropertyType property)
+bool VBox::IMachine::getHWVirtExProperty(HWVirtExPropertyType property) const
 {
     COM_Bool cResult;
     auto cProperty = static_cast<COM_Type(PRUint32, ::HWVirtExPropertyType)>(property);
@@ -1609,7 +1611,7 @@ int64_t VBox::IMachine::showConsoleWindow()
 }
 
 void VBox::IMachine::getGuestProperty(const std::wstring &name,
-        std::wstring &value, int64_t &timestamp, std::wstring &flags)
+        std::wstring &value, int64_t &timestamp, std::wstring &flags) const
 {
     COM_StringProxy pName(name);
     COM_StringProxy pValue;
@@ -1625,7 +1627,7 @@ void VBox::IMachine::getGuestProperty(const std::wstring &name,
     flags = pFlags.toWString();
 }
 
-std::wstring VBox::IMachine::getGuestPropertyValue(const std::wstring &property)
+std::wstring VBox::IMachine::getGuestPropertyValue(const std::wstring &property) const
 {
     COM_StringProxy pResult;
     COM_StringProxy pProperty(property);
@@ -1636,7 +1638,7 @@ std::wstring VBox::IMachine::getGuestPropertyValue(const std::wstring &property)
     return pResult.toWString();
 }
 
-int64_t VBox::IMachine::getGuestPropertyTimestamp(const std::wstring &property)
+int64_t VBox::IMachine::getGuestPropertyTimestamp(const std::wstring &property) const
 {
     COM_Long64 cResult;
     COM_StringProxy pProperty(property);
@@ -1669,7 +1671,7 @@ void VBox::IMachine::setGuestPropertyValue(const std::wstring &property,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::deleteGuestProperty(const std::wstring &name)
+void VBox::IMachine::deleteGuestProperty(const std::wstring &name) const
 {
     COM_StringProxy pName(name);
 
@@ -1679,7 +1681,7 @@ void VBox::IMachine::deleteGuestProperty(const std::wstring &name)
 
 void VBox::IMachine::enumerateGuestProperties(const std::wstring &patterns,
         std::vector<std::wstring> &names, std::vector<std::wstring> &values,
-        std::vector<int64_t> &timestamps, std::vector<std::wstring> &flags)
+        std::vector<int64_t> &timestamps, std::vector<std::wstring> &flags) const
 {
     COM_StringProxy pPatterns(patterns);
     COM_StringArrayProxy pNames;
@@ -1700,7 +1702,7 @@ void VBox::IMachine::enumerateGuestProperties(const std::wstring &patterns,
 
 void VBox::IMachine::querySavedGuestScreenInfo(uint32_t screenId,
         uint32_t &originX, uint32_t &originY, uint32_t &width,
-        uint32_t &height, bool &enabled)
+        uint32_t &height, bool &enabled) const
 {
     COM_ULong cOriginX;
     COM_ULong cOriginY;
@@ -1798,7 +1800,7 @@ bool VBox::IMachine::getCPUStatus(uint32_t cpu)
     return static_cast<bool>(cResult);
 }
 
-VBox::ParavirtProvider VBox::IMachine::getEffectiveParavirtProvider()
+VBox::ParavirtProvider VBox::IMachine::getEffectiveParavirtProvider() const
 {
     COM_Type(PRUint32, ::ParavirtProvider) cResult;
 
