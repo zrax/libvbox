@@ -73,6 +73,7 @@ target_sources(vbox
         include/libvbox_vboxsdk_version.h
         include/libvbox_wrap.h
         lib/libvbox_p.h
+        lib/console.cpp
         lib/event.cpp
         lib/host.cpp
         lib/machine.cpp
