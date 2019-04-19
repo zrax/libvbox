@@ -23,16 +23,16 @@ const void *VBox::IProgress::get_IID()
     return reinterpret_cast<const void *>(&IID_IProgress);
 }
 
-std::wstring VBox::IProgress::id() const
+VBox::COMString VBox::IProgress::id() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), Id, result);
     return result;
 }
 
-std::wstring VBox::IProgress::description() const
+VBox::COMString VBox::IProgress::description() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), Description, result);
     return result;
 }
@@ -108,9 +108,9 @@ uint32_t VBox::IProgress::operation() const
     return static_cast<uint32_t>(result);
 }
 
-std::wstring VBox::IProgress::operationDescription() const
+VBox::COMString VBox::IProgress::operationDescription() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), OperationDescription, result);
     return result;
 }
@@ -157,12 +157,12 @@ void VBox::IProgress::setCurrentOperationProgress(uint32_t percent)
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IProgress::setNextOperation(const std::wstring &nextOperationDescription,
+void VBox::IProgress::setNextOperation(const COMString &nextOperationDescription,
         uint32_t nextOperationsWeight)
 {
     COM_StringProxy pNextOperationDescription(nextOperationDescription);
 
-    auto rc = get_IFC()->SetNextOperation(pNextOperationDescription.m_string,
+    auto rc = get_IFC()->SetNextOperation(pNextOperationDescription.m_text,
                                           nextOperationsWeight);
     COM_ERROR_CHECK(rc);
 }

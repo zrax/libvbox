@@ -228,56 +228,56 @@ std::vector<VBox::DeviceActivity> VBox::IConsole::getDeviceActivity(
     return result;
 }
 
-void VBox::IConsole::attachUSBDevice(const std::wstring &id,
-        const std::wstring &captureFilename)
+void VBox::IConsole::attachUSBDevice(const COMString &id,
+        const COMString &captureFilename)
 {
     COM_StringProxy pId(id);
     COM_StringProxy pCaptureFilename(captureFilename);
 
-    auto rc = get_IFC()->AttachUSBDevice(pId.m_string, pCaptureFilename.m_string);
+    auto rc = get_IFC()->AttachUSBDevice(pId.m_text, pCaptureFilename.m_text);
     COM_ERROR_CHECK(rc);
 }
 
 VBox::COMPtr<VBox::IUSBDevice> VBox::IConsole::detachUSBDevice(
-        const std::wstring &id)
+        const COMString &id)
 {
     ::IUSBDevice *cResult = nullptr;
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->DetachUSBDevice(pId.m_string, &cResult);
+    auto rc = get_IFC()->DetachUSBDevice(pId.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IUSBDevice>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IUSBDevice> VBox::IConsole::findUSBDeviceByAddress(
-        const std::wstring &name)
+        const COMString &name)
 {
     ::IUSBDevice *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->FindUSBDeviceByAddress(pName.m_string, &cResult);
+    auto rc = get_IFC()->FindUSBDeviceByAddress(pName.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IUSBDevice>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IUSBDevice> VBox::IConsole::findUSBDeviceById(
-        const std::wstring &id)
+        const COMString &id)
 {
     ::IUSBDevice *cResult = nullptr;
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->FindUSBDeviceById(pId.m_string, &cResult);
+    auto rc = get_IFC()->FindUSBDeviceById(pId.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IUSBDevice>::wrap(cResult);
 }
 
-void VBox::IConsole::createSharedFolder(const std::wstring &name,
-        const std::wstring &hostPath, bool writable, bool automount
+void VBox::IConsole::createSharedFolder(const COMString &name,
+        const COMString &hostPath, bool writable, bool automount
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-      , const std::wstring &autoMountPoint
+      , const COMString &autoMountPoint
 #endif
         )
 {
@@ -287,52 +287,52 @@ void VBox::IConsole::createSharedFolder(const std::wstring &name,
     COM_StringProxy pAutoMountPoint(autoMountPoint);
 #endif
 
-    auto rc = get_IFC()->CreateSharedFolder(pName.m_string, pHostPath.m_string,
+    auto rc = get_IFC()->CreateSharedFolder(pName.m_text, pHostPath.m_text,
                                             writable, automount
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-                                          , pAutoMountPoint.m_string
+                                          , pAutoMountPoint.m_text
 #endif
                                             );
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IConsole::removeSharedFolder(const std::wstring &name)
+void VBox::IConsole::removeSharedFolder(const COMString &name)
 {
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->RemoveSharedFolder(pName.m_string);
+    auto rc = get_IFC()->RemoveSharedFolder(pName.m_text);
     COM_ERROR_CHECK(rc);
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IConsole::teleport(
-        const std::wstring &hostname, uint32_t tcpport,
-        const std::wstring &password, uint32_t maxDowntime)
+        const COMString &hostname, uint32_t tcpport,
+        const COMString &password, uint32_t maxDowntime)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pHostname(hostname);
     COM_StringProxy pPassword(password);
 
-    auto rc = get_IFC()->Teleport(pHostname.m_string, tcpport, pPassword.m_string,
+    auto rc = get_IFC()->Teleport(pHostname.m_text, tcpport, pPassword.m_text,
                                   maxDowntime, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IProgress>::wrap(cResult);
 }
 
-void VBox::IConsole::addDiskEncryptionPassword(const std::wstring &id,
-        const std::wstring &password, bool clearOnSuspend)
+void VBox::IConsole::addDiskEncryptionPassword(const COMString &id,
+        const COMString &password, bool clearOnSuspend)
 {
     COM_StringProxy pId(id);
     COM_StringProxy pPassword(password);
 
-    auto rc = get_IFC()->AddDiskEncryptionPassword(pId.m_string, pPassword.m_string,
+    auto rc = get_IFC()->AddDiskEncryptionPassword(pId.m_text, pPassword.m_text,
                                                    clearOnSuspend);
     COM_ERROR_CHECK(rc);
 }
 
 void VBox::IConsole::addDiskEncryptionPasswords(
-        const std::vector<std::wstring> &ids,
-        const std::vector<std::wstring> &passwords, bool clearOnSuspend)
+        const std::vector<COMString> &ids,
+        const std::vector<COMString> &passwords, bool clearOnSuspend)
 {
     COM_StringArrayProxy pIds(ids);
     COM_StringArrayProxy pPasswords(passwords);
@@ -342,11 +342,11 @@ void VBox::IConsole::addDiskEncryptionPasswords(
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IConsole::removeDiskEncryptionPassword(const std::wstring &id)
+void VBox::IConsole::removeDiskEncryptionPassword(const COMString &id)
 {
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->RemoveDiskEncryptionPassword(pId.m_string);
+    auto rc = get_IFC()->RemoveDiskEncryptionPassword(pId.m_text);
     COM_ERROR_CHECK(rc);
 }
 

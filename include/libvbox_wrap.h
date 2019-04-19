@@ -19,19 +19,10 @@
 #ifndef _LIBVBOX_WRAP_H
 #define _LIBVBOX_WRAP_H
 
-#include <string>
 #include <vector>
 #include <stdexcept>
 
-#ifdef _WIN32
-#   ifdef BUILDING_LIBVBOX
-#       define LIBVBOX_API __declspec(dllexport)
-#   else
-#       define LIBVBOX_API __declspec(dllimport)
-#   endif
-#else
-#   define LIBVBOX_API
-#endif
+#include "libvbox_string.h"
 
 #define VBox_PROPERTY_RO(type, name)            \
     type name() const;
@@ -192,7 +183,7 @@ namespace VBox
         // XPCOM and MSCOM are completely incompatible for their base
         // error type.  However, both seem to have the concept of a
         // description or message, so that's what we wrap here.
-        std::wstring message() const;
+        COMString message() const;
     };
 }
 

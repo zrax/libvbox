@@ -37,14 +37,14 @@ VBox::SessionType VBox::ISession::type() const
     return static_cast<SessionType>(result);
 }
 
-std::wstring VBox::ISession::name() const
+VBox::COMString VBox::ISession::name() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), Name, result);
     return result;
 }
 
-void VBox::ISession::set_name(const std::wstring &value)
+void VBox::ISession::set_name(const COMString &value)
 {
     COM_SetString(get_IFC(), Name, value);
 }

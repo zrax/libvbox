@@ -140,24 +140,22 @@ const void *VBox::COMErrorInfo::get_IID()
 #endif
 }
 
-std::wstring VBox::COMErrorInfo::message() const
+VBox::COMString VBox::COMErrorInfo::message() const
 {
-    std::wstring result;
+    COMString result;
 
 #if defined(VBOX_XPCOM)
+    // The exception message is UTF-8 on XPCOM
     char *messageText = nullptr;
     auto rc = get_IFC()->GetMessage(&messageText);
     COM_ERROR_CHECK(rc);
-    size_t length = std::mbstowcs(nullptr, messageText, 0);
-    result.resize(length);
-    std::mbstowcs(&result[0], messageText, length);
+    result = COMString::fromUtf8(messageText);
     nsMemory::Free(reinterpret_cast<void *>(messageText));
 #elif defined(VBOX_MSCOM)
-    BSTR messageText;
-    auto rc = get_IFC()->GetDescription(&messageText);
+    COM_StringProxy messageText;
+    auto rc = get_IFC()->GetDescription(&messageText.m_text);
     COM_ERROR_CHECK(rc);
-    result = BSTRToWString(messageText);
-    COM_FreeString(messageText);
+    result = messageText.toString();
 #endif
 
     return result;

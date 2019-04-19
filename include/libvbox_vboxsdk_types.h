@@ -19,9 +19,9 @@
 #ifndef _LIBVBOX_VBOXSDK_TYPES_H
 #define _LIBVBOX_VBOXSDK_TYPES_H
 
-#include "libvbox_vboxsdk_version.h"
-
 #include <type_traits>
+
+#include "libvbox_vboxsdk_version.h"
 
 // Some of the below enums need bitwise operators to behave properly
 #define VBox_ENUM_BITWISE(Enum)                                         \

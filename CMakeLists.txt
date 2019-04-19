@@ -69,10 +69,12 @@ target_sources(vbox
     PRIVATE
         include/libvbox.h
         include/libvbox_interfaces.h
+        include/libvbox_string.h
         include/libvbox_vboxsdk_types.h
         include/libvbox_vboxsdk_version.h
         include/libvbox_wrap.h
         lib/libvbox_p.h
+        lib/comstring.cpp
         lib/console.cpp
         lib/event.cpp
         lib/host.cpp
@@ -102,6 +104,7 @@ install(
     FILES
         include/libvbox.h
         include/libvbox_interfaces.h
+        include/libvbox_string.h
         include/libvbox_vboxsdk_types.h
         include/libvbox_wrap.h
         "${CMAKE_CURRENT_BINARY_DIR}/include/libvbox_vboxsdk_version.h"

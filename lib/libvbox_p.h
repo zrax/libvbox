@@ -21,8 +21,6 @@
 #include <cstring>
 #include <type_traits>
 
-#define BADCHAR_SUBSTITUTE  wchar_t(0xFFFD)
-
 #if defined(VBOX_XPCOM)
 #   include <nsMemory.h>
 #   include <VirtualBox_XPCOM.h>
@@ -39,101 +37,28 @@
     typedef PRUint32    COM_ULong;
     typedef PRInt64     COM_Long64;
     typedef PRUint64    COM_ULong64;
-    typedef PRUnichar  *COM_String;
+    typedef PRUnichar  *COM_Text;
 
 #   define COM_Type(XPCOM_Type, MSCOM_Type)  XPCOM_Type
 
-    template <typename WcType>
-    typename std::enable_if<sizeof(WcType) == sizeof(PRUnichar), std::wstring>::type
-    nsToWString(const PRUnichar *text)
+    static_assert(sizeof(char16_t) == sizeof(PRUnichar), "PRUnichar is not a UTF-16 type");
+
+    inline VBox::COMString nsToString(const COM_Text text)
     {
-        return std::wstring(reinterpret_cast<const WcType *>(text));
+        return VBox::COMString(reinterpret_cast<const char16_t *>(text));
     }
 
-    template <typename WcType>
-    typename std::enable_if<sizeof(WcType) >= sizeof(uint32_t), std::wstring>::type
-    nsToWString(const PRUnichar *text)
+    inline COM_Text nsFromString(const VBox::COMString &string)
     {
-        // C++11 provides a way to convert UTF-16 to std::wstring, but
-        // it's cumbersome to use and is deprecated in C++17 with no
-        // obvious replacement.
-        std::wstring result;
-        size_t inSize = std::char_traits<char16_t>::length(reinterpret_cast<const char16_t *>(text));
-        result.reserve(inSize);
-
-        const PRUnichar *pch = text;
-        const PRUnichar *pend = text + inSize;
-        for (; pch < pend; ++pch) {
-            if (*pch >= 0xD800 && *pch <= 0xDFFF) {
-                // Surrogate pair
-                if (pch + 1 >= pend) {
-                    result.push_back(BADCHAR_SUBSTITUTE);
-                } else if (*pch < 0xDC00) {
-                    if (pch[1] >= 0xDC00 && pch[1] <= 0xDFFF)
-                        result.push_back(0x10000 + ((pch[0] & 0x3FF) << 10) + (pch[1] & 0x3FF));
-                    else
-                        result.push_back(BADCHAR_SUBSTITUTE);
-                    ++pch;
-                } else {
-                    if (pch[1] >= 0xD800 && pch[1] <= 0xDBFF)
-                        result.push_back(0x10000 + (pch[0] & 0x3FF) + ((pch[1] & 0x3FF) << 10));
-                    else
-                        result.push_back(BADCHAR_SUBSTITUTE);
-                    ++pch;
-                }
-            } else {
-                result.push_back(*pch);
-            }
-        }
-
-        return result;
-    }
-
-    template <typename WcType>
-    typename std::enable_if<sizeof(WcType) == sizeof(PRUnichar), PRUnichar *>::type
-    nsFromWString(const std::wstring &string)
-    {
-        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc((string.size() + 1) * sizeof(PRUnichar)));
-        std::char_traits<WcType>::copy(buffer, string.data(), string.size());
+        COM_Text buffer = reinterpret_cast<COM_Text>(nsMemory::Alloc((string.size() + 1) * sizeof(PRUnichar)));
+        std::char_traits<char16_t>::copy(reinterpret_cast<char16_t *>(buffer),
+                                         string.data(), string.size());
         buffer[string.size()] = PRUnichar(0);
         return buffer;
     }
 
-    template <typename WcType>
-    typename std::enable_if<sizeof(WcType) >= sizeof(uint32_t), PRUnichar *>::type
-    nsFromWString(const std::wstring &string)
-    {
-        // C++11 provides a way to convert std::wstring UTF-16, but
-        // it's cumbersome to use and is deprecated in C++17 with no
-        // obvious replacement.
-        size_t utf16_length = 0;
-        for (wchar_t wch : string) {
-            if (static_cast<uint32_t>(wch) >= 0x10000) {
-                // Encode with surrogate pair
-                utf16_length += 2;
-            } else {
-                utf16_length += 1;
-            }
-        }
-
-        PRUnichar *buffer = reinterpret_cast<PRUnichar *>(nsMemory::Alloc((utf16_length + 1) * sizeof(PRUnichar)));
-        PRUnichar *bufp = buffer;
-        for (wchar_t wch : string) {
-            auto uch = static_cast<uint32_t>(wch);
-            if (uch >= 0x10000) {
-                *bufp++ = static_cast<PRUnichar>(0xD800 | ((uch >> 10) & 0x3FF));
-                *bufp++ = static_cast<PRUnichar>(0xDC00 | ((uch      ) & 0x3FF));
-            } else {
-                *bufp++ = static_cast<PRUnichar>(uch);
-            }
-        }
-        buffer[utf16_length] = PRUnichar(0);
-
-        return buffer;
-    }
-
-#   define COM_ToWString(text)      nsToWString<wchar_t>(text)
-#   define COM_FromWString(string)  nsFromWString<wchar_t>(string)
+#   define COM_ToString(text)       nsToString(text)
+#   define COM_FromString(string)   nsFromString(string)
 #   define COM_FreeString(text)     nsMemory::Free(reinterpret_cast<void *>(text))
 
 #   define COM_GetValue(obj, name, result)                              \
@@ -166,15 +91,15 @@
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
             COM_StringProxy proxy;                                      \
-            auto rc = obj->Get##name(&proxy.m_string);                  \
+            auto rc = obj->Get##name(&proxy.m_text);                    \
             COM_ERROR_CHECK(rc);                                        \
-            return proxy.toWString();                                   \
+            return proxy.toString();                                    \
         } while (0)
 
 #   define COM_SetString(obj, name, value)                              \
         do {                                                            \
             COM_StringProxy proxy(value);                               \
-            auto rc = obj->Set##name(proxy.m_string);                   \
+            auto rc = obj->Set##name(proxy.m_text);                     \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
@@ -251,22 +176,26 @@
     typedef ULONG       COM_ULong;
     typedef LONG64      COM_Long64;
     typedef ULONG64     COM_ULong64;
-    typedef BSTR        COM_String;
+    typedef BSTR        COM_Text;
 
 #   define COM_Type(XPCOM_Type, MSCOM_Type)  MSCOM_Type
 
-    inline std::wstring BSTRToWString(BSTR text)
+    static_assert(sizeof(char16_t) == sizeof(WCHAR), "BSTR is not a UTF-16 type");
+
+    inline VBox::COMString BSTRToString(BSTR text)
     {
-        return std::wstring(text, SysStringLen(text));
+        return VBox::COMString(reinterpret_cast<const char16_t *>(text),
+                               SysStringLen(text));
     }
 
-    inline BSTR BSTRFromWString(const std::wstring &string)
+    inline BSTR BSTRFromString(const VBox::COMString &string)
     {
-        return SysAllocStringLen(string.data(), static_cast<UINT>(string.size()));
+        return SysAllocStringLen(reinterpret_cast<const WCHAR *>(string.data()),
+                                 static_cast<UINT>(string.size()));
     }
 
-#   define COM_ToWString(text)      BSTRToWString(text)
-#   define COM_FromWString(string)  BSTRFromWString(string)
+#   define COM_ToString(text)       BSTRToString(text)
+#   define COM_FromString(string)   BSTRFromString(string)
 #   define COM_FreeString(text)     SysFreeString(text)
 
 #   define COM_GetValue(obj, name, result)                              \
@@ -299,15 +228,15 @@
 #   define COM_GetString(obj, name, result)                             \
         do {                                                            \
             COM_StringProxy proxy;                                      \
-            auto rc = obj->get_##name(&proxy.m_string);                 \
+            auto rc = obj->get_##name(&proxy.m_text);                   \
             COM_ERROR_CHECK(rc);                                        \
-            return proxy.toWString();                                   \
+            return proxy.toString();                                    \
         } while (0)
 
 #   define COM_SetString(obj, name, value)                              \
         do {                                                            \
             COM_StringProxy proxy(value);                               \
-            auto rc = obj->put_##name(proxy.m_string);                  \
+            auto rc = obj->put_##name(proxy.m_text);                    \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
@@ -374,31 +303,31 @@ namespace VBox
     class COM_StringProxy
     {
     public:
-        COM_StringProxy() : m_string() { }
+        COM_StringProxy() : m_text() { }
 
-        COM_StringProxy(const std::wstring &value)
+        COM_StringProxy(const COMString &value)
         {
-            fromWString(value);
+            fromString(value);
         }
 
         ~COM_StringProxy()
         {
-            if (m_string)
-                COM_FreeString(m_string);
+            if (m_text)
+                COM_FreeString(m_text);
         }
 
-        void fromWString(const std::wstring &string)
+        void fromString(const COMString &string)
         {
-            m_string = COM_FromWString(string);
+            m_text = COM_FromString(string);
         }
 
-        std::wstring toWString()
+        COMString toString()
         {
-            return COM_ToWString(m_string);
+            return COM_ToString(m_text);
         }
 
     public:
-        COM_String m_string;
+        COM_Text m_text;
     };
 
     template <typename Element>
@@ -570,7 +499,7 @@ namespace VBox
         COM_StringArrayProxy() : m_array() { }
 #endif
 
-        COM_StringArrayProxy(const std::vector<std::wstring> &vector)
+        COM_StringArrayProxy(const std::vector<COMString> &vector)
             : COM_StringArrayProxy()
         {
             fromVector(vector);
@@ -594,7 +523,7 @@ namespace VBox
             m_array = nullptr;
         }
 
-        void toVector(std::vector<std::wstring> &result)
+        void toVector(std::vector<COMString> &result)
         {
             if (!m_array) {
                 result.resize(0);
@@ -604,19 +533,19 @@ namespace VBox
 #if defined(VBOX_XPCOM)
             result.resize(m_count);
             for (PRUint32 i = 0; i < m_count; ++i)
-                result[i] = nsToWString<wchar_t>(m_array[i]);
+                result[i] = nsToString(m_array[i]);
 #elif defined(VBOX_MSCOM)
             BSTR *pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
             COM_ERROR_CHECK(rc);
             result.resize(m_array->rgsabound[0].cElements);
             for (size_t i = 0; i < result.size(); ++i)
-                result[i] = BSTRToWString(pArray[i]);
+                result[i] = BSTRToString(pArray[i]);
             SafeArrayUnaccessData(m_array);
 #endif
         }
 
-        void fromVector(const std::vector<std::wstring> &vector)
+        void fromVector(const std::vector<COMString> &vector)
         {
             Release();
 
@@ -624,14 +553,14 @@ namespace VBox
             m_count = vector.size();
             m_array = reinterpret_cast<PRUnichar **>(nsMemory::Alloc(m_count * sizeof(PRUnichar *)));
             for (size_t i = 0; i < vector.size(); ++i)
-                m_array[i] = nsFromWString<wchar_t>(vector[i]);
+                m_array[i] = nsFromString(vector[i]);
 #elif defined(VBOX_MSCOM)
             m_array = SafeArrayCreateVector(VT_BSTR, 0, static_cast<ULONG>(vector.size()));
             BSTR *pArray = nullptr;
             HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
             COM_ERROR_CHECK(rc);
             for (size_t i = 0; i < vector.size(); ++i)
-                pArray[i] = BSTRFromWString(vector[i]);
+                pArray[i] = BSTRFromString(vector[i]);
             SafeArrayUnaccessData(m_array);
 #endif
         }

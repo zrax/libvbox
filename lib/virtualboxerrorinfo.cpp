@@ -39,23 +39,23 @@ int32_t VBox::IVirtualBoxErrorInfo::resultDetail() const
     return result;
 }
 
-std::wstring VBox::IVirtualBoxErrorInfo::interfaceID() const
+VBox::COMString VBox::IVirtualBoxErrorInfo::interfaceID() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), InterfaceID, result);
     return result;
 }
 
-std::wstring VBox::IVirtualBoxErrorInfo::component() const
+VBox::COMString VBox::IVirtualBoxErrorInfo::component() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), Component, result);
     return result;
 }
 
-std::wstring VBox::IVirtualBoxErrorInfo::text() const
+VBox::COMString VBox::IVirtualBoxErrorInfo::text() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), Text, result);
     return result;
 }

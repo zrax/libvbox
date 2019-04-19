@@ -58,23 +58,23 @@ std::vector<VBox::COMPtr<VBox::IHostNetworkInterface>> VBox::IHost::networkInter
     return result;
 }
 
-std::vector<std::wstring> VBox::IHost::nameServers() const
+std::vector<VBox::COMString> VBox::IHost::nameServers() const
 {
-    std::vector<std::wstring> result;
+    std::vector<COMString> result;
     COM_GetStringArray(get_IFC(), NameServers, result);
     return result;
 }
 
-std::wstring VBox::IHost::domainName() const
+VBox::COMString VBox::IHost::domainName() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), DomainName, result);
     return result;
 }
 
-std::vector<std::wstring> VBox::IHost::searchStrings() const
+std::vector<VBox::COMString> VBox::IHost::searchStrings() const
 {
-    std::vector<std::wstring> result;
+    std::vector<COMString> result;
     COM_GetStringArray(get_IFC(), SearchStrings, result);
     return result;
 }
@@ -121,16 +121,16 @@ uint32_t VBox::IHost::memoryAvailable() const
     return static_cast<uint32_t>(cResult);
 }
 
-std::wstring VBox::IHost::operatingSystem() const
+VBox::COMString VBox::IHost::operatingSystem() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), OperatingSystem, result);
     return result;
 }
 
-std::wstring VBox::IHost::OSVersion() const
+VBox::COMString VBox::IHost::OSVersion() const
 {
-    std::wstring result;
+    COMString result;
     COM_GetString(get_IFC(), OSVersion, result);
     return result;
 }
@@ -177,14 +177,14 @@ bool VBox::IHost::getProcessorFeature(ProcessorFeature feature)
     return static_cast<bool>(cResult);
 }
 
-std::wstring VBox::IHost::getProcessorDescription(uint32_t cpuId)
+VBox::COMString VBox::IHost::getProcessorDescription(uint32_t cpuId)
 {
     COM_StringProxy pResult;
 
-    auto rc = get_IFC()->GetProcessorDescription(cpuId, &pResult.m_string);
+    auto rc = get_IFC()->GetProcessorDescription(cpuId, &pResult.m_text);
     COM_ERROR_CHECK(rc);
 
-    return pResult.toWString();
+    return pResult.toString();
 }
 
 void VBox::IHost::getProcessorCPUIDLeaf(uint32_t cpuId, uint32_t leaf,
@@ -220,24 +220,24 @@ VBox::COMPtr<VBox::IProgress> VBox::IHost::createHostOnlyNetworkInterface(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IHost::removeHostOnlyNetworkInterface(
-        const std::wstring &id)
+        const COMString &id)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->RemoveHostOnlyNetworkInterface(pId.m_string, &cResult);
+    auto rc = get_IFC()->RemoveHostOnlyNetworkInterface(pId.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IProgress>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IHostUSBDeviceFilter> VBox::IHost::createUSBDeviceFilter(
-        const std::wstring name)
+        const COMString name)
 {
     ::IHostUSBDeviceFilter *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->CreateUSBDeviceFilter(pName.m_string, &cResult);
+    auto rc = get_IFC()->CreateUSBDeviceFilter(pName.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IHostUSBDeviceFilter>::wrap(cResult);
@@ -256,47 +256,47 @@ void VBox::IHost::removeUSBDeviceFilter(uint32_t position)
     COM_ERROR_CHECK(rc);
 }
 
-VBox::COMPtr<VBox::IMedium> VBox::IHost::findHostDVDDrive(const std::wstring &name)
+VBox::COMPtr<VBox::IMedium> VBox::IHost::findHostDVDDrive(const COMString &name)
 {
     ::IMedium *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->FindHostDVDDrive(pName.m_string, &cResult);
+    auto rc = get_IFC()->FindHostDVDDrive(pName.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IMedium>::wrap(cResult);
 }
 
-VBox::COMPtr<VBox::IMedium> VBox::IHost::findHostFloppyDrive(const std::wstring &name)
+VBox::COMPtr<VBox::IMedium> VBox::IHost::findHostFloppyDrive(const COMString &name)
 {
     ::IMedium *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->FindHostFloppyDrive(pName.m_string, &cResult);
+    auto rc = get_IFC()->FindHostFloppyDrive(pName.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IMedium>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IHostNetworkInterface> VBox::IHost::findHostNetworkInterfaceByName(
-        const std::wstring &name)
+        const COMString &name)
 {
     ::IHostNetworkInterface *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->FindHostNetworkInterfaceByName(pName.m_string, &cResult);
+    auto rc = get_IFC()->FindHostNetworkInterfaceByName(pName.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IHostNetworkInterface>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IHostNetworkInterface> VBox::IHost::findHostNetworkInterfaceById(
-        const std::wstring &id)
+        const COMString &id)
 {
     ::IHostNetworkInterface *cResult = nullptr;
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->FindHostNetworkInterfaceById(pId.m_string, &cResult);
+    auto rc = get_IFC()->FindHostNetworkInterfaceById(pId.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IHostNetworkInterface>::wrap(cResult);
@@ -317,44 +317,44 @@ VBox::IHost::findHostNetworkInterfacesOfType(HostNetworkInterfaceType type)
 }
 
 VBox::COMPtr<VBox::IHostUSBDevice> VBox::IHost::findUSBDeviceById(
-        const std::wstring &id)
+        const COMString &id)
 {
     ::IHostUSBDevice *cResult = nullptr;
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->FindUSBDeviceById(pId.m_string, &cResult);
+    auto rc = get_IFC()->FindUSBDeviceById(pId.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IHostUSBDevice>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IHostUSBDevice> VBox::IHost::findUSBDeviceByAddress(
-        const std::wstring &name)
+        const COMString &name)
 {
     ::IHostUSBDevice *cResult = nullptr;
     COM_StringProxy pName(name);
 
-    auto rc = get_IFC()->FindUSBDeviceByAddress(pName.m_string, &cResult);
+    auto rc = get_IFC()->FindUSBDeviceByAddress(pName.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IHostUSBDevice>::wrap(cResult);
 }
 
-std::wstring VBox::IHost::generateMACAddress()
+VBox::COMString VBox::IHost::generateMACAddress()
 {
     COM_StringProxy pResult;
 
-    auto rc = get_IFC()->GenerateMACAddress(&pResult.m_string);
+    auto rc = get_IFC()->GenerateMACAddress(&pResult.m_text);
     COM_ERROR_CHECK(rc);
 
-    return pResult.toWString();
+    return pResult.toString();
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
-void VBox::IHost::addUSBDeviceSource(const std::wstring &backend,
-        const std::wstring &id, const std::wstring &address,
-        const std::vector<std::wstring> &propertyNames,
-        const std::vector<std::wstring> &propertyValues)
+void VBox::IHost::addUSBDeviceSource(const COMString &backend,
+        const COMString &id, const COMString &address,
+        const std::vector<COMString> &propertyNames,
+        const std::vector<COMString> &propertyValues)
 {
     COM_StringProxy pBackend(backend);
     COM_StringProxy pId(id);
@@ -362,17 +362,17 @@ void VBox::IHost::addUSBDeviceSource(const std::wstring &backend,
     COM_StringArrayProxy pPropertyNames(propertyNames);
     COM_StringArrayProxy pPropertyValues(propertyValues);
 
-    auto rc = get_IFC()->AddUSBDeviceSource(pBackend.m_string, pId.m_string,
-                    pAddress.m_string, COM_ArrayParameter(pPropertyNames),
+    auto rc = get_IFC()->AddUSBDeviceSource(pBackend.m_text, pId.m_text,
+                    pAddress.m_text, COM_ArrayParameter(pPropertyNames),
                     COM_ArrayParameter(pPropertyValues));
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IHost::removeUSBDeviceSource(const std::wstring &id)
+void VBox::IHost::removeUSBDeviceSource(const COMString &id)
 {
     COM_StringProxy pId(id);
 
-    auto rc = get_IFC()->RemoveUSBDeviceSource(pId.m_string);
+    auto rc = get_IFC()->RemoveUSBDeviceSource(pId.m_text);
     COM_ERROR_CHECK(rc);
 }
 #endif

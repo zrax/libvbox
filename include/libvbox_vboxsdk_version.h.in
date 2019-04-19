@@ -26,4 +26,14 @@
 
 #define VBOX_@VirtualBoxSDK_COM_FLAVOR@
 
+#ifdef _WIN32
+#   ifdef BUILDING_LIBVBOX
+#       define LIBVBOX_API __declspec(dllexport)
+#   else
+#       define LIBVBOX_API __declspec(dllimport)
+#   endif
+#else
+#   define LIBVBOX_API
+#endif
+
 #endif /* _LIBVBOX_VBOXSDK_VERSION_H */
