@@ -127,7 +127,16 @@ namespace VBox
         size_t size() const { return m_string.size(); }
 
     private:
+#if _MSC_VER
+        // We already rely on STL in the public interfaces, which is brought in
+        // by the MSVC runtime, so this warning is meaningless to us.
+#       pragma warning(push)
+#       pragma warning(disable: 4251)
+#endif
         std::u16string m_string;
+#if _MSC_VER
+#       pragma warning(pop)
+#endif
     };
 }
 
