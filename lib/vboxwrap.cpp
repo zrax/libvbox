@@ -161,12 +161,12 @@ VBox::COMString VBox::COMErrorInfo::message() const
     return result;
 }
 
-VBox::COMPtr<VBox::IVirtualBoxClient> VBox::API::virtualBoxClient()
+VBox::COMPtr<VBox::IVirtualBoxClient> VBox::virtualBoxClient()
 {
     return get_API()->createVirtualBoxClient();
 }
 
-VBox::COMPtr<VBox::COMErrorInfo> VBox::API::currentError()
+VBox::COMPtr<VBox::COMErrorInfo> VBox::currentError()
 {
 #if defined(VBOX_XPCOM)
     nsresult rc;

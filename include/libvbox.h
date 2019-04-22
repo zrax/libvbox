@@ -24,11 +24,8 @@
 
 namespace VBox
 {
-    namespace API
-    {
-        LIBVBOX_API COMPtr<IVirtualBoxClient> virtualBoxClient();
-        LIBVBOX_API COMPtr<COMErrorInfo> currentError();
-    }
+    LIBVBOX_API COMPtr<IVirtualBoxClient> virtualBoxClient();
+    LIBVBOX_API COMPtr<COMErrorInfo> currentError();
 }
 
 #endif /* _LIBVBOX_H */
