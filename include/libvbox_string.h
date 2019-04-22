@@ -134,9 +134,6 @@ namespace VBox
         std::u16string toUtf16() const { return m_string; }
         std::wstring toWString() const;
 
-        operator std::u16string() const { return toUtf16(); }
-        operator std::wstring() const { return toWString(); }
-
         std::u16string &get() { return m_string; }
         const std::u16string &get() const { return m_string; }
 
