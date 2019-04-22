@@ -21,6 +21,7 @@
 
 #include "libvbox_vboxsdk_types.h"
 #include "libvbox_interfaces.h"
+#include "libvbox_errors.h"
 
 namespace VBox
 {

@@ -1645,36 +1645,4 @@ VBox_FORWARD_DECL_IFC(IVRDEServerInfo);
 VBox_FORWARD_DECL_IFC(IVRDEServerInfoChangedEvent);
 VBox_FORWARD_DECL_IFC(IWebsessionManager);
 
-namespace VBox
-{
-    enum
-    {
-        // Some standard error codes that VirtualBox may report.
-        E_POINTER = 0x80004003,
-        E_ACCESSDENIED = 0x80070005,
-        E_OUTOFMEMORY = 0x8007000E,
-        E_INVALIDARG = 0x80070057,
-
-        // VirtualBox-specific error codes.
-        E_OBJECT_NOT_FOUND = 0x80BB0001,
-        E_INVALID_VM_STATE = 0x80BB0002,
-        E_VM_ERROR = 0x80BB0003,
-        E_FILE_ERROR = 0x80BB0004,
-        E_IPRT_ERROR = 0x80BB0005,
-        E_PDM_ERROR = 0x80BB0006,
-        E_INVALID_OBJECT_STATE = 0x80BB0007,
-        E_HOST_ERROR = 0x80BB0008,
-        E_NOT_SUPPORTED = 0x80BB0009,
-        E_XML_ERROR = 0x80BB000A,
-        E_INVALID_SESSION_STATE = 0x80BB000B,
-        E_OBJECT_IN_USE = 0x80BB000C,
-        E_PASSWORD_INCORRECT = 0x80BB000D,
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-        E_MAXIMUM_REACHED = 0x80BB000E,
-        E_GSTCTL_GUEST_ERROR = 0x80BB000F,
-        E_TIMEOUT = 0x80BB0010,
-#endif
-    };
-}
-
 #endif /* _LIBVBOX_VBOXSDK_TYPES_H */

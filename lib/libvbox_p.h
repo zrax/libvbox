@@ -28,7 +28,7 @@
 #   define COM_ERROR_CHECK(rc)                                          \
         do {                                                            \
             if (NS_FAILED(rc))                                          \
-                throw COMError(rc);                                     \
+                COMError::raise(rc);                                    \
         } while (0)
 
     typedef PRBool      COM_Bool;
@@ -167,7 +167,7 @@
 #   define COM_ERROR_CHECK(rc)                                          \
         do {                                                            \
             if (FAILED(rc))                                             \
-                throw COMError(rc);                                     \
+                COMError::raise(rc);                                    \
         } while (0)
 
     typedef BOOL        COM_Bool;

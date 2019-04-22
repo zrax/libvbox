@@ -27,7 +27,7 @@ namespace VBox
     class LIBVBOX_API IVirtualBoxErrorInfo : public COMErrorInfo
     {
     public:
-        COM_WRAPPED(::IVirtualBoxErrorInfo)
+        VBox_COM_WRAPPED(::IVirtualBoxErrorInfo)
 
         // Attributes
         VBox_PROPERTY_RO(int32_t, resultCode);
@@ -41,7 +41,7 @@ namespace VBox
     class LIBVBOX_API INATNetwork : public COMUnknown
     {
     public:
-        COM_WRAPPED(::INATNetwork)
+        VBox_COM_WRAPPED(::INATNetwork)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, networkName)
@@ -81,7 +81,7 @@ namespace VBox
     class LIBVBOX_API IDHCPServer : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IDHCPServer)
+        VBox_COM_WRAPPED(::IDHCPServer)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IEventSource>, eventSource)
@@ -140,7 +140,7 @@ namespace VBox
     class LIBVBOX_API IVirtualBox : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVirtualBox)
+        VBox_COM_WRAPPED(::IVirtualBox)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, version)
@@ -251,7 +251,7 @@ namespace VBox
     class LIBVBOX_API IVFSExplorer : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVFSExplorer)
+        VBox_COM_WRAPPED(::IVFSExplorer)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, path)
@@ -277,7 +277,7 @@ namespace VBox
     class LIBVBOX_API ICertificate : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ICertificate)
+        VBox_COM_WRAPPED(::ICertificate)
 
         // Attributes
         VBox_PROPERTY_RO(CertificateVersion, versionNumber)
@@ -312,7 +312,7 @@ namespace VBox
     class LIBVBOX_API IAppliance : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IAppliance)
+        VBox_COM_WRAPPED(::IAppliance)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, path)
@@ -347,7 +347,7 @@ namespace VBox
     class LIBVBOX_API IVirtualSystemDescription : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVirtualSystemDescription)
+        VBox_COM_WRAPPED(::IVirtualSystemDescription)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, count)
@@ -387,7 +387,7 @@ namespace VBox
     class LIBVBOX_API IUnattended : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IUnattended)
+        VBox_COM_WRAPPED(::IUnattended)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, isoPath)
@@ -431,7 +431,7 @@ namespace VBox
     class LIBVBOX_API IInternalMachineControl : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IInternalMachineControl)
+        VBox_COM_WRAPPED(::IInternalMachineControl)
 
         // Methods
         void updateState(
@@ -502,7 +502,7 @@ namespace VBox
     class LIBVBOX_API IBIOSSettings : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IBIOSSettings)
+        VBox_COM_WRAPPED(::IBIOSSettings)
 
         // Attributes
         VBox_PROPERTY_RW_V(bool, logoFadeIn)
@@ -524,7 +524,7 @@ namespace VBox
     class LIBVBOX_API IRecordingScreenSettings : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IRecordingScreenSettings)
+        VBox_COM_WRAPPED(::IRecordingScreenSettings)
 
         // Attributes
         VBox_PROPERTY_RW_V(uint32_t, id)
@@ -555,7 +555,7 @@ namespace VBox
     class LIBVBOX_API IRecordingSettings : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IRecordingSettings)
+        VBox_COM_WRAPPED(::IRecordingSettings)
 
         // Attributes
         VBox_PROPERTY_RW_V(bool, enabled)
@@ -570,7 +570,7 @@ namespace VBox
     class LIBVBOX_API IPCIAddress : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IPCIAddress)
+        VBox_COM_WRAPPED(::IPCIAddress)
 
         // Attributes
         VBox_PROPERTY_RW_V(int16_t, bus)
@@ -586,7 +586,7 @@ namespace VBox
     class LIBVBOX_API IPCIDeviceAttachment : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IPCIDeviceAttachment)
+        VBox_COM_WRAPPED(::IPCIDeviceAttachment)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -598,7 +598,7 @@ namespace VBox
     class LIBVBOX_API IMachine : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMachine)
+        VBox_COM_WRAPPED(::IMachine)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IVirtualBox>, parent)
@@ -987,7 +987,7 @@ namespace VBox
     class LIBVBOX_API IEmulatedUSB : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IEmulatedUSB)
+        VBox_COM_WRAPPED(::IEmulatedUSB)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMString>, webcams)
@@ -1003,7 +1003,7 @@ namespace VBox
     class LIBVBOX_API IVRDEServerInfo : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVRDEServerInfo)
+        VBox_COM_WRAPPED(::IVRDEServerInfo)
 
         // Attributes
         VBox_PROPERTY_RO(bool, active)
@@ -1026,7 +1026,7 @@ namespace VBox
     class LIBVBOX_API IConsole : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IConsole)
+        VBox_COM_WRAPPED(::IConsole)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IMachine>, machine)
@@ -1099,7 +1099,7 @@ namespace VBox
     class LIBVBOX_API IHostNetworkInterface : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IHostNetworkInterface)
+        VBox_COM_WRAPPED(::IHostNetworkInterface)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -1134,7 +1134,7 @@ namespace VBox
     class LIBVBOX_API IHostVideoInputDevice : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IHostVideoInputDevice)
+        VBox_COM_WRAPPED(::IHostVideoInputDevice)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -1145,7 +1145,7 @@ namespace VBox
     class LIBVBOX_API IHost : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IHost)
+        VBox_COM_WRAPPED(::IHost)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMPtr<IMedium>>, DVDDrives)
@@ -1224,7 +1224,7 @@ namespace VBox
     class LIBVBOX_API ISystemProperties : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ISystemProperties)
+        VBox_COM_WRAPPED(::ISystemProperties)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, minGuestRAM)
@@ -1291,7 +1291,7 @@ namespace VBox
     class LIBVBOX_API IGuestOSType : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IGuestOSType)
+        VBox_COM_WRAPPED(::IGuestOSType)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, familyId)
@@ -1337,7 +1337,7 @@ namespace VBox
     class LIBVBOX_API IAdditionsFacility : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IAdditionsFacility)
+        VBox_COM_WRAPPED(::IAdditionsFacility)
 
         // Attributes
         VBox_PROPERTY_RO(AdditionsFacilityClass, classType)
@@ -1350,7 +1350,7 @@ namespace VBox
     class LIBVBOX_API IDnDBase : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IDnDBase)
+        VBox_COM_WRAPPED(::IDnDBase)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMString>, formats)
@@ -1368,7 +1368,7 @@ namespace VBox
     class LIBVBOX_API IDnDSource : public IDnDBase
     {
     public:
-        COM_WRAPPED(::IDnDSource)
+        VBox_COM_WRAPPED(::IDnDSource)
 
         // Methods
         DnDAction dragIsPending(
@@ -1384,13 +1384,13 @@ namespace VBox
     class LIBVBOX_API IGuestDnDSource : public IDnDSource
     {
     public:
-        COM_WRAPPED(::IGuestDnDSource)
+        VBox_COM_WRAPPED(::IGuestDnDSource)
     };
 
     class LIBVBOX_API IDnDTarget : public IDnDBase
     {
     public:
-        COM_WRAPPED(::IDnDTarget)
+        VBox_COM_WRAPPED(::IDnDTarget)
 
         // Methods
         DnDAction enter(
@@ -1427,13 +1427,13 @@ namespace VBox
     class LIBVBOX_API IGuestDnDTarget : public IDnDTarget
     {
     public:
-        COM_WRAPPED(::IGuestDnDTarget)
+        VBox_COM_WRAPPED(::IGuestDnDTarget)
     };
 
     class LIBVBOX_API IGuestSession : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IGuestSession)
+        VBox_COM_WRAPPED(::IGuestSession)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, user)
@@ -1618,7 +1618,7 @@ namespace VBox
     class LIBVBOX_API IProcess : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IProcess)
+        VBox_COM_WRAPPED(::IProcess)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMString>, arguments)
@@ -1657,13 +1657,13 @@ namespace VBox
     class LIBVBOX_API IGuestProcess : public IProcess
     {
     public:
-        COM_WRAPPED(::IGuestProcess)
+        VBox_COM_WRAPPED(::IGuestProcess)
     };
 
     class LIBVBOX_API IDirectory : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IDirectory)
+        VBox_COM_WRAPPED(::IDirectory)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, directoryName)
@@ -1677,13 +1677,13 @@ namespace VBox
     class LIBVBOX_API IGuestDirectory : public IDirectory
     {
     public:
-        COM_WRAPPED(::IGuestDirectory)
+        VBox_COM_WRAPPED(::IGuestDirectory)
     };
 
     class LIBVBOX_API IFile : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IFile)
+        VBox_COM_WRAPPED(::IFile)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IEventSource>, eventSource)
@@ -1728,13 +1728,13 @@ namespace VBox
     class LIBVBOX_API IGuestFile : public IFile
     {
     public:
-        COM_WRAPPED(::IGuestFile)
+        VBox_COM_WRAPPED(::IGuestFile)
     };
 
     class LIBVBOX_API IFsObjInfo : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IFsObjInfo)
+        VBox_COM_WRAPPED(::IFsObjInfo)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -1769,13 +1769,13 @@ namespace VBox
     class LIBVBOX_API IGuestFsObjInfo : public IFsObjInfo
     {
     public:
-        COM_WRAPPED(::IGuestFsObjInfo)
+        VBox_COM_WRAPPED(::IGuestFsObjInfo)
     };
 
     class LIBVBOX_API IGuest : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IGuest)
+        VBox_COM_WRAPPED(::IGuest)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, OSTypeId)
@@ -1831,7 +1831,7 @@ namespace VBox
     class LIBVBOX_API IProgress : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IProgress)
+        VBox_COM_WRAPPED(::IProgress)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, id)
@@ -1878,7 +1878,7 @@ namespace VBox
     class LIBVBOX_API IInternalProgressControl : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IInternalProgressControl)
+        VBox_COM_WRAPPED(::IInternalProgressControl)
 
         // Methods
         void setCurrentOperationProgress(
@@ -1899,7 +1899,7 @@ namespace VBox
     class LIBVBOX_API ISnapshot : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ISnapshot)
+        VBox_COM_WRAPPED(::ISnapshot)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, id)
@@ -1923,7 +1923,7 @@ namespace VBox
     class LIBVBOX_API IMediumAttachment : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMediumAttachment)
+        VBox_COM_WRAPPED(::IMediumAttachment)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IMedium>, medium)
@@ -1943,7 +1943,7 @@ namespace VBox
     class LIBVBOX_API IMedium : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMedium)
+        VBox_COM_WRAPPED(::IMedium)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, id)
@@ -2038,7 +2038,7 @@ namespace VBox
     class LIBVBOX_API IMediumFormat : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMediumFormat)
+        VBox_COM_WRAPPED(::IMediumFormat)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, id)
@@ -2061,7 +2061,7 @@ namespace VBox
     class LIBVBOX_API IDataStream : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IDataStream)
+        VBox_COM_WRAPPED(::IDataStream)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, readSize)
@@ -2075,7 +2075,7 @@ namespace VBox
     class LIBVBOX_API IMediumIO : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMediumIO)
+        VBox_COM_WRAPPED(::IMediumIO)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IMedium>, medium)
@@ -2106,7 +2106,7 @@ namespace VBox
     class LIBVBOX_API IToken : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IToken)
+        VBox_COM_WRAPPED(::IToken)
 
         // Methods
         void abandon();
@@ -2116,7 +2116,7 @@ namespace VBox
     class LIBVBOX_API IKeyboard : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IKeyboard)
+        VBox_COM_WRAPPED(::IKeyboard)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<KeyboardLED>, keyboardLEDs)
@@ -2134,7 +2134,7 @@ namespace VBox
     class LIBVBOX_API IMousePointerShape : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMousePointerShape)
+        VBox_COM_WRAPPED(::IMousePointerShape)
 
         // Attributes
         VBox_PROPERTY_RO(bool, visible)
@@ -2149,7 +2149,7 @@ namespace VBox
     class LIBVBOX_API IMouse : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMouse)
+        VBox_COM_WRAPPED(::IMouse)
 
         // Attributes
         VBox_PROPERTY_RO(bool, absoluteSupported)
@@ -2185,7 +2185,7 @@ namespace VBox
     class LIBVBOX_API IDisplaySourceBitmap : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IDisplaySourceBitmap)
+        VBox_COM_WRAPPED(::IDisplaySourceBitmap)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, screenId)
@@ -2203,7 +2203,7 @@ namespace VBox
     class LIBVBOX_API IFramebuffer : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IFramebuffer)
+        VBox_COM_WRAPPED(::IFramebuffer)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, width)
@@ -2261,7 +2261,7 @@ namespace VBox
     class LIBVBOX_API IFramebufferOverlay : public IFramebuffer
     {
     public:
-        COM_WRAPPED(::IFramebufferOverlay)
+        VBox_COM_WRAPPED(::IFramebufferOverlay)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, x)
@@ -2279,7 +2279,7 @@ namespace VBox
     class LIBVBOX_API IGuestScreenInfo : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IGuestScreenInfo)
+        VBox_COM_WRAPPED(::IGuestScreenInfo)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, screenId)
@@ -2300,7 +2300,7 @@ namespace VBox
     class LIBVBOX_API IDisplay : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IDisplay)
+        VBox_COM_WRAPPED(::IDisplay)
 
         // Attributes
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
@@ -2399,7 +2399,7 @@ namespace VBox
     class LIBVBOX_API INetworkAdapter : public COMUnknown
     {
     public:
-        COM_WRAPPED(::INetworkAdapter)
+        VBox_COM_WRAPPED(::INetworkAdapter)
 
         // Attributes
         VBox_PROPERTY_RW_V(NetworkAdapterType, adapterType)
@@ -2435,7 +2435,7 @@ namespace VBox
     class LIBVBOX_API ISerialPort : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ISerialPort)
+        VBox_COM_WRAPPED(::ISerialPort)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, slot)
@@ -2453,7 +2453,7 @@ namespace VBox
     class LIBVBOX_API IParallelPort : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IParallelPort)
+        VBox_COM_WRAPPED(::IParallelPort)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, slot)
@@ -2466,7 +2466,7 @@ namespace VBox
     class LIBVBOX_API IMachineDebugger : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IMachineDebugger)
+        VBox_COM_WRAPPED(::IMachineDebugger)
 
         // Attributes
         VBox_PROPERTY_RW_V(bool, singleStep)
@@ -2567,7 +2567,7 @@ namespace VBox
     class LIBVBOX_API IUSBDeviceFilters : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IUSBDeviceFilters)
+        VBox_COM_WRAPPED(::IUSBDeviceFilters)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMPtr<IUSBDeviceFilter>>, deviceFilters)
@@ -2585,7 +2585,7 @@ namespace VBox
     class LIBVBOX_API IUSBController : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IUSBController)
+        VBox_COM_WRAPPED(::IUSBController)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, name)
@@ -2596,7 +2596,7 @@ namespace VBox
     class LIBVBOX_API IUSBDevice : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IUSBDevice)
+        VBox_COM_WRAPPED(::IUSBDevice)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, id)
@@ -2623,7 +2623,7 @@ namespace VBox
     class LIBVBOX_API IUSBDeviceFilter : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IUSBDeviceFilter)
+        VBox_COM_WRAPPED(::IUSBDeviceFilter)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, name)
@@ -2642,7 +2642,7 @@ namespace VBox
     class LIBVBOX_API IHostUSBDevice : public IUSBDevice
     {
     public:
-        COM_WRAPPED(::IHostUSBDevice)
+        VBox_COM_WRAPPED(::IHostUSBDevice)
 
         // Attributes
         VBox_PROPERTY_RO(USBDeviceState, state)
@@ -2651,7 +2651,7 @@ namespace VBox
     class LIBVBOX_API IHostUSBDeviceFilter : public IUSBDeviceFilter
     {
     public:
-        COM_WRAPPED(::IHostUSBDeviceFilter)
+        VBox_COM_WRAPPED(::IHostUSBDeviceFilter)
 
         // Attributes
         VBox_PROPERTY_RW_V(USBDeviceFilterAction, action)
@@ -2661,7 +2661,7 @@ namespace VBox
     class LIBVBOX_API IUSBProxyBackend : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IUSBProxyBackend)
+        VBox_COM_WRAPPED(::IUSBProxyBackend)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -2672,7 +2672,7 @@ namespace VBox
     class LIBVBOX_API IAudioAdapter : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IAudioAdapter)
+        VBox_COM_WRAPPED(::IAudioAdapter)
 
         // Attributes
         VBox_PROPERTY_RW_V(bool, enabled)
@@ -2694,7 +2694,7 @@ namespace VBox
     class LIBVBOX_API IVRDEServer : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVRDEServer)
+        VBox_COM_WRAPPED(::IVRDEServer)
 
         // Attributes
         VBox_PROPERTY_RW_V(bool, enabled)
@@ -2717,7 +2717,7 @@ namespace VBox
     class LIBVBOX_API ISharedFolder : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ISharedFolder)
+        VBox_COM_WRAPPED(::ISharedFolder)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -2737,7 +2737,7 @@ namespace VBox
     class LIBVBOX_API IInternalSessionControl : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IInternalSessionControl)
+        VBox_COM_WRAPPED(::IInternalSessionControl)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, PID)
@@ -2845,7 +2845,7 @@ namespace VBox
     class LIBVBOX_API ISession : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ISession)
+        VBox_COM_WRAPPED(::ISession)
 
         // Attributes
         VBox_PROPERTY_RO(SessionState, state)
@@ -2861,7 +2861,7 @@ namespace VBox
     class LIBVBOX_API IStorageController : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IStorageController)
+        VBox_COM_WRAPPED(::IStorageController)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, name)
@@ -2879,7 +2879,7 @@ namespace VBox
     class LIBVBOX_API IPerformanceMetric : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IPerformanceMetric)
+        VBox_COM_WRAPPED(::IPerformanceMetric)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, metricName)
@@ -2895,7 +2895,7 @@ namespace VBox
     class LIBVBOX_API IPerformanceCollector : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IPerformanceCollector)
+        VBox_COM_WRAPPED(::IPerformanceCollector)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMString>, metricNames)
@@ -2930,7 +2930,7 @@ namespace VBox
     class LIBVBOX_API INATEngine : public COMUnknown
     {
     public:
-        COM_WRAPPED(::INATEngine)
+        VBox_COM_WRAPPED(::INATEngine)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, network)
@@ -2971,7 +2971,7 @@ namespace VBox
     class LIBVBOX_API IExtPackPlugIn : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IExtPackPlugIn)
+        VBox_COM_WRAPPED(::IExtPackPlugIn)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -2983,7 +2983,7 @@ namespace VBox
     class LIBVBOX_API IExtPackBase : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IExtPackBase)
+        VBox_COM_WRAPPED(::IExtPackBase)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -3008,7 +3008,7 @@ namespace VBox
     class LIBVBOX_API IExtPack : public IExtPackBase
     {
     public:
-        COM_WRAPPED(::IExtPack)
+        VBox_COM_WRAPPED(::IExtPack)
 
         // Methods
         COMPtr<COMUnknown> queryObject(
@@ -3018,7 +3018,7 @@ namespace VBox
     class LIBVBOX_API IExtPackFile : public IExtPackBase
     {
     public:
-        COM_WRAPPED(::IExtPackFile)
+        VBox_COM_WRAPPED(::IExtPackFile)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, filePath)
@@ -3032,7 +3032,7 @@ namespace VBox
     class LIBVBOX_API IExtPackManager : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IExtPackManager)
+        VBox_COM_WRAPPED(::IExtPackManager)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<IExtPack>, installedExtPacks)
@@ -3056,7 +3056,7 @@ namespace VBox
     class LIBVBOX_API IBandwidthGroup : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IBandwidthGroup)
+        VBox_COM_WRAPPED(::IBandwidthGroup)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -3068,7 +3068,7 @@ namespace VBox
     class LIBVBOX_API IBandwidthControl : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IBandwidthControl)
+        VBox_COM_WRAPPED(::IBandwidthControl)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, numGroups)
@@ -3088,7 +3088,7 @@ namespace VBox
     class LIBVBOX_API IVirtualBoxClient : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVirtualBoxClient)
+        VBox_COM_WRAPPED(::IVirtualBoxClient)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IVirtualBox>, virtualBox)
@@ -3103,7 +3103,7 @@ namespace VBox
     class LIBVBOX_API IEventSource : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IEventSource)
+        VBox_COM_WRAPPED(::IEventSource)
 
         // Methods
         COMPtr<IEventListener> createListener();
@@ -3129,7 +3129,7 @@ namespace VBox
     class LIBVBOX_API IEventListener : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IEventListener)
+        VBox_COM_WRAPPED(::IEventListener)
 
         // Methods
         void handleEvent(
@@ -3139,7 +3139,7 @@ namespace VBox
     class LIBVBOX_API IEvent : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IEvent)
+        VBox_COM_WRAPPED(::IEvent)
 
         // Attributes
         VBox_PROPERTY_RO(VBoxEventType, type)
@@ -3155,7 +3155,7 @@ namespace VBox
     class LIBVBOX_API IReusableEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IReusableEvent)
+        VBox_COM_WRAPPED(::IReusableEvent)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, generation)
@@ -3167,7 +3167,7 @@ namespace VBox
     class LIBVBOX_API IMachineEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IMachineEvent)
+        VBox_COM_WRAPPED(::IMachineEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, machineId)
@@ -3176,7 +3176,7 @@ namespace VBox
     class LIBVBOX_API IMachineStateChangedEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::IMachineStateChangedEvent)
+        VBox_COM_WRAPPED(::IMachineStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(MachineState, state)
@@ -3185,7 +3185,7 @@ namespace VBox
     class LIBVBOX_API IMachineDataChangedEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::IMachineDataChangedEvent)
+        VBox_COM_WRAPPED(::IMachineDataChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, temporary)
@@ -3194,7 +3194,7 @@ namespace VBox
     class LIBVBOX_API IMediumRegisteredEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IMediumRegisteredEvent)
+        VBox_COM_WRAPPED(::IMediumRegisteredEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, mediumId)
@@ -3205,7 +3205,7 @@ namespace VBox
     class LIBVBOX_API IMediumConfigChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IMediumConfigChangedEvent)
+        VBox_COM_WRAPPED(::IMediumConfigChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IMedium>, medium)
@@ -3214,7 +3214,7 @@ namespace VBox
     class LIBVBOX_API IMachineRegisteredEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::IMachineRegisteredEvent)
+        VBox_COM_WRAPPED(::IMachineRegisteredEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, registered)
@@ -3223,7 +3223,7 @@ namespace VBox
     class LIBVBOX_API ISessionStateChangedEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::ISessionStateChangedEvent)
+        VBox_COM_WRAPPED(::ISessionStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(SessionState, state)
@@ -3232,7 +3232,7 @@ namespace VBox
     class LIBVBOX_API IGuestPropertyChangedEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::IGuestPropertyChangedEvent)
+        VBox_COM_WRAPPED(::IGuestPropertyChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -3243,7 +3243,7 @@ namespace VBox
     class LIBVBOX_API ISnapshotEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::ISnapshotEvent)
+        VBox_COM_WRAPPED(::ISnapshotEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, snapshotId)
@@ -3252,31 +3252,31 @@ namespace VBox
     class LIBVBOX_API ISnapshotTakenEvent : public ISnapshotEvent
     {
     public:
-        COM_WRAPPED(::ISnapshotTakenEvent)
+        VBox_COM_WRAPPED(::ISnapshotTakenEvent)
     };
 
     class LIBVBOX_API ISnapshotDeletedEvent : public ISnapshotEvent
     {
     public:
-        COM_WRAPPED(::ISnapshotDeletedEvent)
+        VBox_COM_WRAPPED(::ISnapshotDeletedEvent)
     };
 
     class LIBVBOX_API ISnapshotRestoredEvent : public ISnapshotEvent
     {
     public:
-        COM_WRAPPED(::ISnapshotRestoredEvent)
+        VBox_COM_WRAPPED(::ISnapshotRestoredEvent)
     };
 
     class LIBVBOX_API ISnapshotChangedEvent : public ISnapshotEvent
     {
     public:
-        COM_WRAPPED(::ISnapshotChangedEvent)
+        VBox_COM_WRAPPED(::ISnapshotChangedEvent)
     };
 
     class LIBVBOX_API IMousePointerShapeChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IMousePointerShapeChangedEvent)
+        VBox_COM_WRAPPED(::IMousePointerShapeChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, visible)
@@ -3291,7 +3291,7 @@ namespace VBox
     class LIBVBOX_API IMouseCapabilityChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IMouseCapabilityChangedEvent)
+        VBox_COM_WRAPPED(::IMouseCapabilityChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, supportsAbsolute)
@@ -3303,7 +3303,7 @@ namespace VBox
     class LIBVBOX_API IKeyboardLedsChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IKeyboardLedsChangedEvent)
+        VBox_COM_WRAPPED(::IKeyboardLedsChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, numLock)
@@ -3314,7 +3314,7 @@ namespace VBox
     class LIBVBOX_API IStateChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IStateChangedEvent)
+        VBox_COM_WRAPPED(::IStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(MachineState, state)
@@ -3323,13 +3323,13 @@ namespace VBox
     class LIBVBOX_API IAdditionsStateChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IAdditionsStateChangedEvent)
+        VBox_COM_WRAPPED(::IAdditionsStateChangedEvent)
     };
 
     class LIBVBOX_API INetworkAdapterChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::INetworkAdapterChangedEvent)
+        VBox_COM_WRAPPED(::INetworkAdapterChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<INetworkAdapter>, networkAdapter)
@@ -3339,7 +3339,7 @@ namespace VBox
     class LIBVBOX_API IAudioAdapterChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IAudioAdapterChangedEvent)
+        VBox_COM_WRAPPED(::IAudioAdapterChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IAudioAdapter>, audioAdapter)
@@ -3349,7 +3349,7 @@ namespace VBox
     class LIBVBOX_API ISerialPortChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::ISerialPortChangedEvent)
+        VBox_COM_WRAPPED(::ISerialPortChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<ISerialPort>, serialPort)
@@ -3358,7 +3358,7 @@ namespace VBox
     class LIBVBOX_API IParallelPortChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IParallelPortChangedEvent)
+        VBox_COM_WRAPPED(::IParallelPortChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IParallelPort>, parallelPort)
@@ -3367,13 +3367,13 @@ namespace VBox
     class LIBVBOX_API IStorageControllerChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IStorageControllerChangedEvent)
+        VBox_COM_WRAPPED(::IStorageControllerChangedEvent)
     };
 
     class LIBVBOX_API IMediumChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IMediumChangedEvent)
+        VBox_COM_WRAPPED(::IMediumChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IMediumAttachment>, mediumAttachment)
@@ -3382,7 +3382,7 @@ namespace VBox
     class LIBVBOX_API IClipboardModeChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IClipboardModeChangedEvent)
+        VBox_COM_WRAPPED(::IClipboardModeChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(ClipboardMode, clipboardMode)
@@ -3391,7 +3391,7 @@ namespace VBox
     class LIBVBOX_API IDnDModeChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IDnDModeChangedEvent)
+        VBox_COM_WRAPPED(::IDnDModeChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(DnDMode, dndMode)
@@ -3400,7 +3400,7 @@ namespace VBox
     class LIBVBOX_API ICPUChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::ICPUChangedEvent)
+        VBox_COM_WRAPPED(::ICPUChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, CPU)
@@ -3410,7 +3410,7 @@ namespace VBox
     class LIBVBOX_API ICPUExecutionCapChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::ICPUExecutionCapChangedEvent)
+        VBox_COM_WRAPPED(::ICPUExecutionCapChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, executionCap)
@@ -3419,7 +3419,7 @@ namespace VBox
     class LIBVBOX_API IGuestKeyboardEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IGuestKeyboardEvent)
+        VBox_COM_WRAPPED(::IGuestKeyboardEvent)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<int32_t>, scancodes)
@@ -3428,7 +3428,7 @@ namespace VBox
     class LIBVBOX_API IGuestMouseEvent : public IReusableEvent
     {
     public:
-        COM_WRAPPED(::IGuestMouseEvent)
+        VBox_COM_WRAPPED(::IGuestMouseEvent)
 
         // Attributes
         VBox_PROPERTY_RO(GuestMouseEventMode, mode)
@@ -3442,7 +3442,7 @@ namespace VBox
     class LIBVBOX_API IGuestMultiTouchEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IGuestMultiTouchEvent)
+        VBox_COM_WRAPPED(::IGuestMultiTouchEvent)
 
         // Attributes
         VBox_PROPERTY_RO(int32_t, contactCount)
@@ -3456,7 +3456,7 @@ namespace VBox
     class LIBVBOX_API IGuestSessionEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IGuestSessionEvent)
+        VBox_COM_WRAPPED(::IGuestSessionEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IGuestSession>, session)
@@ -3465,7 +3465,7 @@ namespace VBox
     class LIBVBOX_API IGuestSessionStateChangedEvent : public IGuestSessionEvent
     {
     public:
-        COM_WRAPPED(::IGuestSessionStateChangedEvent)
+        VBox_COM_WRAPPED(::IGuestSessionStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, id)
@@ -3476,7 +3476,7 @@ namespace VBox
     class LIBVBOX_API IGuestSessionRegisteredEvent : public IGuestSessionEvent
     {
     public:
-        COM_WRAPPED(::IGuestSessionRegisteredEvent)
+        VBox_COM_WRAPPED(::IGuestSessionRegisteredEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, registered)
@@ -3485,7 +3485,7 @@ namespace VBox
     class LIBVBOX_API IGuestProcessEvent : public IGuestSessionEvent
     {
     public:
-        COM_WRAPPED(::IGuestProcessEvent)
+        VBox_COM_WRAPPED(::IGuestProcessEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IGuestProcess>, process)
@@ -3495,7 +3495,7 @@ namespace VBox
     class LIBVBOX_API IGuestProcessRegisteredEvent : public IGuestProcessEvent
     {
     public:
-        COM_WRAPPED(::IGuestProcessRegisteredEvent)
+        VBox_COM_WRAPPED(::IGuestProcessRegisteredEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, registered)
@@ -3504,7 +3504,7 @@ namespace VBox
     class LIBVBOX_API IGuestProcessStateChangedEvent : public IGuestProcessEvent
     {
     public:
-        COM_WRAPPED(::IGuestProcessStateChangedEvent)
+        VBox_COM_WRAPPED(::IGuestProcessStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(ProcessStatus, status)
@@ -3514,7 +3514,7 @@ namespace VBox
     class LIBVBOX_API IGuestProcessIOEvent : public IGuestProcessEvent
     {
     public:
-        COM_WRAPPED(::IGuestProcessIOEvent)
+        VBox_COM_WRAPPED(::IGuestProcessIOEvent)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, handle)
@@ -3524,7 +3524,7 @@ namespace VBox
     class LIBVBOX_API IGuestProcessInputNotifyEvent : public IGuestProcessIOEvent
     {
     public:
-        COM_WRAPPED(::IGuestProcessInputNotifyEvent)
+        VBox_COM_WRAPPED(::IGuestProcessInputNotifyEvent)
 
         // Attributes
         VBox_PROPERTY_RO(ProcessInputStatus, status)
@@ -3533,7 +3533,7 @@ namespace VBox
     class LIBVBOX_API IGuestProcessOutputEvent : public IGuestProcessIOEvent
     {
     public:
-        COM_WRAPPED(::IGuestProcessOutputEvent)
+        VBox_COM_WRAPPED(::IGuestProcessOutputEvent)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<uint8_t>, data)
@@ -3542,7 +3542,7 @@ namespace VBox
     class LIBVBOX_API IGuestFileEvent : public IGuestSessionEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileEvent)
+        VBox_COM_WRAPPED(::IGuestFileEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IGuestFile>, file)
@@ -3551,7 +3551,7 @@ namespace VBox
     class LIBVBOX_API IGuestFileRegisteredEvent : public IGuestFileEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileRegisteredEvent)
+        VBox_COM_WRAPPED(::IGuestFileRegisteredEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, registered)
@@ -3560,7 +3560,7 @@ namespace VBox
     class LIBVBOX_API IGuestFileStateChangedEvent : public IGuestFileEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileStateChangedEvent)
+        VBox_COM_WRAPPED(::IGuestFileStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(FileStatus, status)
@@ -3570,7 +3570,7 @@ namespace VBox
     class LIBVBOX_API IGuestFileIOEvent : public IGuestFileEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileIOEvent)
+        VBox_COM_WRAPPED(::IGuestFileIOEvent)
 
         // Attributes
         VBox_PROPERTY_RO(int64_t, offset)
@@ -3580,13 +3580,13 @@ namespace VBox
     class LIBVBOX_API IGuestFileOffsetChangedEvent : public IGuestFileIOEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileOffsetChangedEvent)
+        VBox_COM_WRAPPED(::IGuestFileOffsetChangedEvent)
     };
 
     class LIBVBOX_API IGuestFileReadEvent : public IGuestFileIOEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileReadEvent)
+        VBox_COM_WRAPPED(::IGuestFileReadEvent)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<uint8_t>, data)
@@ -3595,26 +3595,26 @@ namespace VBox
     class LIBVBOX_API IGuestFileWriteEvent : public IGuestFileIOEvent
     {
     public:
-        COM_WRAPPED(::IGuestFileWriteEvent)
+        VBox_COM_WRAPPED(::IGuestFileWriteEvent)
     };
 
     class LIBVBOX_API IVRDEServerChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IVRDEServerChangedEvent)
+        VBox_COM_WRAPPED(::IVRDEServerChangedEvent)
     };
 
     class LIBVBOX_API IVRDEServerInfoChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IVRDEServerInfoChangedEvent)
+        VBox_COM_WRAPPED(::IVRDEServerInfoChangedEvent)
     };
 
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
     class LIBVBOX_API IVideoCaptureChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IVideoCaptureChangedEvent)
+        VBox_COM_WRAPPED(::IVideoCaptureChangedEvent)
     };
 #endif
 
@@ -3622,20 +3622,20 @@ namespace VBox
     class LIBVBOX_API IRecordingChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IRecordingChangedEvent)
+        VBox_COM_WRAPPED(::IRecordingChangedEvent)
     };
 #endif
 
     class LIBVBOX_API IUSBControllerChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IUSBControllerChangedEvent)
+        VBox_COM_WRAPPED(::IUSBControllerChangedEvent)
     };
 
     class LIBVBOX_API IUSBDeviceStateChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IUSBDeviceStateChangedEvent)
+        VBox_COM_WRAPPED(::IUSBDeviceStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IUSBDevice>, device)
@@ -3646,7 +3646,7 @@ namespace VBox
     class LIBVBOX_API ISharedFolderChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::ISharedFolderChangedEvent)
+        VBox_COM_WRAPPED(::ISharedFolderChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(Scope, scope)
@@ -3655,7 +3655,7 @@ namespace VBox
     class LIBVBOX_API IRuntimeErrorEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IRuntimeErrorEvent)
+        VBox_COM_WRAPPED(::IRuntimeErrorEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, fatal)
@@ -3666,7 +3666,7 @@ namespace VBox
     class LIBVBOX_API IEventSourceChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IEventSourceChangedEvent)
+        VBox_COM_WRAPPED(::IEventSourceChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IEventListener>, listener)
@@ -3676,7 +3676,7 @@ namespace VBox
     class LIBVBOX_API IExtraDataChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IExtraDataChangedEvent)
+        VBox_COM_WRAPPED(::IExtraDataChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, machineId)
@@ -3687,7 +3687,7 @@ namespace VBox
     class LIBVBOX_API IVetoEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IVetoEvent)
+        VBox_COM_WRAPPED(::IVetoEvent)
 
         // Methods
         void addVeto(
@@ -3703,7 +3703,7 @@ namespace VBox
     class LIBVBOX_API IExtraDataCanChangeEvent : public IVetoEvent
     {
     public:
-        COM_WRAPPED(::IExtraDataCanChangeEvent)
+        VBox_COM_WRAPPED(::IExtraDataCanChangeEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, machineId)
@@ -3714,13 +3714,13 @@ namespace VBox
     class LIBVBOX_API ICanShowWindowEvent : public IVetoEvent
     {
     public:
-        COM_WRAPPED(::ICanShowWindowEvent)
+        VBox_COM_WRAPPED(::ICanShowWindowEvent)
     };
 
     class LIBVBOX_API IShowWindowEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IShowWindowEvent)
+        VBox_COM_WRAPPED(::IShowWindowEvent)
 
         // Attributes
         VBox_PROPERTY_RW_V(int64_t, winId)
@@ -3729,7 +3729,7 @@ namespace VBox
     class LIBVBOX_API INATRedirectEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::INATRedirectEvent)
+        VBox_COM_WRAPPED(::INATRedirectEvent)
 
         // Attributes
         VBox_PROPERTY_RO(uint32_t, slot)
@@ -3745,7 +3745,7 @@ namespace VBox
     class LIBVBOX_API IHostPCIDevicePlugEvent : public IMachineEvent
     {
     public:
-        COM_WRAPPED(::IHostPCIDevicePlugEvent)
+        VBox_COM_WRAPPED(::IHostPCIDevicePlugEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, plugged)
@@ -3757,7 +3757,7 @@ namespace VBox
     class LIBVBOX_API IVBoxSVCAvailabilityChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IVBoxSVCAvailabilityChangedEvent)
+        VBox_COM_WRAPPED(::IVBoxSVCAvailabilityChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, available)
@@ -3766,7 +3766,7 @@ namespace VBox
     class LIBVBOX_API IBandwidthGroupChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IBandwidthGroupChangedEvent)
+        VBox_COM_WRAPPED(::IBandwidthGroupChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IBandwidthGroup>, bandwidthGroup)
@@ -3775,7 +3775,7 @@ namespace VBox
     class LIBVBOX_API IGuestMonitorChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IGuestMonitorChangedEvent)
+        VBox_COM_WRAPPED(::IGuestMonitorChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(GuestMonitorChangedEventType, changeType)
@@ -3789,7 +3789,7 @@ namespace VBox
     class LIBVBOX_API IGuestUserStateChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IGuestUserStateChangedEvent)
+        VBox_COM_WRAPPED(::IGuestUserStateChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -3801,7 +3801,7 @@ namespace VBox
     class LIBVBOX_API IStorageDeviceChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IStorageDeviceChangedEvent)
+        VBox_COM_WRAPPED(::IStorageDeviceChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMPtr<IMediumAttachment>, storageDevice)
@@ -3812,7 +3812,7 @@ namespace VBox
     class LIBVBOX_API INATNetworkChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::INATNetworkChangedEvent)
+        VBox_COM_WRAPPED(::INATNetworkChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, networkName)
@@ -3821,7 +3821,7 @@ namespace VBox
     class LIBVBOX_API INATNetworkStartStopEvent : public INATNetworkChangedEvent
     {
     public:
-        COM_WRAPPED(::INATNetworkStartStopEvent)
+        VBox_COM_WRAPPED(::INATNetworkStartStopEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, startEvent)
@@ -3830,13 +3830,13 @@ namespace VBox
     class LIBVBOX_API INATNetworkAlterEvent : public INATNetworkChangedEvent
     {
     public:
-        COM_WRAPPED(::INATNetworkAlterEvent)
+        VBox_COM_WRAPPED(::INATNetworkAlterEvent)
     };
 
     class LIBVBOX_API INATNetworkCreationDeletionEvent : public INATNetworkAlterEvent
     {
     public:
-        COM_WRAPPED(::INATNetworkCreationDeletionEvent)
+        VBox_COM_WRAPPED(::INATNetworkCreationDeletionEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, creationEvent)
@@ -3845,7 +3845,7 @@ namespace VBox
     class LIBVBOX_API INATNetworkSettingEvent : public INATNetworkAlterEvent
     {
     public:
-        COM_WRAPPED(::INATNetworkSettingEvent)
+        VBox_COM_WRAPPED(::INATNetworkSettingEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, enabled)
@@ -3858,7 +3858,7 @@ namespace VBox
     class LIBVBOX_API INATNetworkPortForwardEvent : public INATNetworkAlterEvent
     {
     public:
-        COM_WRAPPED(::INATNetworkPortForwardEvent)
+        VBox_COM_WRAPPED(::INATNetworkPortForwardEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, create)
@@ -3874,14 +3874,14 @@ namespace VBox
     class LIBVBOX_API IHostNameResolutionConfigurationChangeEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IHostNameResolutionConfigurationChangeEvent)
+        VBox_COM_WRAPPED(::IHostNameResolutionConfigurationChangeEvent)
     };
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
     class LIBVBOX_API IProgressEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::IProgressEvent)
+        VBox_COM_WRAPPED(::IProgressEvent)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, progressId)
@@ -3890,7 +3890,7 @@ namespace VBox
     class LIBVBOX_API IProgressPercentageChangedEvent : public IProgressEvent
     {
     public:
-        COM_WRAPPED(::IProgressPercentageChangedEvent)
+        VBox_COM_WRAPPED(::IProgressPercentageChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(int32_t, percent)
@@ -3899,7 +3899,7 @@ namespace VBox
     class LIBVBOX_API IProgressTaskCompletedEvent : public IProgressEvent
     {
     public:
-        COM_WRAPPED(::IProgressTaskCompletedEvent)
+        VBox_COM_WRAPPED(::IProgressTaskCompletedEvent)
     };
 #endif
 
@@ -3907,7 +3907,7 @@ namespace VBox
     class LIBVBOX_API IVBoxSVCRegistration : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVBoxSVCRegistration)
+        VBox_COM_WRAPPED(::IVBoxSVCRegistration)
 
         // Methods
         COMPtr<COMUnknown> getVirtualBox();
@@ -3916,7 +3916,7 @@ namespace VBox
     class LIBVBOX_API IVirtualBoxSDS : public COMUnknown
     {
     public:
-        COM_WRAPPED(::IVirtualBoxSDS)
+        VBox_COM_WRAPPED(::IVirtualBoxSDS)
 
         // Methods
         COMPtr<COMUnknown> registerVBoxSVC(
@@ -3932,7 +3932,7 @@ namespace VBox
     class LIBVBOX_API ICursorPositionChangedEvent : public IEvent
     {
     public:
-        COM_WRAPPED(::ICursorPositionChangedEvent)
+        VBox_COM_WRAPPED(::ICursorPositionChangedEvent)
 
         // Attributes
         VBox_PROPERTY_RO(bool, hasData)
@@ -3945,7 +3945,7 @@ namespace VBox
     class LIBVBOX_API ICloudClient : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ICloudClient)
+        VBox_COM_WRAPPED(::ICloudClient)
 
         // Methods
         COMString getExportLaunchParameters() const;
@@ -3958,7 +3958,7 @@ namespace VBox
     class LIBVBOX_API ICloudProfile : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ICloudProfile)
+        VBox_COM_WRAPPED(::ICloudProfile)
 
         // Attributes
         VBox_PROPERTY_RW_R(COMString, name)
@@ -3983,7 +3983,7 @@ namespace VBox
     class LIBVBOX_API ICloudProvider : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ICloudProvider)
+        VBox_COM_WRAPPED(::ICloudProvider)
 
         // Attributes
         VBox_PROPERTY_RO(COMString, name)
@@ -4011,7 +4011,7 @@ namespace VBox
     class LIBVBOX_API ICloudProviderManager : public COMUnknown
     {
     public:
-        COM_WRAPPED(::ICloudProviderManager)
+        VBox_COM_WRAPPED(::ICloudProviderManager)
 
         // Attributes
         VBox_PROPERTY_RO(std::vector<COMPtr<ICloudProvider>>, providers)

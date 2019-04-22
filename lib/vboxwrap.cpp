@@ -95,15 +95,6 @@ namespace VBox
     }
 }
 
-std::string VBox::COMError::error_message(uint32_t rc)
-{
-    // TODO: Get a string representation of the error itself.
-    // I can't find how to do that with XPCOM currently...
-    char buffer[40];
-    snprintf(buffer, sizeof(buffer), "COM Error %#x", rc);
-    return buffer;
-}
-
 uint32_t VBox::COMUnknown::AddRef()
 {
     return get_IFC()->AddRef();

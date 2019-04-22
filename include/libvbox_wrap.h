@@ -35,7 +35,7 @@
     type name() const;                          \
     void set_##name(const type &value);
 
-#define COM_WRAPPED(COMType)                                            \
+#define VBox_COM_WRAPPED(COMType)                                       \
             typedef COMType COM_Ifc;                                    \
             static const void *get_IID();                               \
             COMType *get_IFC() const { return reinterpret_cast<COMType *>(m_ifc); } \
@@ -51,20 +51,6 @@ struct IErrorInfo;
 
 namespace VBox
 {
-    class COMError : public std::runtime_error
-    {
-    public:
-        COMError(uint32_t rc)
-            : std::runtime_error(error_message(rc)), m_rc(rc) { }
-
-        uint32_t error_code() const { return m_rc; }
-
-        static LIBVBOX_API std::string error_message(uint32_t rc);
-
-    private:
-        uint32_t m_rc;
-    };
-
     template <class Wrapped>
     class COMPtr
     {
@@ -140,9 +126,9 @@ namespace VBox
     {
     public:
 #if defined(VBOX_XPCOM)
-        COM_WRAPPED(::nsISupports)
+        VBox_COM_WRAPPED(::nsISupports)
 #elif defined(VBOX_MSCOM)
-        COM_WRAPPED(::IUnknown)
+        VBox_COM_WRAPPED(::IUnknown)
 #endif
 
         bool have_IFC() const { return m_ifc != nullptr; }
@@ -169,9 +155,9 @@ namespace VBox
     {
     public:
 #if defined(VBOX_XPCOM)
-        COM_WRAPPED(::nsIException)
+        VBox_COM_WRAPPED(::nsIException)
 #elif defined(VBOX_MSCOM)
-        COM_WRAPPED(::IErrorInfo)
+        VBox_COM_WRAPPED(::IErrorInfo)
 #endif
 
         // XPCOM and MSCOM are completely incompatible for their base
