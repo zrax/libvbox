@@ -76,6 +76,21 @@ namespace VBox
         COMString &operator=(const std::wstring &other);
         COMString &operator=(const wchar_t *other);
 
+        inline bool operator==(const VBox::COMString &other) const
+        {
+            return m_string == other.m_string;
+        }
+
+        inline bool operator!=(const VBox::COMString &other) const
+        {
+            return m_string != other.m_string;
+        }
+
+        inline bool operator<(const VBox::COMString &other) const
+        {
+            return m_string < other.m_string;
+        }
+
         static COMString fromUtf8(const std::string &string);
         static COMString fromUtf8(const char *cstring);
         static COMString fromUtf8(const char *cstring, size_t size);
@@ -122,6 +137,9 @@ namespace VBox
         operator std::u16string() const { return toUtf16(); }
         operator std::wstring() const { return toWString(); }
 
+        std::u16string &get() { return m_string; }
+        const std::u16string &get() const { return m_string; }
+
         const char16_t *c_str() const { return m_string.c_str(); }
         const char16_t *data() const { return m_string.data(); }
         size_t size() const { return m_string.size(); }
@@ -137,6 +155,18 @@ namespace VBox
 #if _MSC_VER
 #       pragma warning(pop)
 #endif
+    };
+}
+
+namespace std
+{
+    template <>
+    struct hash<VBox::COMString>
+    {
+        size_t operator()(const VBox::COMString &value) const noexcept
+        {
+            return std::hash<std::u16string>{}(value.get());
+        }
     };
 }
 
