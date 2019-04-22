@@ -38,8 +38,8 @@
 #define COM_WRAPPED(COMType)                                            \
             typedef COMType COM_Ifc;                                    \
             static const void *get_IID();                               \
-            COMType *get_IFC() const { return _get_IFC<COMType>(); }    \
-            void set_IFC(COMType *ifc) { _set_IFC(ifc); }
+            COMType *get_IFC() const { return reinterpret_cast<COMType *>(m_ifc); } \
+            void set_IFC(COMType *ifc) { m_ifc = reinterpret_cast<void *>(ifc); }
 
 #if defined(VBOX_XPCOM)
 class nsISupports;
@@ -130,7 +130,7 @@ namespace VBox
         const Wrapped *operator->() const { return &m_wrap; }
         const Wrapped &operator*() const { return m_wrap; }
 
-        operator bool() const { return m_wrap.get_IFC() != nullptr; }
+        operator bool() const { return m_wrap.have_IFC(); }
 
     private:
         Wrapped m_wrap;
@@ -144,12 +144,6 @@ namespace VBox
 #elif defined(VBOX_MSCOM)
         COM_WRAPPED(::IUnknown)
 #endif
-
-        template <class Ifc>
-        Ifc *_get_IFC() const { return reinterpret_cast<Ifc *>(m_ifc); }
-
-        template <class Ifc>
-        void _set_IFC(Ifc *ifc) { m_ifc = reinterpret_cast<void *>(ifc); }
 
         bool have_IFC() const { return m_ifc != nullptr; }
         void clear_IFC() { m_ifc = nullptr; }
@@ -167,7 +161,7 @@ namespace VBox
             return COMPtr<QIfc>::wrap(pResult);
         }
 
-    private:
+    protected:
         void *m_ifc;
     };
 
