@@ -77,6 +77,7 @@ target_sources(vbox
         lib/libvbox_p.h
         lib/comstring.cpp
         lib/console.cpp
+        lib/display.cpp
         lib/errorwrap.cpp
         lib/event.cpp
         lib/host.cpp

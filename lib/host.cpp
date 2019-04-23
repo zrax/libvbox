@@ -221,7 +221,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IHost::createHostOnlyNetworkInterface(
 
     if (hostInterface)
         *hostInterface = COMPtr<IHostNetworkInterface>::wrap(cHostInterface);
-    else
+    else if (cHostInterface)
         cHostInterface->Release();
     return COMPtr<IProgress>::wrap(cResult);
 }
