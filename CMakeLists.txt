@@ -81,7 +81,10 @@ target_sources(vbox
         lib/errorwrap.cpp
         lib/event.cpp
         lib/host.cpp
+        lib/keyboard.cpp
         lib/machine.cpp
+        lib/mouse.cpp
+        lib/mousepointershape.cpp
         lib/progress.cpp
         lib/session.cpp
         lib/vetoevent.cpp
