@@ -32,7 +32,7 @@ VBox::COMPtr<VBox::IMachine> VBox::IConsole::machine() const
 
 VBox::MachineState VBox::IConsole::state() const
 {
-    COM_Type(PRUint32, ::MachineState) result;
+    COM_Enum(::MachineState) result;
     COM_GetValue(get_IFC(), State, result);
     return static_cast<MachineState>(result);
 }
@@ -216,8 +216,8 @@ bool VBox::IConsole::getGuestEnteredACPIMode()
 std::vector<VBox::DeviceActivity> VBox::IConsole::getDeviceActivity(
         const std::vector<DeviceType> &type)
 {
-    COM_ArrayProxy<COM_Type(PRUint32, ::DeviceType)> pType(type);
-    COM_ArrayProxy<COM_Type(PRUint32, ::DeviceActivity)> pResult;
+    COM_ArrayProxy<COM_Enum(::DeviceType)> pType(type);
+    COM_ArrayProxy<COM_Enum(::DeviceActivity)> pResult;
 
     auto rc = get_IFC()->GetDeviceActivity(COM_ArrayParameter(pType),
                                            COM_ArrayParameterRef(pResult));

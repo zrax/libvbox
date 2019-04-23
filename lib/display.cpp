@@ -41,7 +41,7 @@ void VBox::IDisplay::getScreenResolution(uint32_t screenId, uint32_t *width,
     COM_ULong cBitsPerPixel;
     COM_Long cXOrigin;
     COM_Long cYOrigin;
-    COM_Type(PRUint32, ::GuestMonitorStatus) cGuestMonitorStatus;
+    COM_Enum(::GuestMonitorStatus) cGuestMonitorStatus;
 
     auto rc = get_IFC()->GetScreenResolution(screenId, &cWidth, &cHeight,
                     &cBitsPerPixel, &cXOrigin, &cYOrigin, &cGuestMonitorStatus);
@@ -109,7 +109,7 @@ void VBox::IDisplay::setSeamlessMode(bool enabled)
 void VBox::IDisplay::takeScreenShot(uint32_t screenId, uint8_t *address,
         uint32_t width, uint32_t height, BitmapFormat bitmapFormat)
 {
-    auto cBitmapFormat = static_cast<COM_Type(PRUint32, ::BitmapFormat)>(bitmapFormat);
+    auto cBitmapFormat = static_cast<COM_Enum(::BitmapFormat)>(bitmapFormat);
 
     auto rc = get_IFC()->TakeScreenShot(screenId, address, width, height,
                                         cBitmapFormat);
@@ -120,7 +120,7 @@ std::vector<uint8_t> VBox::IDisplay::takeScreenShotToArray(uint32_t screenId,
         uint32_t width, uint32_t height, BitmapFormat bitmapFormat)
 {
     COM_ArrayProxy<COM_Byte> cResult;
-    auto cBitmapFormat = static_cast<COM_Type(PRUint32, ::BitmapFormat)>(bitmapFormat);
+    auto cBitmapFormat = static_cast<COM_Enum(::BitmapFormat)>(bitmapFormat);
 
     auto rc = get_IFC()->TakeScreenShotToArray(screenId, width, height,
                     cBitmapFormat, COM_ArrayParameterRef(cResult));
@@ -195,7 +195,7 @@ void VBox::IDisplay::notifyHiDPIOutputPolicyChange(bool fUnscaledHiDPI)
 void VBox::IDisplay::setScreenLayout(ScreenLayoutMode screenLayoutMode,
         const std::vector<COMPtr<IGuestScreenInfo>> &guestScreenInfo)
 {
-    auto cScreenLayoutMode = static_cast<COM_Type(PRUint32, ::ScreenLayoutMode)>(screenLayoutMode);
+    auto cScreenLayoutMode = static_cast<COM_Enum(::ScreenLayoutMode)>(screenLayoutMode);
     COM_ArrayProxy<::IGuestScreenInfo *> pGuestScreenInfo(guestScreenInfo);
 
     auto rc = get_IFC()->SetScreenLayout(cScreenLayoutMode,
@@ -221,7 +221,7 @@ VBox::COMPtr<VBox::IGuestScreenInfo> VBox::IDisplay::createGuestScreenInfo(
         uint32_t width, uint32_t height, uint32_t bitsPerPixel)
 {
     ::IGuestScreenInfo *cResult = nullptr;
-    auto cStatus = static_cast<COM_Type(PRUint32, ::GuestMonitorStatus)>(status);
+    auto cStatus = static_cast<COM_Enum(::GuestMonitorStatus)>(status);
 
     auto rc = get_IFC()->CreateGuestScreenInfo(display, cStatus, primary,
                     changeOrigin, originX, originY, width, height,

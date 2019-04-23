@@ -291,7 +291,7 @@ std::vector<VBox::COMPtr<VBox::IMachine>> VBox::IVirtualBox::getMachinesByGroups
 std::vector<VBox::MachineState> VBox::IVirtualBox::getMachineStates(
         const std::vector<COMPtr<IMachine>> &machines)
 {
-    COM_ArrayProxy<COM_Type(PRUint32, ::MachineState)> pResult;
+    COM_ArrayProxy<COM_Enum(::MachineState)> pResult;
     COM_ArrayProxy<::IMachine *> pMachines(machines);
 
     auto rc = get_IFC()->GetMachineStates(COM_ArrayParameter(pMachines),
@@ -328,8 +328,8 @@ VBox::COMPtr<VBox::IMedium> VBox::IVirtualBox::createMedium(
     ::IMedium *cResult = nullptr;
     COM_StringProxy pFormat(format);
     COM_StringProxy pLocation(location);
-    auto cAccessMode = static_cast<COM_Type(PRUint32, ::AccessMode)>(accessMode);
-    auto cDeviceType = static_cast<COM_Type(PRUint32, ::DeviceType)>(aADeviceTypeType);
+    auto cAccessMode = static_cast<COM_Enum(::AccessMode)>(accessMode);
+    auto cDeviceType = static_cast<COM_Enum(::DeviceType)>(aADeviceTypeType);
 
     auto rc = get_IFC()->CreateMedium(pFormat.m_text, pLocation.m_text,
                                       cAccessMode, cDeviceType, &cResult);
@@ -344,8 +344,8 @@ VBox::COMPtr<VBox::IMedium> VBox::IVirtualBox::openMedium(
 {
     ::IMedium *cResult = nullptr;
     COM_StringProxy pLocation(location);
-    auto cDeviceType = static_cast<COM_Type(PRUint32, ::DeviceType)>(deviceType);
-    auto cAccessMode = static_cast<COM_Type(PRUint32, ::AccessMode)>(accessMode);
+    auto cDeviceType = static_cast<COM_Enum(::DeviceType)>(deviceType);
+    auto cAccessMode = static_cast<COM_Enum(::AccessMode)>(accessMode);
     auto cForceNewUuid = static_cast<COM_Bool>(forceNewUuid);
 
     auto rc = get_IFC()->OpenMedium(pLocation.m_text, cDeviceType, cAccessMode,
@@ -497,7 +497,7 @@ bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
         const COMString &version, COMString *url, COMString *file)
 {
     COM_Bool cResult;
-    auto cFirmwareType = static_cast<COM_Type(PRUint32, ::FirmwareType)>(firmwareType);
+    auto cFirmwareType = static_cast<COM_Enum(::FirmwareType)>(firmwareType);
     COM_StringProxy pVersion(version);
     COM_StringProxy pUrl;
     COM_StringProxy pFile;

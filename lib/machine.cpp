@@ -221,14 +221,14 @@ void VBox::IMachine::set_pageFusionEnabled(bool value)
 
 VBox::GraphicsControllerType VBox::IMachine::graphicsControllerType() const
 {
-    COM_Type(PRUint32, ::GraphicsControllerType) result;
+    COM_Enum(::GraphicsControllerType) result;
     COM_GetValue(get_IFC(), GraphicsControllerType, result);
     return static_cast<GraphicsControllerType>(result);
 }
 
 void VBox::IMachine::set_graphicsControllerType(GraphicsControllerType value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::GraphicsControllerType)>(value);
+    auto cValue = static_cast<COM_Enum(::GraphicsControllerType)>(value);
     COM_SetValue(get_IFC(), GraphicsControllerType, cValue);
 }
 
@@ -426,40 +426,40 @@ VBox::COMPtr<VBox::IRecordingSettings> VBox::IMachine::recordingSettings() const
 
 VBox::FirmwareType VBox::IMachine::firmwareType() const
 {
-    COM_Type(PRUint32, ::FirmwareType) result;
+    COM_Enum(::FirmwareType) result;
     COM_GetValue(get_IFC(), FirmwareType, result);
     return static_cast<FirmwareType>(result);
 }
 
 void VBox::IMachine::set_firmwareType(FirmwareType value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::FirmwareType)>(value);
+    auto cValue = static_cast<COM_Enum(::FirmwareType)>(value);
     COM_SetValue(get_IFC(), FirmwareType, cValue);
 }
 
 VBox::PointingHIDType VBox::IMachine::pointingHIDType() const
 {
-    COM_Type(PRUint32, ::PointingHIDType) result;
+    COM_Enum(::PointingHIDType) result;
     COM_GetValue(get_IFC(), PointingHIDType, result);
     return static_cast<PointingHIDType>(result);
 }
 
 void VBox::IMachine::set_pointingHIDType(PointingHIDType value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::PointingHIDType)>(value);
+    auto cValue = static_cast<COM_Enum(::PointingHIDType)>(value);
     COM_SetValue(get_IFC(), PointingHIDType, cValue);
 }
 
 VBox::KeyboardHIDType VBox::IMachine::keyboardHIDType() const
 {
-    COM_Type(PRUint32, ::KeyboardHIDType) result;
+    COM_Enum(::KeyboardHIDType) result;
     COM_GetValue(get_IFC(), KeyboardHIDType, result);
     return static_cast<KeyboardHIDType>(result);
 }
 
 void VBox::IMachine::set_keyboardHIDType(KeyboardHIDType value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::KeyboardHIDType)>(value);
+    auto cValue = static_cast<COM_Enum(::KeyboardHIDType)>(value);
     COM_SetValue(get_IFC(), KeyboardHIDType, cValue);
 }
 
@@ -477,14 +477,14 @@ void VBox::IMachine::set_HPETEnabled(bool value)
 
 VBox::ChipsetType VBox::IMachine::chipsetType() const
 {
-    COM_Type(PRUint32, ::ChipsetType) result;
+    COM_Enum(::ChipsetType) result;
     COM_GetValue(get_IFC(), ChipsetType, result);
     return static_cast<ChipsetType>(result);
 }
 
 void VBox::IMachine::set_chipsetType(ChipsetType value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::ChipsetType)>(value);
+    auto cValue = static_cast<COM_Enum(::ChipsetType)>(value);
     COM_SetValue(get_IFC(), ChipsetType, cValue);
 }
 
@@ -579,7 +579,7 @@ bool VBox::IMachine::settingsModified() const
 
 VBox::SessionState VBox::IMachine::sessionState() const
 {
-    COM_Type(PRUint32, ::SessionState) result;
+    COM_Enum(::SessionState) result;
     COM_GetValue(get_IFC(), SessionState, result);
     return static_cast<SessionState>(result);
 }
@@ -600,7 +600,7 @@ uint32_t VBox::IMachine::sessionPID() const
 
 VBox::MachineState VBox::IMachine::state() const
 {
-    COM_Type(PRUint32, ::MachineState) result;
+    COM_Enum(::MachineState) result;
     COM_GetValue(get_IFC(), State, result);
     return static_cast<MachineState>(result);
 }
@@ -656,27 +656,27 @@ std::vector<VBox::COMPtr<VBox::ISharedFolder>> VBox::IMachine::sharedFolders() c
 
 VBox::ClipboardMode VBox::IMachine::clipboardMode() const
 {
-    COM_Type(PRUint32, ::ClipboardMode) result;
+    COM_Enum(::ClipboardMode) result;
     COM_GetValue(get_IFC(), ClipboardMode, result);
     return static_cast<ClipboardMode>(result);
 }
 
 void VBox::IMachine::set_clipboardMode(ClipboardMode value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::ClipboardMode)>(value);
+    auto cValue = static_cast<COM_Enum(::ClipboardMode)>(value);
     COM_SetValue(get_IFC(), ClipboardMode, cValue);
 }
 
 VBox::DnDMode VBox::IMachine::dnDMode() const
 {
-    COM_Type(PRUint32, ::DnDMode) result;
+    COM_Enum(::DnDMode) result;
     COM_GetValue(get_IFC(), DnDMode, result);
     return static_cast<DnDMode>(result);
 }
 
 void VBox::IMachine::set_dnDMode(DnDMode value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::DnDMode)>(value);
+    auto cValue = static_cast<COM_Enum(::DnDMode)>(value);
     COM_SetValue(get_IFC(), DnDMode, cValue);
 }
 
@@ -730,27 +730,27 @@ void VBox::IMachine::set_teleporterPassword(const COMString &value)
 
 VBox::ParavirtProvider VBox::IMachine::paravirtProvider() const
 {
-    COM_Type(PRUint32, ::ParavirtProvider) result;
+    COM_Enum(::ParavirtProvider) result;
     COM_GetValue(get_IFC(), ParavirtProvider, result);
     return static_cast<ParavirtProvider>(result);
 }
 
 void VBox::IMachine::set_paravirtProvider(ParavirtProvider value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::ParavirtProvider)>(value);
+    auto cValue = static_cast<COM_Enum(::ParavirtProvider)>(value);
     COM_SetValue(get_IFC(), ParavirtProvider, cValue);
 }
 
 VBox::FaultToleranceState VBox::IMachine::faultToleranceState() const
 {
-    COM_Type(PRUint32, ::FaultToleranceState) result;
+    COM_Enum(::FaultToleranceState) result;
     COM_GetValue(get_IFC(), FaultToleranceState, result);
     return static_cast<FaultToleranceState>(result);
 }
 
 void VBox::IMachine::set_faultToleranceState(FaultToleranceState value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::FaultToleranceState)>(value);
+    auto cValue = static_cast<COM_Enum(::FaultToleranceState)>(value);
     COM_SetValue(get_IFC(), FaultToleranceState, cValue);
 }
 
@@ -914,14 +914,14 @@ void VBox::IMachine::set_autostartDelay(uint32_t value)
 
 VBox::AutostopType VBox::IMachine::autostopType() const
 {
-    COM_Type(PRUint32, ::AutostopType) result;
+    COM_Enum(::AutostopType) result;
     COM_GetValue(get_IFC(), AutostopType, result);
     return static_cast<AutostopType>(result);
 }
 
 void VBox::IMachine::set_autostopType(AutostopType value)
 {
-    auto cValue = static_cast<COM_Type(PRUint32, ::AutostopType)>(value);
+    auto cValue = static_cast<COM_Enum(::AutostopType)>(value);
     COM_SetValue(get_IFC(), AutostopType, cValue);
 }
 
@@ -984,7 +984,7 @@ void VBox::IMachine::set_CPUProfile(const COMString &value)
 
 void VBox::IMachine::lockMachine(const COMPtr<ISession> &session, LockType lockType)
 {
-    auto cLockType = static_cast<COM_Type(PRUint32, ::LockType)>(lockType);
+    auto cLockType = static_cast<COM_Enum(::LockType)>(lockType);
 
     auto rc = get_IFC()->LockMachine(session->get_IFC(), cLockType);
     COM_ERROR_CHECK(rc);
@@ -1007,7 +1007,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::launchVMProcess(
 
 void VBox::IMachine::setBootOrder(uint32_t position, DeviceType device)
 {
-    auto cDevice = static_cast<COM_Type(PRUint32, ::DeviceType)>(device);
+    auto cDevice = static_cast<COM_Enum(::DeviceType)>(device);
 
     auto rc = get_IFC()->SetBootOrder(position, cDevice);
     COM_ERROR_CHECK(rc);
@@ -1015,7 +1015,7 @@ void VBox::IMachine::setBootOrder(uint32_t position, DeviceType device)
 
 VBox::DeviceType VBox::IMachine::getBootOrder(uint32_t position) const
 {
-    COM_Type(PRUint32, ::DeviceType) cResult;
+    COM_Enum(::DeviceType) cResult;
 
     auto rc = get_IFC()->GetBootOrder(position, &cResult);
     COM_ERROR_CHECK(rc);
@@ -1027,7 +1027,7 @@ void VBox::IMachine::attachDevice(const COMString &name, int32_t controllerPort,
     int32_t device, DeviceType type, const COMPtr<IMedium> &medium)
 {
     COM_StringProxy pName(name);
-    auto cType = static_cast<COM_Type(PRUint32, ::DeviceType)>(type);
+    auto cType = static_cast<COM_Enum(::DeviceType)>(type);
 
     auto rc = get_IFC()->AttachDevice(pName.m_text, controllerPort, device,
                                       cType, medium->get_IFC());
@@ -1038,7 +1038,7 @@ void VBox::IMachine::attachDeviceWithoutMedium(const COMString &name,
         int32_t controllerPort, int32_t device, DeviceType type)
 {
     COM_StringProxy pName(name);
-    auto cType = static_cast<COM_Type(PRUint32, ::DeviceType)>(type);
+    auto cType = static_cast<COM_Enum(::DeviceType)>(type);
 
     auto rc = get_IFC()->AttachDeviceWithoutMedium(pName.m_text, controllerPort,
                                                    device, cType);
@@ -1216,7 +1216,7 @@ VBox::COMPtr<VBox::IStorageController> VBox::IMachine::addStorageController(
 {
     ::IStorageController *cResult = nullptr;
     COM_StringProxy pName(name);
-    auto cConnectionType = static_cast<COM_Type(PRUint32, ::StorageBus)>(connectionType);
+    auto cConnectionType = static_cast<COM_Enum(::StorageBus)>(connectionType);
 
     auto rc = get_IFC()->AddStorageController(pName.m_text, cConnectionType,
                                               &cResult);
@@ -1241,7 +1241,7 @@ VBox::COMPtr<VBox::IStorageController> VBox::IMachine::getStorageControllerByIns
         StorageBus connectionType, uint32_t instance) const
 {
     ::IStorageController *cResult = nullptr;
-    auto cConnectionType = static_cast<COM_Type(PRUint32, ::StorageBus)>(connectionType);
+    auto cConnectionType = static_cast<COM_Enum(::StorageBus)>(connectionType);
 
     auto rc = get_IFC()->GetStorageControllerByInstance(cConnectionType, instance,
                                                         &cResult);
@@ -1272,7 +1272,7 @@ VBox::COMPtr<VBox::IUSBController> VBox::IMachine::addUSBController(
 {
     ::IUSBController *cResult = nullptr;
     COM_StringProxy pName(name);
-    auto cType = static_cast<COM_Type(PRUint32, ::USBControllerType)>(type);
+    auto cType = static_cast<COM_Enum(::USBControllerType)>(type);
 
     auto rc = get_IFC()->AddUSBController(pName.m_text, cType, &cResult);
     COM_ERROR_CHECK(rc);
@@ -1303,7 +1303,7 @@ VBox::COMPtr<VBox::IUSBController> VBox::IMachine::getUSBControllerByName(
 uint32_t VBox::IMachine::getUSBControllerCountByType(USBControllerType type) const
 {
     COM_ULong cResult;
-    auto cType = static_cast<COM_Type(PRUint32, ::USBControllerType)>(type);
+    auto cType = static_cast<COM_Enum(::USBControllerType)>(type);
 
     auto rc = get_IFC()->GetUSBControllerCountByType(cType, &cResult);
     COM_ERROR_CHECK(rc);
@@ -1367,7 +1367,7 @@ void VBox::IMachine::setExtraData(const COMString &key, const COMString &value)
 bool VBox::IMachine::getCPUProperty(CPUPropertyType property) const
 {
     COM_Bool cResult;
-    auto cProperty = static_cast<COM_Type(PRUint32, ::CPUPropertyType)>(property);
+    auto cProperty = static_cast<COM_Enum(::CPUPropertyType)>(property);
 
     auto rc = get_IFC()->GetCPUProperty(cProperty, &cResult);
     COM_ERROR_CHECK(rc);
@@ -1377,7 +1377,7 @@ bool VBox::IMachine::getCPUProperty(CPUPropertyType property) const
 
 void VBox::IMachine::setCPUProperty(CPUPropertyType property, bool value)
 {
-    auto cProperty = static_cast<COM_Type(PRUint32, ::CPUPropertyType)>(property);
+    auto cProperty = static_cast<COM_Enum(::CPUPropertyType)>(property);
 
     auto rc = get_IFC()->SetCPUProperty(cProperty, value);
     COM_ERROR_CHECK(rc);
@@ -1479,7 +1479,7 @@ void VBox::IMachine::removeAllCPUIDLeaves()
 bool VBox::IMachine::getHWVirtExProperty(HWVirtExPropertyType property) const
 {
     COM_Bool cResult;
-    auto cProperty = static_cast<COM_Type(PRUint32, ::HWVirtExPropertyType)>(property);
+    auto cProperty = static_cast<COM_Enum(::HWVirtExPropertyType)>(property);
 
     auto rc = get_IFC()->GetHWVirtExProperty(cProperty, &cResult);
     COM_ERROR_CHECK(rc);
@@ -1489,7 +1489,7 @@ bool VBox::IMachine::getHWVirtExProperty(HWVirtExPropertyType property) const
 
 void VBox::IMachine::setHWVirtExProperty(HWVirtExPropertyType property, bool value)
 {
-    auto cProperty = static_cast<COM_Type(PRUint32, ::HWVirtExPropertyType)>(property);
+    auto cProperty = static_cast<COM_Enum(::HWVirtExPropertyType)>(property);
 
     auto rc = get_IFC()->SetHWVirtExProperty(cProperty, value);
     COM_ERROR_CHECK(rc);
@@ -1523,7 +1523,7 @@ std::vector<VBox::COMPtr<VBox::IMedium>> VBox::IMachine::unregister(
         CleanupMode cleanupMode)
 {
     COM_ArrayProxy<::IMedium *> pResult;
-    auto cCleanupMode = static_cast<COM_Type(PRUint32, ::CleanupMode)>(cleanupMode);
+    auto cCleanupMode = static_cast<COM_Enum(::CleanupMode)>(cleanupMode);
 
     auto rc = get_IFC()->Unregister(cCleanupMode, COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
@@ -1747,7 +1747,7 @@ std::vector<uint8_t> VBox::IMachine::readSavedThumbnailToArray(uint32_t screenId
         BitmapFormat bitmapFormat, uint32_t *width, uint32_t *height)
 {
     COM_ArrayProxy<COM_Byte> pResult;
-    auto cBitmapFormat = static_cast<COM_Type(PRUint32, ::BitmapFormat)>(bitmapFormat);
+    auto cBitmapFormat = static_cast<COM_Enum(::BitmapFormat)>(bitmapFormat);
     COM_ULong cWidth;
     COM_ULong cHeight;
 
@@ -1767,7 +1767,7 @@ std::vector<uint8_t> VBox::IMachine::readSavedThumbnailToArray(uint32_t screenId
 std::vector<VBox::BitmapFormat> VBox::IMachine::querySavedScreenshotInfo(
         uint32_t screenId, uint32_t *width, uint32_t *height)
 {
-    COM_ArrayProxy<COM_Type(PRUint32, ::BitmapFormat)> pResult;
+    COM_ArrayProxy<COM_Enum(::BitmapFormat)> pResult;
     COM_ULong cWidth;
     COM_ULong cHeight;
 
@@ -1789,7 +1789,7 @@ std::vector<uint8_t> VBox::IMachine::readSavedScreenshotToArray(
         uint32_t *width, uint32_t *height)
 {
     COM_ArrayProxy<COM_Byte> pResult;
-    auto cBitmapFormat = static_cast<COM_Type(PRUint32, ::BitmapFormat)>(bitmapFormat);
+    auto cBitmapFormat = static_cast<COM_Enum(::BitmapFormat)>(bitmapFormat);
     COM_ULong cWidth;
     COM_ULong cHeight;
 
@@ -1830,7 +1830,7 @@ bool VBox::IMachine::getCPUStatus(uint32_t cpu)
 
 VBox::ParavirtProvider VBox::IMachine::getEffectiveParavirtProvider() const
 {
-    COM_Type(PRUint32, ::ParavirtProvider) cResult;
+    COM_Enum(::ParavirtProvider) cResult;
 
     auto rc = get_IFC()->GetEffectiveParavirtProvider(&cResult);
     COM_ERROR_CHECK(rc);
@@ -1866,8 +1866,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::cloneTo(
         const std::vector<CloneOptions> &options)
 {
     ::IProgress *cResult = nullptr;
-    auto cMode = static_cast<COM_Type(PRUint32, ::CloneMode)>(mode);
-    COM_ArrayProxy<COM_Type(PRUint32, ::CloneOptions)> pOptions(options);
+    auto cMode = static_cast<COM_Enum(::CloneMode)>(mode);
+    COM_ArrayProxy<COM_Enum(::CloneOptions)> pOptions(options);
 
     auto rc = get_IFC()->CloneTo(target->get_IFC(), cMode,
                 COM_ArrayParameter(pOptions), &cResult);

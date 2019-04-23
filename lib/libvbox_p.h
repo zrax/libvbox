@@ -39,7 +39,7 @@
     typedef PRUint64    COM_ULong64;
     typedef PRUnichar  *COM_Text;
 
-#   define COM_Type(XPCOM_Type, MSCOM_Type)  XPCOM_Type
+#   define COM_Enum(MSCOM_Type) PRUint32
 
     static_assert(sizeof(char16_t) == sizeof(PRUnichar), "PRUnichar is not a UTF-16 type");
 
@@ -178,7 +178,7 @@
     typedef ULONG64     COM_ULong64;
     typedef BSTR        COM_Text;
 
-#   define COM_Type(XPCOM_Type, MSCOM_Type)  MSCOM_Type
+#   define COM_Enum(MSCOM_Type) MSCOM_Type
 
     static_assert(sizeof(char16_t) == sizeof(WCHAR), "BSTR is not a UTF-16 type");
 

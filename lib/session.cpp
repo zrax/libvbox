@@ -25,14 +25,14 @@ const void *VBox::ISession::get_IID()
 
 VBox::SessionState VBox::ISession::state() const
 {
-    COM_Type(PRUint32, ::SessionState) result;
+    COM_Enum(::SessionState) result;
     COM_GetValue(get_IFC(), State, result);
     return static_cast<SessionState>(result);
 }
 
 VBox::SessionType VBox::ISession::type() const
 {
-    COM_Type(PRUint32, ::SessionType) result;
+    COM_Enum(::SessionType) result;
     COM_GetValue(get_IFC(), Type, result);
     return static_cast<SessionType>(result);
 }

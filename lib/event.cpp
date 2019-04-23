@@ -25,7 +25,7 @@ const void *VBox::IEvent::get_IID()
 
 VBox::VBoxEventType VBox::IEvent::type() const
 {
-    COM_Type(PRUint32, ::VBoxEventType) result;
+    COM_Enum(::VBoxEventType) result;
     COM_GetValue(get_IFC(), Type, result);
     return static_cast<VBoxEventType>(result);
 }

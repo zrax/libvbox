@@ -169,7 +169,7 @@ uint32_t VBox::IHost::getProcessorSpeed(uint32_t cpuId)
 bool VBox::IHost::getProcessorFeature(ProcessorFeature feature)
 {
     COM_Bool cResult;
-    auto cFeature = static_cast<COM_Type(PRUint32, ::ProcessorFeature)>(feature);
+    auto cFeature = static_cast<COM_Enum(::ProcessorFeature)>(feature);
 
     auto rc = get_IFC()->GetProcessorFeature(cFeature, &cResult);
     COM_ERROR_CHECK(rc);
@@ -313,7 +313,7 @@ std::vector<VBox::COMPtr<VBox::IHostNetworkInterface>>
 VBox::IHost::findHostNetworkInterfacesOfType(HostNetworkInterfaceType type)
 {
     COM_ArrayProxy<::IHostNetworkInterface *> pResult;
-    auto cType = static_cast<COM_Type(PRUint32, ::HostNetworkInterfaceType)>(type);
+    auto cType = static_cast<COM_Enum(::HostNetworkInterfaceType)>(type);
 
     auto rc = get_IFC()->FindHostNetworkInterfacesOfType(cType, COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
