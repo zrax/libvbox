@@ -80,6 +80,8 @@ target_sources(vbox
         lib/display.cpp
         lib/errorwrap.cpp
         lib/event.cpp
+        lib/eventlistener.cpp
+        lib/eventsource.cpp
         lib/host.cpp
         lib/keyboard.cpp
         lib/machine.cpp
