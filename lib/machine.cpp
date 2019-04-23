@@ -33,13 +33,13 @@ VBox::COMPtr<VBox::IVirtualBox> VBox::IMachine::parent() const
 std::vector<uint8_t> VBox::IMachine::icon() const
 {
     std::vector<uint8_t> result;
-    COM_GetArray(get_IFC(), Icon, result);
+    COM_GetArray(get_IFC(), Icon, COM_Byte, result);
     return result;
 }
 
 void VBox::IMachine::set_icon(const std::vector<uint8_t> &value)
 {
-    COM_SetArray(get_IFC(), Icon, value);
+    COM_SetArray(get_IFC(), Icon, COM_Byte, value);
 }
 
 bool VBox::IMachine::accessible() const
@@ -295,20 +295,14 @@ void VBox::IMachine::set_videoCaptureEnabled(bool value)
 
 std::vector<bool> VBox::IMachine::videoCaptureScreens() const
 {
-    std::vector<COM_Bool> cResult;
-    COM_GetArray(get_IFC(), VideoCaptureScreens, cResult);
     std::vector<bool> result;
-    result.reserve(cResult.size());
-    std::copy(cResult.begin(), cResult.end(), std::back_inserter(result));
+    COM_GetArray(get_IFC(), VideoCaptureScreens, COM_Bool, result);
     return result;
 }
 
 void VBox::IMachine::set_videoCaptureScreens(const std::vector<bool> &value)
 {
-    std::vector<COM_Bool> cValue;
-    cValue.reserve(value.size());
-    std::copy(value.begin(), value.end(), std::back_inserter(cValue));
-    COM_SetArray(get_IFC(), VideoCaptureScreens, cValue);
+    COM_SetArray(get_IFC(), VideoCaptureScreens, COM_Bool, value);
 }
 
 VBox::COMString VBox::IMachine::videoCaptureFile() const

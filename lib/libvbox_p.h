@@ -103,19 +103,17 @@
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
-#   define COM_GetArray(obj, name, result)                              \
+#   define COM_GetArray(obj, name, comtype, result)                     \
         do {                                                            \
-            typedef decltype(result)::value_type Element;               \
-            COM_ArrayProxy<Element> proxy;                              \
+            COM_ArrayProxy<comtype> proxy;                              \
             auto rc = obj->Get##name(&proxy.m_count, &proxy.m_array);   \
             COM_ERROR_CHECK(rc);                                        \
             proxy.toVector(result);                                     \
         } while (0)
 
-#   define COM_SetArray(obj, name, value)                               \
+#   define COM_SetArray(obj, name, comtype, value)                      \
         do {                                                            \
-            typedef std::remove_reference<decltype(value)>::type::value_type Element; \
-            COM_ArrayProxy<Element> proxy(value);                       \
+            COM_ArrayProxy<comtype> proxy(value);                       \
             auto rc = obj->Set##name(proxy.m_count, proxy.m_array);     \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
@@ -240,19 +238,17 @@
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
 
-#   define COM_GetArray(obj, name, result)                              \
+#   define COM_GetArray(obj, name, comtype, result)                     \
         do {                                                            \
-            typedef decltype(result)::value_type Element;               \
-            COM_ArrayProxy<Element> proxy;                              \
+            COM_ArrayProxy<comtype> proxy;                              \
             auto rc = obj->get_##name(&proxy.m_array);                  \
             COM_ERROR_CHECK(rc);                                        \
             proxy.toVector(result);                                     \
         } while (0)
 
-#   define COM_SetArray(obj, name, value)                               \
+#   define COM_SetArray(obj, name, comtype, value)                      \
         do {                                                            \
-            typedef std::remove_reference<decltype(value)>::type::value_type Element; \
-            COM_ArrayProxy<Element> proxy(value);                       \
+            COM_ArrayProxy<comtype> proxy(value);                       \
             auto rc = obj->put_##name(proxy.m_array);                   \
             COM_ERROR_CHECK(rc);                                        \
         } while (0)
@@ -370,6 +366,35 @@ namespace VBox
         }
 
         template <typename Type>
+        static typename std::enable_if<sizeof(Type) == sizeof(Element)
+                                       && std::is_trivially_copyable<Type>::value, void>::type
+        fillVector(std::vector<Type> &result, Element *source)
+        {
+            std::memcpy(&result[0], source, result.size() * sizeof(Type));
+        }
+
+        template <typename Type>
+        static typename std::enable_if<sizeof(Type) != sizeof(Element)
+                                       || !std::is_trivially_copyable<Type>::value, void>::type
+        fillVector(std::vector<Type> &result, Element *source)
+        {
+            for (size_t i = 0; i < result.size(); ++i)
+                result[i] = static_cast<Type>(source[i]);
+        }
+
+        template <typename Wrap>
+        static void fillVector(std::vector<COMPtr<Wrap>> &result, Element *source)
+        {
+            for (size_t i = 0; i < result.size(); ++i) {
+#if defined(VBOX_MSCOM)
+                // This will be Released by SafeArrayDestroy
+                source[i]->AddRef();
+#endif
+                result[i] = COMPtr<Wrap>::wrap(source[i]);
+            }
+        }
+
+        template <typename Type>
         void toVector(std::vector<Type> &result)
         {
             if (!m_array) {
@@ -379,50 +404,44 @@ namespace VBox
 
 #if defined(VBOX_XPCOM)
             result.resize(m_count);
-            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
-                std::memcpy(&result[0], &m_array[0], m_count * sizeof(Type));
-            } else {
-                for (PRUint32 i = 0; i < m_count; ++i)
-                    result[i] = static_cast<Type>(m_array[i]);
-            }
+            fillVector(result, m_array);
 #elif defined(VBOX_MSCOM)
             Element *pArray = nullptr;
             auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
             COM_ERROR_CHECK(rc);
             result.resize(m_array->rgsabound[0].cElements);
-            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
-                std::memcpy(&result[0], &pArray[0], result.size() * sizeof(Type));
-            } else {
-                for (size_t i = 0; i < result.size(); ++i)
-                    result[i] = static_cast<Type>(pArray[i]);
-            }
+            fillVector(result, pArray);
             SafeArrayUnaccessData(m_array);
 #endif
         }
 
-        template <typename Wrap>
-        void toVector(std::vector<COMPtr<Wrap>> &result)
+        template <typename Type>
+        static typename std::enable_if<sizeof(Type) == sizeof(Element)
+                                       && std::is_trivially_copyable<Type>::value, void>::type
+        copyVector(Element *result, const std::vector<Type> &source)
         {
-            if (!m_array) {
-                result.resize(0);
-                return;
-            }
+            std::memcpy(result, &source[0], source.size() * sizeof(Type));
+        }
 
-#if defined(VBOX_XPCOM)
-            result.resize(m_count);
-            for (PRUint32 i = 0; i < m_count; ++i)
-                result[i] = COMPtr<Wrap>::wrap(m_array[i]);
-#elif defined(VBOX_MSCOM)
-            COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
-            auto rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            COM_ERROR_CHECK(rc);
-            result.resize(m_array->rgsabound[0].cElements);
-            for (size_t i = 0; i < result.size(); ++i) {
-                pArray[i]->AddRef();
-                result[i] = COMPtr<Wrap>::wrap(pArray[i]);
-            }
-            SafeArrayUnaccessData(m_array);
+        template <typename Type>
+        static typename std::enable_if<sizeof(Type) != sizeof(Element)
+                                       || !std::is_trivially_copyable<Type>::value, void>::type
+        copyVector(Element *result, const std::vector<Type> &source)
+        {
+            for (size_t i = 0; i < source.size(); ++i)
+                result[i] = static_cast<Element>(source[i]);
+        }
+
+        template <typename Wrap>
+        static void copyVector(Element *result, const std::vector<COMPtr<Wrap>> &source)
+        {
+            for (size_t i = 0; i < source.size(); ++i) {
+                result[i] = source[i]->get_IFC();
+#if defined(VBOX_MSCOM)
+                // This will be Released by SafeArrayDestroy
+                result[i]->AddRef();
 #endif
+            }
         }
 
         template <typename Type>
@@ -433,46 +452,13 @@ namespace VBox
 #if defined(VBOX_XPCOM)
             m_count = vector.size();
             m_array = reinterpret_cast<Element *>(nsMemory::Alloc(m_count * sizeof(Element)));
-            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
-                std::memcpy(&m_array[0], &vector[0], m_count * sizeof(Type));
-            } else {
-                for (PRUint32 i = 0; i < m_count; ++i)
-                    m_array[i] = static_cast<Element>(vector[i]);
-            }
+            copyVector(m_array, vector);
 #elif defined(VBOX_MSCOM)
             m_array = SafeArrayCreateVector(VT_UNKNOWN, 0, static_cast<ULONG>(vector.size()));
             Element *pArray = nullptr;
             HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
             COM_ERROR_CHECK(rc);
-            if (sizeof(Type) == sizeof(Element) && std::is_trivially_copyable<Type>::value) {
-                std::memcpy(&pArray[0], &vector[0], vector.size() * sizeof(Type));
-            } else {
-                for (size_t i = 0; i < vector.size(); ++i)
-                    pArray[i] = static_cast<Element>(vector[i]);
-            }
-            SafeArrayUnaccessData(m_array);
-#endif
-        }
-
-        template <typename Wrap>
-        void fromVector(const std::vector<COMPtr<Wrap>> &vector)
-        {
-            Release();
-
-#if defined(VBOX_XPCOM)
-            m_count = vector.size();
-            m_array = reinterpret_cast<Element *>(nsMemory::Alloc(m_count * sizeof(Element)));
-            for (size_t i = 0; i < vector.size(); ++i)
-                m_array[i] = vector[i]->get_IFC();
-#elif defined(VBOX_MSCOM)
-            m_array = SafeArrayCreateVector(VT_UNKNOWN, 0, static_cast<ULONG>(vector.size()));
-            COMPtr<Wrap>::element_type::COM_Ifc **pArray = nullptr;
-            HRESULT rc = SafeArrayAccessData(m_array, reinterpret_cast<void **>(&pArray));
-            COM_ERROR_CHECK(rc);
-            for (size_t i = 0; i < vector.size(); ++i) {
-                pArray[i] = vector[i]->get_IFC();
-                pArray[i]->AddRef();
-            }
+            copyVector(pArray, vector);
             SafeArrayUnaccessData(m_array);
 #endif
         }
