@@ -68,6 +68,7 @@ target_compile_definitions(vbox
 target_sources(vbox
     PRIVATE
         include/libvbox.h
+        include/libvbox_errors.h
         include/libvbox_interfaces.h
         include/libvbox_string.h
         include/libvbox_vboxsdk_types.h
@@ -104,6 +105,7 @@ install(TARGETS vbox
 install(
     FILES
         include/libvbox.h
+        include/libvbox_errors.h
         include/libvbox_interfaces.h
         include/libvbox_string.h
         include/libvbox_vboxsdk_types.h
