@@ -1384,9 +1384,9 @@ void VBox::IMachine::setCPUProperty(CPUPropertyType property, bool value)
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-void VBox::IMachine::getCPUIDLeafByOrdinal(uint32_t ordinal, uint32_t &idx,
-        uint32_t &idxSub, uint32_t &valEax, uint32_t &valEbx, uint32_t &valEcx,
-        uint32_t &valEdx) const
+void VBox::IMachine::getCPUIDLeafByOrdinal(uint32_t ordinal, uint32_t *idx,
+        uint32_t *idxSub, uint32_t *valEax, uint32_t *valEbx, uint32_t *valEcx,
+        uint32_t *valEdx) const
 {
     COM_ULong cIdx;
     COM_ULong cIdxSub;
@@ -1399,12 +1399,18 @@ void VBox::IMachine::getCPUIDLeafByOrdinal(uint32_t ordinal, uint32_t &idx,
                 &cValEax, &cValEbx, &cValEcx, &cValEdx);
     COM_ERROR_CHECK(rc);
 
-    idx = static_cast<uint32_t>(cIdx);
-    idxSub = static_cast<uint32_t>(cIdxSub);
-    valEax = static_cast<uint32_t>(cValEax);
-    valEbx = static_cast<uint32_t>(cValEbx);
-    valEcx = static_cast<uint32_t>(cValEcx);
-    valEdx = static_cast<uint32_t>(cValEdx);
+    if (idx)
+        *idx = static_cast<uint32_t>(cIdx);
+    if (idxSub)
+        *idxSub = static_cast<uint32_t>(cIdxSub);
+    if (valEax)
+        *valEax = static_cast<uint32_t>(cValEax);
+    if (valEbx)
+        *valEbx = static_cast<uint32_t>(cValEbx);
+    if (valEcx)
+        *valEcx = static_cast<uint32_t>(cValEcx);
+    if (valEdx)
+        *valEdx = static_cast<uint32_t>(cValEdx);
 }
 #endif
 
@@ -1412,7 +1418,7 @@ void VBox::IMachine::getCPUIDLeaf(uint32_t idx,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
         uint32_t idxSub,
 #endif
-        uint32_t &valEax, uint32_t &valEbx, uint32_t &valEcx, uint32_t &valEdx) const
+        uint32_t *valEax, uint32_t *valEbx, uint32_t *valEcx, uint32_t *valEdx) const
 {
     COM_ULong cValEax;
     COM_ULong cValEbx;
@@ -1426,10 +1432,14 @@ void VBox::IMachine::getCPUIDLeaf(uint32_t idx,
                 &cValEax, &cValEbx, &cValEcx, &cValEdx);
     COM_ERROR_CHECK(rc);
 
-    valEax = static_cast<uint32_t>(cValEax);
-    valEbx = static_cast<uint32_t>(cValEbx);
-    valEcx = static_cast<uint32_t>(cValEcx);
-    valEdx = static_cast<uint32_t>(cValEdx);
+    if (valEax)
+        *valEax = static_cast<uint32_t>(cValEax);
+    if (valEbx)
+        *valEbx = static_cast<uint32_t>(cValEbx);
+    if (valEcx)
+        *valEcx = static_cast<uint32_t>(cValEcx);
+    if (valEdx)
+        *valEdx = static_cast<uint32_t>(cValEdx);
 }
 
 void VBox::IMachine::setCPUIDLeaf(uint32_t idx,
@@ -1611,7 +1621,7 @@ int64_t VBox::IMachine::showConsoleWindow()
 }
 
 void VBox::IMachine::getGuestProperty(const COMString &name,
-        COMString &value, int64_t &timestamp, COMString &flags) const
+        COMString *value, int64_t *timestamp, COMString *flags) const
 {
     COM_StringProxy pName(name);
     COM_StringProxy pValue;
@@ -1622,9 +1632,12 @@ void VBox::IMachine::getGuestProperty(const COMString &name,
                                           &cTimestamp, &pFlags.m_text);
     COM_ERROR_CHECK(rc);
 
-    value = pValue.toString();
-    timestamp = static_cast<int64_t>(cTimestamp);
-    flags = pFlags.toString();
+    if (value)
+        *value = pValue.toString();
+    if (timestamp)
+        *timestamp = static_cast<int64_t>(cTimestamp);
+    if (flags)
+        *flags = pFlags.toString();
 }
 
 VBox::COMString VBox::IMachine::getGuestPropertyValue(const COMString &property) const
@@ -1680,8 +1693,8 @@ void VBox::IMachine::deleteGuestProperty(const COMString &name) const
 }
 
 void VBox::IMachine::enumerateGuestProperties(const COMString &patterns,
-        std::vector<COMString> &names, std::vector<COMString> &values,
-        std::vector<int64_t> &timestamps, std::vector<COMString> &flags) const
+        std::vector<COMString> *names, std::vector<COMString> *values,
+        std::vector<int64_t> *timestamps, std::vector<COMString> *flags) const
 {
     COM_StringProxy pPatterns(patterns);
     COM_StringArrayProxy pNames;
@@ -1694,15 +1707,19 @@ void VBox::IMachine::enumerateGuestProperties(const COMString &patterns,
                 COM_ArrayParameterRef(pTimestamps), COM_ArrayParameterRef(pFlags));
     COM_ERROR_CHECK(rc);
 
-    pNames.toVector(names);
-    pValues.toVector(values);
-    pTimestamps.toVector(timestamps);
-    pFlags.toVector(flags);
+    if (names)
+        pNames.toVector(*names);
+    if (values)
+        pValues.toVector(*values);
+    if (timestamps)
+        pTimestamps.toVector(*timestamps);
+    if (flags)
+        pFlags.toVector(*flags);
 }
 
 void VBox::IMachine::querySavedGuestScreenInfo(uint32_t screenId,
-        uint32_t &originX, uint32_t &originY, uint32_t &width,
-        uint32_t &height, bool &enabled) const
+        uint32_t *originX, uint32_t *originY, uint32_t *width,
+        uint32_t *height, bool *enabled) const
 {
     COM_ULong cOriginX;
     COM_ULong cOriginY;
@@ -1714,15 +1731,20 @@ void VBox::IMachine::querySavedGuestScreenInfo(uint32_t screenId,
                 &cOriginY, &cWidth, &cHeight, &cEnabled);
     COM_ERROR_CHECK(rc);
 
-    originX = static_cast<uint32_t>(cOriginX);
-    originY = static_cast<uint32_t>(cOriginY);
-    width = static_cast<uint32_t>(cWidth);
-    height = static_cast<uint32_t>(cHeight);
-    enabled = static_cast<bool>(cEnabled);
+    if (originX)
+        *originX = static_cast<uint32_t>(cOriginX);
+    if (originY)
+        *originY = static_cast<uint32_t>(cOriginY);
+    if (width)
+        *width = static_cast<uint32_t>(cWidth);
+    if (height)
+        *height = static_cast<uint32_t>(cHeight);
+    if (enabled)
+        *enabled = static_cast<bool>(cEnabled);
 }
 
 std::vector<uint8_t> VBox::IMachine::readSavedThumbnailToArray(uint32_t screenId,
-        BitmapFormat bitmapFormat, uint32_t &width, uint32_t &height)
+        BitmapFormat bitmapFormat, uint32_t *width, uint32_t *height)
 {
     COM_ArrayProxy<COM_Byte> pResult;
     auto cBitmapFormat = static_cast<COM_Type(PRUint32, ::BitmapFormat)>(bitmapFormat);
@@ -1733,15 +1755,17 @@ std::vector<uint8_t> VBox::IMachine::readSavedThumbnailToArray(uint32_t screenId
                 &cWidth, &cHeight, COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
 
-    width = static_cast<uint32_t>(cWidth);
-    height = static_cast<uint32_t>(cHeight);
+    if (width)
+        *width = static_cast<uint32_t>(cWidth);
+    if (height)
+        *height = static_cast<uint32_t>(cHeight);
     std::vector<uint8_t> result;
     pResult.toVector(result);
     return result;
 }
 
 std::vector<VBox::BitmapFormat> VBox::IMachine::querySavedScreenshotInfo(
-        uint32_t screenId, uint32_t &width, uint32_t &height)
+        uint32_t screenId, uint32_t *width, uint32_t *height)
 {
     COM_ArrayProxy<COM_Type(PRUint32, ::BitmapFormat)> pResult;
     COM_ULong cWidth;
@@ -1751,8 +1775,10 @@ std::vector<VBox::BitmapFormat> VBox::IMachine::querySavedScreenshotInfo(
                 COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
 
-    width = static_cast<uint32_t>(cWidth);
-    height = static_cast<uint32_t>(cHeight);
+    if (width)
+        *width = static_cast<uint32_t>(cWidth);
+    if (height)
+        *height = static_cast<uint32_t>(cHeight);
     std::vector<BitmapFormat> result;
     pResult.toVector(result);
     return result;
@@ -1760,7 +1786,7 @@ std::vector<VBox::BitmapFormat> VBox::IMachine::querySavedScreenshotInfo(
 
 std::vector<uint8_t> VBox::IMachine::readSavedScreenshotToArray(
         uint32_t screenId, BitmapFormat bitmapFormat,
-        uint32_t &width, uint32_t &height)
+        uint32_t *width, uint32_t *height)
 {
     COM_ArrayProxy<COM_Byte> pResult;
     auto cBitmapFormat = static_cast<COM_Type(PRUint32, ::BitmapFormat)>(bitmapFormat);
@@ -1771,8 +1797,10 @@ std::vector<uint8_t> VBox::IMachine::readSavedScreenshotToArray(
                 &cWidth, &cHeight, COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
 
-    width = static_cast<uint32_t>(cWidth);
-    height = static_cast<uint32_t>(cHeight);
+    if (width)
+        *width = static_cast<uint32_t>(cWidth);
+    if (height)
+        *height = static_cast<uint32_t>(cHeight);
     std::vector<uint8_t> result;
     pResult.toVector(result);
     return result;
@@ -1889,7 +1917,7 @@ void VBox::IMachine::discardSavedState(bool fRemoveFile)
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::takeSnapshot(
         const COMString &name, const COMString &description,
-        bool pause, COMString &id)
+        bool pause, COMString *id)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1900,7 +1928,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::takeSnapshot(
                                       pause, &pId.m_text, &cResult);
     COM_ERROR_CHECK(rc);
 
-    id = pId.toString();
+    if (id)
+        *id = pId.toString();
     return COMPtr<IProgress>::wrap(cResult);
 }
 

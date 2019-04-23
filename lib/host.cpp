@@ -188,8 +188,8 @@ VBox::COMString VBox::IHost::getProcessorDescription(uint32_t cpuId)
 }
 
 void VBox::IHost::getProcessorCPUIDLeaf(uint32_t cpuId, uint32_t leaf,
-        uint32_t subLeaf, uint32_t &valEax, uint32_t &valEbx, uint32_t &valEcx,
-        uint32_t &valEdx)
+        uint32_t subLeaf, uint32_t *valEax, uint32_t *valEbx, uint32_t *valEcx,
+        uint32_t *valEdx)
 {
     COM_ULong cValEax;
     COM_ULong cValEbx;
@@ -200,14 +200,18 @@ void VBox::IHost::getProcessorCPUIDLeaf(uint32_t cpuId, uint32_t leaf,
                     &cValEax, &cValEbx, &cValEcx, &cValEdx);
     COM_ERROR_CHECK(rc);
 
-    valEax = static_cast<uint32_t>(cValEax);
-    valEbx = static_cast<uint32_t>(cValEbx);
-    valEcx = static_cast<uint32_t>(cValEcx);
-    valEdx = static_cast<uint32_t>(cValEdx);
+    if (valEax)
+        *valEax = static_cast<uint32_t>(cValEax);
+    if (valEbx)
+        *valEbx = static_cast<uint32_t>(cValEbx);
+    if (valEcx)
+        *valEcx = static_cast<uint32_t>(cValEcx);
+    if (valEdx)
+        *valEdx = static_cast<uint32_t>(cValEdx);
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IHost::createHostOnlyNetworkInterface(
-        COMPtr<IHostNetworkInterface> &hostInterface)
+        COMPtr<IHostNetworkInterface> *hostInterface)
 {
     ::IProgress *cResult = nullptr;
     ::IHostNetworkInterface *cHostInterface = nullptr;
@@ -215,7 +219,10 @@ VBox::COMPtr<VBox::IProgress> VBox::IHost::createHostOnlyNetworkInterface(
     auto rc = get_IFC()->CreateHostOnlyNetworkInterface(&cHostInterface, &cResult);
     COM_ERROR_CHECK(rc);
 
-    hostInterface = COMPtr<IHostNetworkInterface>::wrap(cHostInterface);
+    if (hostInterface)
+        *hostInterface = COMPtr<IHostNetworkInterface>::wrap(cHostInterface);
+    else
+        cHostInterface->Release();
     return COMPtr<IProgress>::wrap(cResult);
 }
 

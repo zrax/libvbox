@@ -494,7 +494,7 @@ void VBox::IVirtualBox::removeNATNetwork(const COMPtr<INATNetwork> &network)
 }
 
 bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
-        const COMString &version, COMString &url, COMString &file)
+        const COMString &version, COMString *url, COMString *file)
 {
     COM_Bool cResult;
     auto cFirmwareType = static_cast<COM_Type(PRUint32, ::FirmwareType)>(firmwareType);
@@ -507,7 +507,9 @@ bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
                                               &cResult);
     COM_ERROR_CHECK(rc);
 
-    url = pUrl.toString();
-    file = pFile.toString();
+    if (url)
+        *url = pUrl.toString();
+    if (file)
+        *file = pFile.toString();
     return static_cast<bool>(cResult);
 }
