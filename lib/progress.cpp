@@ -86,7 +86,6 @@ int32_t VBox::IProgress::resultCode() const
     return static_cast<int32_t>(result);
 }
 
-
 VBox::COMPtr<VBox::IVirtualBoxErrorInfo> VBox::IProgress::errorInfo() const
 {
     COMPtr<IVirtualBoxErrorInfo> result;

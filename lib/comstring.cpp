@@ -152,30 +152,6 @@ static std::u16string COM_FromUtf8(const char *text, size_t size)
 #endif
 }
 
-VBox::COMString::COMString(const std::wstring &string)
-    : m_string(COM_FromWString(string.c_str(), string.size()))
-{ }
-
-VBox::COMString::COMString(const wchar_t *cstring)
-    : m_string(COM_FromWString(cstring, std::char_traits<wchar_t>::length(cstring)))
-{ }
-
-VBox::COMString::COMString(const wchar_t *cstring, size_t size)
-    : m_string(COM_FromWString(cstring, size))
-{ }
-
-VBox::COMString &VBox::COMString::operator=(const std::wstring &other)
-{
-    m_string = COM_FromWString(other.c_str(), other.size());
-    return *this;
-}
-
-VBox::COMString &VBox::COMString::operator=(const wchar_t *other)
-{
-    m_string = COM_FromWString(other, std::char_traits<wchar_t>::length(other));
-    return *this;
-}
-
 VBox::COMString VBox::COMString::fromUtf8(const std::string &string)
 {
     return COM_FromUtf8(string.data(), string.size());
@@ -189,6 +165,21 @@ VBox::COMString VBox::COMString::fromUtf8(const char *cstring)
 VBox::COMString VBox::COMString::fromUtf8(const char *cstring, size_t size)
 {
     return COM_FromUtf8(cstring, size);
+}
+
+VBox::COMString VBox::COMString::fromWString(const std::wstring &string)
+{
+    return COM_FromWString(string.data(), string.size());
+}
+
+VBox::COMString VBox::COMString::fromWString(const wchar_t *cstring)
+{
+    return COM_FromWString(cstring, std::char_traits<wchar_t>::length(cstring));
+}
+
+VBox::COMString VBox::COMString::fromWString(const wchar_t *cstring, size_t size)
+{
+    return COM_FromWString(cstring, size);
 }
 
 std::string VBox::COMString::toUtf8() const
