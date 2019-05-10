@@ -24,11 +24,11 @@
 #include "libvbox_vboxsdk_version.h"
 
 #define VBox_WRAP_ERROR(classname, errcode)                             \
-            class classname : public COMError                           \
-            {                                                           \
-            public:                                                     \
-                classname() : COMError(errcode, #errcode) { }           \
-            };
+    class classname : public COMError                                   \
+    {                                                                   \
+    public:                                                             \
+        classname() : COMError(errcode, #errcode) { }                   \
+    };
 
 namespace VBox
 {

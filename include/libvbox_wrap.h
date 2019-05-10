@@ -36,10 +36,10 @@
     void set_##name(const type &value);
 
 #define VBox_COM_WRAPPED(COMType)                                       \
-            typedef COMType COM_Ifc;                                    \
-            static const void *get_IID();                               \
-            COMType *get_IFC() const { return reinterpret_cast<COMType *>(m_ifc); } \
-            void set_IFC(COMType *ifc) { m_ifc = reinterpret_cast<void *>(ifc); }
+    typedef COMType COM_Ifc;                                            \
+    static const void *get_IID();                                       \
+    COMType *get_IFC() const { return reinterpret_cast<COMType *>(m_ifc); } \
+    void set_IFC(COMType *ifc) { m_ifc = reinterpret_cast<void *>(ifc); }
 
 #if defined(VBOX_XPCOM)
 class nsISupports;
@@ -81,8 +81,8 @@ namespace VBox
 
         COMPtr<Wrapped> &operator=(const COMPtr<Wrapped> &other)
         {
-            if (other.m_wrap.have_IFC())
-                other.m_wrap.AddRef();
+            if (other->have_IFC())
+                other->AddRef();
             if (m_wrap.have_IFC())
                 m_wrap.Release();
             m_wrap = other.m_wrap;
@@ -110,16 +110,15 @@ namespace VBox
             return wrapPtr;
         }
 
-        Wrapped *operator->() { return &m_wrap; }
-        Wrapped &operator*() { return m_wrap; }
-
-        const Wrapped *operator->() const { return &m_wrap; }
-        const Wrapped &operator*() const { return m_wrap; }
+        Wrapped *operator->() const { return &m_wrap; }
+        Wrapped &operator*() const { return m_wrap; }
 
         operator bool() const { return m_wrap.have_IFC(); }
 
     private:
-        Wrapped m_wrap;
+        // Mutable because Wrapped is treated like a pointer, since its
+        // only member is an opaque pointer to the wrapped COM object.
+        mutable Wrapped m_wrap;
     };
 
     class LIBVBOX_API COMUnknown
