@@ -1515,7 +1515,7 @@ namespace VBox
         COMPtr<IProgress> fileCopy(
                 /* in */ const COMString &source,
                 /* in */ const COMString &destination,
-                /* in */ const std::vector<FileCopyFlag> flags);
+                /* in */ const std::vector<FileCopyFlag> &flags);
         COMPtr<IProgress> fileCopyFromGuest(
                 /* in */ const COMString &source,
                 /* in */ const COMString &destination,
@@ -1781,7 +1781,7 @@ namespace VBox
         VBox_PROPERTY_RO(COMString, OSTypeId)
         VBox_PROPERTY_RO(AdditionsRunLevelType, additionsRunLevel)
         VBox_PROPERTY_RO(COMString, additionsVersion)
-        VBox_PROPERTY_RO(uint32_t, additions_revision)
+        VBox_PROPERTY_RO(uint32_t, additionsRevision)
         VBox_PROPERTY_RO(COMPtr<IGuestDnDSource>, dnDSource)
         VBox_PROPERTY_RO(COMPtr<IGuestDnDTarget>, dnDTarget)
         VBox_PROPERTY_RO(COMPtr<IEventSource>, eventSource)

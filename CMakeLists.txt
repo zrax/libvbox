@@ -82,11 +82,14 @@ target_sources(vbox
         lib/event.cpp
         lib/eventlistener.cpp
         lib/eventsource.cpp
+        lib/guest.cpp
+        lib/guestsession.cpp
         lib/host.cpp
         lib/keyboard.cpp
         lib/machine.cpp
         lib/mouse.cpp
         lib/mousepointershape.cpp
+        lib/process.cpp
         lib/progress.cpp
         lib/session.cpp
         lib/vetoevent.cpp
