@@ -23,23 +23,23 @@ const void *VBox::IGuestSession::get_IID()
     return reinterpret_cast<const void *>(&IID_IGuestSession);
 }
 
-VBox::COMString VBox::IGuestSession::user() const
+std::u16string VBox::IGuestSession::user() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), User, result);
     return result;
 }
 
-VBox::COMString VBox::IGuestSession::domain() const
+std::u16string VBox::IGuestSession::domain() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), Domain, result);
     return result;
 }
 
-VBox::COMString VBox::IGuestSession::name() const
+std::u16string VBox::IGuestSession::name() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), Name, result);
     return result;
 }
@@ -77,21 +77,21 @@ VBox::GuestSessionStatus VBox::IGuestSession::status() const
     return static_cast<GuestSessionStatus>(result);
 }
 
-std::vector<VBox::COMString> VBox::IGuestSession::environmentChanges() const
+std::vector<std::u16string> VBox::IGuestSession::environmentChanges() const
 {
-    std::vector<COMString> result;
+    std::vector<std::u16string> result;
     COM_GetStringArray(get_IFC(), EnvironmentChanges, result);
     return result;
 }
 
-void VBox::IGuestSession::set_environmentChanges(const std::vector<COMString> &value)
+void VBox::IGuestSession::set_environmentChanges(const std::vector<std::u16string> &value)
 {
     COM_SetStringArray(get_IFC(), EnvironmentChanges, value);
 }
 
-std::vector<VBox::COMString> VBox::IGuestSession::environmentBase() const
+std::vector<std::u16string> VBox::IGuestSession::environmentBase() const
 {
-    std::vector<COMString> result;
+    std::vector<std::u16string> result;
     COM_GetStringArray(get_IFC(), EnvironmentBase, result);
     return result;
 }
@@ -110,29 +110,29 @@ VBox::PathStyle VBox::IGuestSession::pathStyle() const
     return static_cast<PathStyle>(result);
 }
 
-VBox::COMString VBox::IGuestSession::currentDirectory() const
+std::u16string VBox::IGuestSession::currentDirectory() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), CurrentDirectory, result);
     return result;
 }
 
-void VBox::IGuestSession::set_currentDirectory(const COMString &value)
+void VBox::IGuestSession::set_currentDirectory(const std::u16string &value)
 {
     COM_SetString(get_IFC(), CurrentDirectory, value);
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-VBox::COMString VBox::IGuestSession::userHome() const
+std::u16string VBox::IGuestSession::userHome() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), UserHome, result);
     return result;
 }
 
-VBox::COMString VBox::IGuestSession::userDocuments() const
+std::u16string VBox::IGuestSession::userDocuments() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), UserDocuments, result);
     return result;
 }
@@ -167,8 +167,8 @@ void VBox::IGuestSession::close()
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::copyFromGuest(
-        const std::vector<COMString> &sources, const std::vector<COMString> &filters,
-        const std::vector<COMString> &flags, const COMString &destination)
+        const std::vector<std::u16string> &sources, const std::vector<std::u16string> &filters,
+        const std::vector<std::u16string> &flags, const std::u16string &destination)
 {
     ::IProgress *cResult = nullptr;
     COM_StringArrayProxy pSources(sources);
@@ -185,8 +185,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::copyFromGuest(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::copyToGuest(
-        const std::vector<COMString> &sources, const std::vector<COMString> &filters,
-        const std::vector<COMString> &flags, const COMString &destination)
+        const std::vector<std::u16string> &sources, const std::vector<std::u16string> &filters,
+        const std::vector<std::u16string> &flags, const std::u16string &destination)
 {
     ::IProgress *cResult = nullptr;
     COM_StringArrayProxy pSources(sources);
@@ -204,7 +204,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::copyToGuest(
 #endif
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryCopy(
-        const COMString &source, const COMString &destination,
+        const std::u16string &source, const std::u16string &destination,
         const std::vector<DirectoryCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -224,7 +224,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryCopy(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryCopyFromGuest(
-        const COMString &source, const COMString &destination,
+        const std::u16string &source, const std::u16string &destination,
         const std::vector<DirectoryCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -244,7 +244,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryCopyFromGuest(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryCopyToGuest(
-        const COMString &source, const COMString &destination,
+        const std::u16string &source, const std::u16string &destination,
         const std::vector<DirectoryCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -263,7 +263,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryCopyToGuest(
     return COMPtr<IProgress>::wrap(cResult);
 }
 
-void VBox::IGuestSession::directoryCreate(const COMString &path, uint32_t mode,
+void VBox::IGuestSession::directoryCreate(const std::u16string &path, uint32_t mode,
         const std::vector<DirectoryCreateFlag> &flags)
 {
     COM_StringProxy pPath(path);
@@ -274,8 +274,8 @@ void VBox::IGuestSession::directoryCreate(const COMString &path, uint32_t mode,
     COM_ERROR_CHECK(rc);
 }
 
-VBox::COMString VBox::IGuestSession::directoryCreateTemp(
-        const COMString &templateName, uint32_t mode, const COMString &path,
+std::u16string VBox::IGuestSession::directoryCreateTemp(
+        const std::u16string &templateName, uint32_t mode, const std::u16string &path,
         bool secure)
 {
     COM_StringProxy pResult;
@@ -289,7 +289,7 @@ VBox::COMString VBox::IGuestSession::directoryCreateTemp(
     return pResult.toString();
 }
 
-bool VBox::IGuestSession::directoryExists(const COMString &path, bool followSymlinks)
+bool VBox::IGuestSession::directoryExists(const std::u16string &path, bool followSymlinks)
 {
     COM_Bool cResult;
     COM_StringProxy pPath(path);
@@ -301,7 +301,7 @@ bool VBox::IGuestSession::directoryExists(const COMString &path, bool followSyml
 }
 
 VBox::COMPtr<VBox::IGuestDirectory> VBox::IGuestSession::directoryOpen(
-        const COMString &path, const COMString &filter,
+        const std::u16string &path, const std::u16string &filter,
         const std::vector<DirectoryOpenFlag> &flags)
 {
     ::IGuestDirectory *cResult = nullptr;
@@ -316,7 +316,7 @@ VBox::COMPtr<VBox::IGuestDirectory> VBox::IGuestSession::directoryOpen(
     return COMPtr<IGuestDirectory>::wrap(cResult);
 }
 
-void VBox::IGuestSession::directoryRemove(const COMString &path)
+void VBox::IGuestSession::directoryRemove(const std::u16string &path)
 {
     COM_StringProxy pPath(path);
 
@@ -325,7 +325,7 @@ void VBox::IGuestSession::directoryRemove(const COMString &path)
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryRemoveRecursive(
-        const COMString &path, const std::vector<DirectoryRemoveRecFlag> &flags)
+        const std::u16string &path, const std::vector<DirectoryRemoveRecFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pPath(path);
@@ -338,8 +338,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::directoryRemoveRecursive(
     return COMPtr<IProgress>::wrap(cResult);
 }
 
-void VBox::IGuestSession::environmentScheduleSet(const COMString &name,
-        const COMString &value)
+void VBox::IGuestSession::environmentScheduleSet(const std::u16string &name,
+        const std::u16string &value)
 {
     COM_StringProxy pName(name);
     COM_StringProxy pValue(value);
@@ -348,7 +348,7 @@ void VBox::IGuestSession::environmentScheduleSet(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IGuestSession::environmentScheduleUnset(const COMString &name)
+void VBox::IGuestSession::environmentScheduleUnset(const std::u16string &name)
 {
     COM_StringProxy pName(name);
 
@@ -356,8 +356,8 @@ void VBox::IGuestSession::environmentScheduleUnset(const COMString &name)
     COM_ERROR_CHECK(rc);
 }
 
-VBox::COMString VBox::IGuestSession::environmentGetBaseVariable(
-        const COMString &name)
+std::u16string VBox::IGuestSession::environmentGetBaseVariable(
+        const std::u16string &name)
 {
     COM_StringProxy pResult;
     COM_StringProxy pName(name);
@@ -368,7 +368,7 @@ VBox::COMString VBox::IGuestSession::environmentGetBaseVariable(
     return pResult.toString();
 }
 
-bool VBox::IGuestSession::environmentDoesBaseVariableExist(const COMString &name)
+bool VBox::IGuestSession::environmentDoesBaseVariableExist(const std::u16string &name)
 {
     COM_Bool cResult;
     COM_StringProxy pName(name);
@@ -379,8 +379,8 @@ bool VBox::IGuestSession::environmentDoesBaseVariableExist(const COMString &name
     return static_cast<bool>(cResult);
 }
 
-VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopy(const COMString &source,
-        const COMString &destination, const std::vector<FileCopyFlag> &flags)
+VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopy(const std::u16string &source,
+        const std::u16string &destination, const std::vector<FileCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pSource(source);
@@ -395,7 +395,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopy(const COMString &sou
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopyFromGuest(
-        const COMString &source, const COMString &destination,
+        const std::u16string &source, const std::u16string &destination,
         const std::vector<FileCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -411,7 +411,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopyFromGuest(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopyToGuest(
-        const COMString &source, const COMString &destination,
+        const std::u16string &source, const std::u16string &destination,
         const std::vector<FileCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -427,7 +427,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fileCopyToGuest(
 }
 
 VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileCreateTemp(
-        const COMString &templateName, uint32_t mode, const COMString &path,
+        const std::u16string &templateName, uint32_t mode, const std::u16string &path,
         bool secure)
 {
     ::IGuestFile *cResult = nullptr;
@@ -441,7 +441,7 @@ VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileCreateTemp(
     return COMPtr<IGuestFile>::wrap(cResult);
 }
 
-bool VBox::IGuestSession::fileExists(const COMString &path, bool followSymlinks)
+bool VBox::IGuestSession::fileExists(const std::u16string &path, bool followSymlinks)
 {
     COM_Bool cResult;
     COM_StringProxy pPath(path);
@@ -453,7 +453,7 @@ bool VBox::IGuestSession::fileExists(const COMString &path, bool followSymlinks)
 }
 
 VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileOpen(
-        const COMString &path, FileAccessMode accessMode,
+        const std::u16string &path, FileAccessMode accessMode,
         FileOpenAction openAction, uint32_t creationMode)
 {
     ::IGuestFile *cResult = nullptr;
@@ -468,7 +468,7 @@ VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileOpen(
     return COMPtr<IGuestFile>::wrap(cResult);
 }
 
-VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileOpenEx(const COMString &path,
+VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileOpenEx(const std::u16string &path,
         FileAccessMode accessMode, FileOpenAction openAction,
         FileSharingMode sharingMode, uint32_t creationMode,
         const std::vector<FileOpenExFlag> &flags)
@@ -491,7 +491,7 @@ VBox::COMPtr<VBox::IGuestFile> VBox::IGuestSession::fileOpenEx(const COMString &
     return COMPtr<IGuestFile>::wrap(cResult);
 }
 
-int64_t VBox::IGuestSession::fileQuerySize(const COMString &path,
+int64_t VBox::IGuestSession::fileQuerySize(const std::u16string &path,
         bool followSymlinks)
 {
     COM_Long64 cResult;
@@ -503,7 +503,7 @@ int64_t VBox::IGuestSession::fileQuerySize(const COMString &path,
     return static_cast<int64_t>(cResult);
 }
 
-bool VBox::IGuestSession::fsObjExists(const COMString &path, bool followSymlinks)
+bool VBox::IGuestSession::fsObjExists(const std::u16string &path, bool followSymlinks)
 {
     COM_Bool cResult;
     COM_StringProxy pPath(path);
@@ -515,7 +515,7 @@ bool VBox::IGuestSession::fsObjExists(const COMString &path, bool followSymlinks
 }
 
 VBox::COMPtr<VBox::IGuestFsObjInfo> VBox::IGuestSession::fsObjQueryInfo(
-        const COMString &path, bool followSymlinks)
+        const std::u16string &path, bool followSymlinks)
 {
     ::IGuestFsObjInfo *cResult = nullptr;
     COM_StringProxy pPath(path);
@@ -526,7 +526,7 @@ VBox::COMPtr<VBox::IGuestFsObjInfo> VBox::IGuestSession::fsObjQueryInfo(
     return COMPtr<IGuestFsObjInfo>::wrap(cResult);
 }
 
-void VBox::IGuestSession::fsObjRemove(const COMString &path)
+void VBox::IGuestSession::fsObjRemove(const std::u16string &path)
 {
     COM_StringProxy pPath(path);
 
@@ -536,7 +536,7 @@ void VBox::IGuestSession::fsObjRemove(const COMString &path)
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjRemoveArray(
-        const std::vector<COMString> &path)
+        const std::vector<std::u16string> &path)
 {
     ::IProgress *cResult = nullptr;
     COM_StringArrayProxy pPath(path);
@@ -548,8 +548,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjRemoveArray(
 }
 #endif
 
-void VBox::IGuestSession::fsObjRename(const COMString &oldPath,
-        const COMString &newPath, const std::vector<FsObjRenameFlag> &flags)
+void VBox::IGuestSession::fsObjRename(const std::u16string &oldPath,
+        const std::u16string &newPath, const std::vector<FsObjRenameFlag> &flags)
 {
     COM_StringProxy pOldPath(oldPath);
     COM_StringProxy pNewPath(newPath);
@@ -561,7 +561,7 @@ void VBox::IGuestSession::fsObjRename(const COMString &oldPath,
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjMove(
-        const COMString &source, const COMString &destination,
+        const std::u16string &source, const std::u16string &destination,
         const std::vector<FsObjMoveFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -582,7 +582,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjMove(
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjMoveArray(
-        const std::vector<COMString> &source, const COMString &destination,
+        const std::vector<std::u16string> &source, const std::u16string &destination,
         const std::vector<FsObjMoveFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -598,7 +598,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjMoveArray(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjCopyArray(
-        const std::vector<COMString> &source, const COMString &destination,
+        const std::vector<std::u16string> &source, const std::u16string &destination,
         const std::vector<FileCopyFlag> &flags)
 {
     ::IProgress *cResult = nullptr;
@@ -614,8 +614,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IGuestSession::fsObjCopyArray(
 }
 #endif
 
-void VBox::IGuestSession::fsObjSetACL(const COMString &path, bool followSymlinks,
-        const COMString &acl, uint32_t mode)
+void VBox::IGuestSession::fsObjSetACL(const std::u16string &path, bool followSymlinks,
+        const std::u16string &acl, uint32_t mode)
 {
     COM_StringProxy pPath(path);
     COM_StringProxy pAcl(acl);
@@ -625,8 +625,8 @@ void VBox::IGuestSession::fsObjSetACL(const COMString &path, bool followSymlinks
 }
 
 VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreate(
-        const COMString &executable, const std::vector<COMString> &arguments,
-        const std::vector<COMString> &environmentChanges,
+        const std::u16string &executable, const std::vector<std::u16string> &arguments,
+        const std::vector<std::u16string> &environmentChanges,
         const std::vector<ProcessCreateFlag> &flags, uint32_t timeoutMS)
 {
     ::IGuestProcess *cResult = nullptr;
@@ -644,8 +644,8 @@ VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreate(
 }
 
 VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreateEx(
-        const COMString &executable, const std::vector<COMString> &arguments,
-        const std::vector<COMString> &environmentChanges,
+        const std::u16string &executable, const std::vector<std::u16string> &arguments,
+        const std::vector<std::u16string> &environmentChanges,
         const std::vector<ProcessCreateFlag> &flags, uint32_t timeoutMS,
         ProcessPriority priority, const std::vector<int32_t> &affinity)
 {
@@ -676,8 +676,8 @@ VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processGet(uint32_t pid)
     return COMPtr<IGuestProcess>::wrap(cResult);
 }
 
-void VBox::IGuestSession::symlinkCreate(const COMString &symlink,
-        const COMString &target, SymlinkType type)
+void VBox::IGuestSession::symlinkCreate(const std::u16string &symlink,
+        const std::u16string &target, SymlinkType type)
 {
     COM_StringProxy pSymlink(symlink);
     COM_StringProxy pTarget(target);
@@ -687,7 +687,7 @@ void VBox::IGuestSession::symlinkCreate(const COMString &symlink,
     COM_ERROR_CHECK(rc);
 }
 
-bool VBox::IGuestSession::symlinkExists(const COMString &symlink)
+bool VBox::IGuestSession::symlinkExists(const std::u16string &symlink)
 {
     COM_Bool cResult;
     COM_StringProxy pSymlink(symlink);
@@ -698,7 +698,7 @@ bool VBox::IGuestSession::symlinkExists(const COMString &symlink)
     return static_cast<bool>(cResult);
 }
 
-VBox::COMString VBox::IGuestSession::symlinkRead(const COMString &symlink,
+std::u16string VBox::IGuestSession::symlinkRead(const std::u16string &symlink,
         const std::vector<SymlinkReadFlag> &flags)
 {
     COM_StringProxy pResult;

@@ -70,7 +70,6 @@ target_sources(vbox
         include/libvbox.h
         include/libvbox_errors.h
         include/libvbox_interfaces.h
-        include/libvbox_string.h
         include/libvbox_vboxsdk_types.h
         include/libvbox_vboxsdk_version.h
         include/libvbox_wrap.h
@@ -116,7 +115,6 @@ install(
         include/libvbox.h
         include/libvbox_errors.h
         include/libvbox_interfaces.h
-        include/libvbox_string.h
         include/libvbox_vboxsdk_types.h
         include/libvbox_wrap.h
         "${CMAKE_CURRENT_BINARY_DIR}/include/libvbox_vboxsdk_version.h"

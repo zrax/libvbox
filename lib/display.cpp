@@ -61,7 +61,7 @@ void VBox::IDisplay::getScreenResolution(uint32_t screenId, uint32_t *width,
         *guestMonitorStatus = static_cast<GuestMonitorStatus>(cGuestMonitorStatus);
 }
 
-VBox::COMString VBox::IDisplay::attachFramebuffer(uint32_t screenId,
+std::u16string VBox::IDisplay::attachFramebuffer(uint32_t screenId,
         const COMPtr<IFramebuffer> &framebuffer)
 {
     COM_StringProxy pResult;
@@ -73,7 +73,7 @@ VBox::COMString VBox::IDisplay::attachFramebuffer(uint32_t screenId,
     return pResult.toString();
 }
 
-void VBox::IDisplay::detachFramebuffer(uint32_t screenId, const COMString &id)
+void VBox::IDisplay::detachFramebuffer(uint32_t screenId, const std::u16string &id)
 {
     COM_StringProxy pId(id);
 

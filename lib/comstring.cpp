@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#include "libvbox_string.h"
+#include "libvbox.h"
 
 #if defined(VBOX_XPCOM)
 #   include <nsString.h>
@@ -152,42 +152,42 @@ static std::u16string COM_FromUtf8(const char *text, size_t size)
 #endif
 }
 
-VBox::COMString VBox::COMString::fromUtf8(const std::string &string)
+std::string VBox::utf16ToUtf8(const std::u16string &text)
 {
-    return COM_FromUtf8(string.data(), string.size());
+    return COM_ToUtf8(text.c_str(), text.size());
 }
 
-VBox::COMString VBox::COMString::fromUtf8(const char *cstring)
+std::u16string VBox::utf8ToUtf16(const std::string &text)
 {
-    return COM_FromUtf8(cstring, std::char_traits<char>::length(cstring));
+    return COM_FromUtf8(text.c_str(), text.size());
 }
 
-VBox::COMString VBox::COMString::fromUtf8(const char *cstring, size_t size)
+std::u16string VBox::utf8ToUtf16(const char *text, size_t size)
 {
-    return COM_FromUtf8(cstring, size);
+    return COM_FromUtf8(text, size);
 }
 
-VBox::COMString VBox::COMString::fromWString(const std::wstring &string)
+std::u16string VBox::utf8ToUtf16(const char *text)
 {
-    return COM_FromWString(string.data(), string.size());
+    return COM_FromUtf8(text, std::char_traits<char>::length(text));
 }
 
-VBox::COMString VBox::COMString::fromWString(const wchar_t *cstring)
+std::wstring VBox::utf16ToWide(const std::u16string &text)
 {
-    return COM_FromWString(cstring, std::char_traits<wchar_t>::length(cstring));
+    return COM_ToWString<wchar_t>(text.c_str(), text.size());
 }
 
-VBox::COMString VBox::COMString::fromWString(const wchar_t *cstring, size_t size)
+std::u16string VBox::wideToUtf16(const std::wstring &text)
 {
-    return COM_FromWString(cstring, size);
+    return COM_FromWString(text.data(), text.size());
 }
 
-std::string VBox::COMString::toUtf8() const
+std::u16string VBox::wideToUtf16(const wchar_t *text, size_t size)
 {
-    return COM_ToUtf8(data(), size());
+    return COM_FromWString(text, size);
 }
 
-std::wstring VBox::COMString::toWString() const
+std::u16string VBox::wideToUtf16(const wchar_t *text)
 {
-    return COM_ToWString<wchar_t>(data(), size());
+    return COM_FromWString(text, std::char_traits<wchar_t>::length(text));
 }

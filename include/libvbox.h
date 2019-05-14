@@ -26,6 +26,18 @@ namespace VBox
 {
     LIBVBOX_API COMPtr<IVirtualBoxClient> virtualBoxClient();
     LIBVBOX_API COMPtr<COMErrorInfo> currentError();
+
+    // Provided by MSCOM/XPCOM
+    LIBVBOX_API std::string utf16ToUtf8(const std::u16string &text);
+    LIBVBOX_API std::u16string utf8ToUtf16(const std::string &text);
+    LIBVBOX_API std::u16string utf8ToUtf16(const char *text, size_t size);
+    LIBVBOX_API std::u16string utf8ToUtf16(const char *text);
+
+    // Provided by libvbox
+    LIBVBOX_API std::wstring utf16ToWide(const std::u16string &text);
+    LIBVBOX_API std::u16string wideToUtf16(const std::wstring &text);
+    LIBVBOX_API std::u16string wideToUtf16(const wchar_t *text, size_t size);
+    LIBVBOX_API std::u16string wideToUtf16(const wchar_t *text);
 }
 
 #endif /* _LIBVBOX_H */

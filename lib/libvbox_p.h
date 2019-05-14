@@ -43,16 +43,16 @@
 
     static_assert(sizeof(char16_t) == sizeof(PRUnichar), "PRUnichar is not a UTF-16 type");
 
-    inline VBox::COMString nsToString(const COM_Text text)
+    inline std::u16string nsToString(const COM_Text text)
     {
-        return VBox::COMString(reinterpret_cast<const char16_t *>(text));
+        return std::u16string(reinterpret_cast<const char16_t *>(text));
     }
 
-    inline COM_Text nsFromString(const VBox::COMString &string)
+    inline COM_Text nsFromString(const std::u16string &string)
     {
         COM_Text buffer = reinterpret_cast<COM_Text>(nsMemory::Alloc((string.size() + 1) * sizeof(PRUnichar)));
         std::char_traits<char16_t>::copy(reinterpret_cast<char16_t *>(buffer),
-                                         string.data(), string.size());
+                                         string.c_str(), string.size());
         buffer[string.size()] = PRUnichar(0);
         return buffer;
     }
@@ -180,15 +180,15 @@
 
     static_assert(sizeof(char16_t) == sizeof(WCHAR), "BSTR is not a UTF-16 type");
 
-    inline VBox::COMString BSTRToString(BSTR text)
+    inline std::u16string BSTRToString(BSTR text)
     {
-        return VBox::COMString(reinterpret_cast<const char16_t *>(text),
-                               SysStringLen(text));
+        return std::u16string(reinterpret_cast<const char16_t *>(text),
+                              SysStringLen(text));
     }
 
-    inline BSTR BSTRFromString(const VBox::COMString &string)
+    inline BSTR BSTRFromString(const std::u16string &string)
     {
-        return SysAllocStringLen(reinterpret_cast<const WCHAR *>(string.data()),
+        return SysAllocStringLen(reinterpret_cast<const WCHAR *>(string.c_str()),
                                  static_cast<UINT>(string.size()));
     }
 
@@ -301,7 +301,7 @@ namespace VBox
     public:
         COM_StringProxy() : m_text() { }
 
-        COM_StringProxy(const COMString &value)
+        COM_StringProxy(const std::u16string &value)
         {
             fromString(value);
         }
@@ -312,12 +312,12 @@ namespace VBox
                 COM_FreeString(m_text);
         }
 
-        void fromString(const COMString &string)
+        void fromString(const std::u16string &string)
         {
             m_text = COM_FromString(string);
         }
 
-        COMString toString()
+        std::u16string toString()
         {
             return COM_ToString(m_text);
         }
@@ -485,7 +485,7 @@ namespace VBox
         COM_StringArrayProxy() : m_array() { }
 #endif
 
-        COM_StringArrayProxy(const std::vector<COMString> &vector)
+        COM_StringArrayProxy(const std::vector<std::u16string> &vector)
             : COM_StringArrayProxy()
         {
             fromVector(vector);
@@ -509,7 +509,7 @@ namespace VBox
             m_array = nullptr;
         }
 
-        void toVector(std::vector<COMString> &result)
+        void toVector(std::vector<std::u16string> &result)
         {
             if (!m_array) {
                 result.resize(0);
@@ -531,7 +531,7 @@ namespace VBox
 #endif
         }
 
-        void fromVector(const std::vector<COMString> &vector)
+        void fromVector(const std::vector<std::u16string> &vector)
         {
             Release();
 

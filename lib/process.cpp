@@ -28,16 +28,16 @@ const void *VBox::IGuestProcess::get_IID()
     return reinterpret_cast<const void *>(&IID_IGuestProcess);
 }
 
-std::vector<VBox::COMString> VBox::IProcess::arguments() const
+std::vector<std::u16string> VBox::IProcess::arguments() const
 {
-    std::vector<COMString> result;
+    std::vector<std::u16string> result;
     COM_GetStringArray(get_IFC(), Arguments, result);
     return result;
 }
 
-std::vector<VBox::COMString> VBox::IProcess::environment() const
+std::vector<std::u16string> VBox::IProcess::environment() const
 {
-    std::vector<COMString> result;
+    std::vector<std::u16string> result;
     COM_GetStringArray(get_IFC(), Environment, result);
     return result;
 }
@@ -49,9 +49,9 @@ VBox::COMPtr<VBox::IEventSource> VBox::IProcess::eventSource() const
     return result;
 }
 
-VBox::COMString VBox::IProcess::executablePath() const
+std::u16string VBox::IProcess::executablePath() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), ExecutablePath, result);
     return result;
 }
@@ -63,9 +63,9 @@ int32_t VBox::IProcess::exitCode() const
     return static_cast<int32_t>(result);
 }
 
-VBox::COMString VBox::IProcess::name() const
+std::u16string VBox::IProcess::name() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), Name, result);
     return result;
 }

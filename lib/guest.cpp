@@ -23,9 +23,9 @@ const void *VBox::IGuest::get_IID()
     return reinterpret_cast<const void *>(&IID_IGuest);
 }
 
-VBox::COMString VBox::IGuest::OSTypeId() const
+std::u16string VBox::IGuest::OSTypeId() const
 {
-    VBox::COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), OSTypeId, result);
     return result;
 }
@@ -37,9 +37,9 @@ VBox::AdditionsRunLevelType VBox::IGuest::additionsRunLevel() const
     return static_cast<AdditionsRunLevelType>(result);
 }
 
-VBox::COMString VBox::IGuest::additionsVersion() const
+std::u16string VBox::IGuest::additionsVersion() const
 {
-    VBox::COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), AdditionsVersion, result);
     return result;
 }
@@ -181,8 +181,8 @@ bool VBox::IGuest::getAdditionsStatus(AdditionsRunLevelType level)
     return static_cast<bool>(cResult);
 }
 
-void VBox::IGuest::setCredentials(const COMString &userName,
-        const COMString &password, const COMString &domain,
+void VBox::IGuest::setCredentials(const std::u16string &userName,
+        const std::u16string &password, const std::u16string &domain,
         bool allowInteractiveLogon)
 {
     COM_StringProxy pUserName(userName);
@@ -195,8 +195,8 @@ void VBox::IGuest::setCredentials(const COMString &userName,
 }
 
 VBox::COMPtr<VBox::IGuestSession> VBox::IGuest::createSession(
-        const COMString &user, const COMString &password,
-        const COMString &domain, const COMString &sessionName)
+        const std::u16string &user, const std::u16string &password,
+        const std::u16string &domain, const std::u16string &sessionName)
 {
     ::IGuestSession *cResult = nullptr;
     COM_StringProxy pUser(user);
@@ -212,7 +212,7 @@ VBox::COMPtr<VBox::IGuestSession> VBox::IGuest::createSession(
 }
 
 std::vector<VBox::COMPtr<VBox::IGuestSession>> VBox::IGuest::findSession(
-        const COMString &sessionName)
+        const std::u16string &sessionName)
 {
     COM_ArrayProxy<::IGuestSession *> pResult;
     COM_StringProxy pSessionName(sessionName);
@@ -226,7 +226,7 @@ std::vector<VBox::COMPtr<VBox::IGuestSession>> VBox::IGuest::findSession(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IGuest::updateGuestAdditions(
-        const COMString &source, const std::vector<COMString> &arguments,
+        const std::u16string &source, const std::vector<std::u16string> &arguments,
         const std::vector<AdditionsUpdateFlag> &flags)
 {
     ::IProgress *cResult = nullptr;

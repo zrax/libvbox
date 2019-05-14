@@ -131,16 +131,16 @@ const void *VBox::COMErrorInfo::get_IID()
 #endif
 }
 
-VBox::COMString VBox::COMErrorInfo::message() const
+std::u16string VBox::COMErrorInfo::message() const
 {
-    COMString result;
+    std::u16string result;
 
 #if defined(VBOX_XPCOM)
     // The exception message is UTF-8 on XPCOM
     char *messageText = nullptr;
     auto rc = get_IFC()->GetMessage(&messageText);
     COM_ERROR_CHECK(rc);
-    result = COMString::fromUtf8(messageText);
+    result = VBox::utf8ToUtf16(messageText);
     nsMemory::Free(reinterpret_cast<void *>(messageText));
 #elif defined(VBOX_MSCOM)
     COM_StringProxy messageText;

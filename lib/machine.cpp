@@ -56,81 +56,81 @@ VBox::COMPtr<VBox::IVirtualBoxErrorInfo> VBox::IMachine::accessError() const
     return result;
 }
 
-VBox::COMString VBox::IMachine::name() const
+std::u16string VBox::IMachine::name() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), Name, result);
     return result;
 }
 
-void VBox::IMachine::set_name(const COMString &value)
+void VBox::IMachine::set_name(const std::u16string &value)
 {
     COM_SetString(get_IFC(), Name, value);
 }
 
-VBox::COMString VBox::IMachine::description() const
+std::u16string VBox::IMachine::description() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), Description, result);
     return result;
 }
 
-void VBox::IMachine::set_description(const COMString &value)
+void VBox::IMachine::set_description(const std::u16string &value)
 {
     COM_SetString(get_IFC(), Description, value);
 }
 
-VBox::COMString VBox::IMachine::id() const
+std::u16string VBox::IMachine::id() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), Id, result);
     return result;
 }
 
-std::vector<VBox::COMString> VBox::IMachine::groups() const
+std::vector<std::u16string> VBox::IMachine::groups() const
 {
-    std::vector<COMString> result;
+    std::vector<std::u16string> result;
     COM_GetStringArray(get_IFC(), Groups, result);
     return result;
 }
 
-void VBox::IMachine::set_groups(const std::vector<COMString> &value)
+void VBox::IMachine::set_groups(const std::vector<std::u16string> &value)
 {
     COM_SetStringArray(get_IFC(), Groups, value);
 }
 
-VBox::COMString VBox::IMachine::OSTypeId() const
+std::u16string VBox::IMachine::OSTypeId() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), OSTypeId, result);
     return result;
 }
 
-void VBox::IMachine::set_OSTypeId(const COMString &value)
+void VBox::IMachine::set_OSTypeId(const std::u16string &value)
 {
     COM_SetString(get_IFC(), OSTypeId, value);
 }
 
-VBox::COMString VBox::IMachine::hardwareVersion() const
+std::u16string VBox::IMachine::hardwareVersion() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), HardwareVersion, result);
     return result;
 }
 
-void VBox::IMachine::set_hardwareVersion(const COMString &value)
+void VBox::IMachine::set_hardwareVersion(const std::u16string &value)
 {
     COM_SetString(get_IFC(), HardwareVersion, value);
 }
 
-VBox::COMString VBox::IMachine::hardwareUUID() const
+std::u16string VBox::IMachine::hardwareUUID() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), HardwareUUID, result);
     return result;
 }
 
-void VBox::IMachine::set_hardwareUUID(const COMString &value)
+void VBox::IMachine::set_hardwareUUID(const std::u16string &value)
 {
     COM_SetString(get_IFC(), HardwareUUID, value);
 }
@@ -305,14 +305,14 @@ void VBox::IMachine::set_videoCaptureScreens(const std::vector<bool> &value)
     COM_SetArray(get_IFC(), VideoCaptureScreens, COM_Bool, value);
 }
 
-VBox::COMString VBox::IMachine::videoCaptureFile() const
+std::u16string VBox::IMachine::videoCaptureFile() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), VideoCaptureFile, result);
     return result;
 }
 
-void VBox::IMachine::set_videoCaptureFile(const COMString &value)
+void VBox::IMachine::set_videoCaptureFile(const std::u16string &value)
 {
     COM_SetString(get_IFC(), VideoCaptureFile, value);
 }
@@ -389,14 +389,14 @@ void VBox::IMachine::set_videoCaptureMaxFileSize(uint32_t value)
     COM_SetValue(get_IFC(), VideoCaptureMaxFileSize, value);
 }
 
-VBox::COMString VBox::IMachine::videoCaptureOptions() const
+std::u16string VBox::IMachine::videoCaptureOptions() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), VideoCaptureOptions, result);
     return result;
 }
 
-void VBox::IMachine::set_videoCaptureOptions(const COMString &value)
+void VBox::IMachine::set_videoCaptureOptions(const std::u16string &value)
 {
     COM_SetString(get_IFC(), VideoCaptureOptions, value);
 }
@@ -482,14 +482,14 @@ void VBox::IMachine::set_chipsetType(ChipsetType value)
     COM_SetValue(get_IFC(), ChipsetType, cValue);
 }
 
-VBox::COMString VBox::IMachine::snapshotFolder() const
+std::u16string VBox::IMachine::snapshotFolder() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), SnapshotFolder, result);
     return result;
 }
 
-void VBox::IMachine::set_snapshotFolder(const COMString &value)
+void VBox::IMachine::set_snapshotFolder(const std::u16string &value)
 {
     COM_SetString(get_IFC(), SnapshotFolder, value);
 }
@@ -548,17 +548,17 @@ std::vector<VBox::COMPtr<VBox::IStorageController>> VBox::IMachine::storageContr
     return result;
 }
 
-VBox::COMString VBox::IMachine::settingsFilePath() const
+std::u16string VBox::IMachine::settingsFilePath() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), SettingsFilePath, result);
     return result;
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
-VBox::COMString VBox::IMachine::settingsAuxFilePath() const
+std::u16string VBox::IMachine::settingsAuxFilePath() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), SettingsAuxFilePath, result);
     return result;
 }
@@ -578,9 +578,9 @@ VBox::SessionState VBox::IMachine::sessionState() const
     return static_cast<SessionState>(result);
 }
 
-VBox::COMString VBox::IMachine::sessionName() const
+std::u16string VBox::IMachine::sessionName() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), SessionName, result);
     return result;
 }
@@ -606,16 +606,16 @@ int64_t VBox::IMachine::lastStateChange() const
     return static_cast<int64_t>(result);
 }
 
-VBox::COMString VBox::IMachine::stateFilePath() const
+std::u16string VBox::IMachine::stateFilePath() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), StateFilePath, result);
     return result;
 }
 
-VBox::COMString VBox::IMachine::logFolder() const
+std::u16string VBox::IMachine::logFolder() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), LogFolder, result);
     return result;
 }
@@ -698,26 +698,26 @@ void VBox::IMachine::set_teleporterPort(uint32_t value)
     COM_SetValue(get_IFC(), TeleporterPort, value);
 }
 
-VBox::COMString VBox::IMachine::teleporterAddress() const
+std::u16string VBox::IMachine::teleporterAddress() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), TeleporterAddress, result);
     return result;
 }
 
-void VBox::IMachine::set_teleporterAddress(const COMString &value)
+void VBox::IMachine::set_teleporterAddress(const std::u16string &value)
 {
     COM_SetString(get_IFC(), TeleporterAddress, value);
 }
 
-VBox::COMString VBox::IMachine::teleporterPassword() const
+std::u16string VBox::IMachine::teleporterPassword() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), TeleporterPassword, result);
     return result;
 }
 
-void VBox::IMachine::set_teleporterPassword(const COMString &value)
+void VBox::IMachine::set_teleporterPassword(const std::u16string &value)
 {
     COM_SetString(get_IFC(), TeleporterPassword, value);
 }
@@ -760,26 +760,26 @@ void VBox::IMachine::set_faultTolerancePort(uint32_t value)
     COM_SetValue(get_IFC(), FaultTolerancePort, value);
 }
 
-VBox::COMString VBox::IMachine::faultToleranceAddress() const
+std::u16string VBox::IMachine::faultToleranceAddress() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), FaultToleranceAddress, result);
     return result;
 }
 
-void VBox::IMachine::set_faultToleranceAddress(const COMString &value)
+void VBox::IMachine::set_faultToleranceAddress(const std::u16string &value)
 {
     COM_SetString(get_IFC(), FaultToleranceAddress, value);
 }
 
-VBox::COMString VBox::IMachine::faultTolerancePassword() const
+std::u16string VBox::IMachine::faultTolerancePassword() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), FaultTolerancePassword, result);
     return result;
 }
 
-void VBox::IMachine::set_faultTolerancePassword(const COMString &value)
+void VBox::IMachine::set_faultTolerancePassword(const std::u16string &value)
 {
     COM_SetString(get_IFC(), FaultTolerancePassword, value);
 }
@@ -858,14 +858,14 @@ void VBox::IMachine::set_tracingEnabled(bool value)
     COM_SetValue(get_IFC(), TracingEnabled, value);
 }
 
-VBox::COMString VBox::IMachine::tracingConfig() const
+std::u16string VBox::IMachine::tracingConfig() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), TracingConfig, result);
     return result;
 }
 
-void VBox::IMachine::set_tracingConfig(const COMString &value)
+void VBox::IMachine::set_tracingConfig(const std::u16string &value)
 {
     COM_SetString(get_IFC(), TracingConfig, value);
 }
@@ -919,14 +919,14 @@ void VBox::IMachine::set_autostopType(AutostopType value)
     COM_SetValue(get_IFC(), AutostopType, cValue);
 }
 
-VBox::COMString VBox::IMachine::defaultFrontend() const
+std::u16string VBox::IMachine::defaultFrontend() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), DefaultFrontend, result);
     return result;
 }
 
-void VBox::IMachine::set_defaultFrontend(const COMString &value)
+void VBox::IMachine::set_defaultFrontend(const std::u16string &value)
 {
     COM_SetString(get_IFC(), DefaultFrontend, value);
 }
@@ -938,39 +938,39 @@ bool VBox::IMachine::USBProxyAvailable() const
     return static_cast<bool>(result);
 }
 
-VBox::COMString VBox::IMachine::VMProcessPriority() const
+std::u16string VBox::IMachine::VMProcessPriority() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), VMProcessPriority, result);
     return result;
 }
 
-void VBox::IMachine::set_VMProcessPriority(const COMString &value)
+void VBox::IMachine::set_VMProcessPriority(const std::u16string &value)
 {
     COM_SetString(get_IFC(), VMProcessPriority, value);
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
-VBox::COMString VBox::IMachine::paravirtDebug() const
+std::u16string VBox::IMachine::paravirtDebug() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), ParavirtDebug, result);
     return result;
 }
 
-void VBox::IMachine::set_paravirtDebug(const COMString &value)
+void VBox::IMachine::set_paravirtDebug(const std::u16string &value)
 {
     COM_SetString(get_IFC(), ParavirtDebug, value);
 }
 
-VBox::COMString VBox::IMachine::CPUProfile() const
+std::u16string VBox::IMachine::CPUProfile() const
 {
-    COMString result;
+    std::u16string result;
     COM_GetString(get_IFC(), CPUProfile, result);
     return result;
 }
 
-void VBox::IMachine::set_CPUProfile(const COMString &value)
+void VBox::IMachine::set_CPUProfile(const std::u16string &value)
 {
     COM_SetString(get_IFC(), CPUProfile, value);
 }
@@ -985,8 +985,8 @@ void VBox::IMachine::lockMachine(const COMPtr<ISession> &session, LockType lockT
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::launchVMProcess(
-        const COMPtr<ISession> &session, const COMString &name,
-        const COMString &environment)
+        const COMPtr<ISession> &session, const std::u16string &name,
+        const std::u16string &environment)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1017,7 +1017,7 @@ VBox::DeviceType VBox::IMachine::getBootOrder(uint32_t position) const
     return static_cast<DeviceType>(cResult);
 }
 
-void VBox::IMachine::attachDevice(const COMString &name, int32_t controllerPort,
+void VBox::IMachine::attachDevice(const std::u16string &name, int32_t controllerPort,
     int32_t device, DeviceType type, const COMPtr<IMedium> &medium)
 {
     COM_StringProxy pName(name);
@@ -1028,7 +1028,7 @@ void VBox::IMachine::attachDevice(const COMString &name, int32_t controllerPort,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::attachDeviceWithoutMedium(const COMString &name,
+void VBox::IMachine::attachDeviceWithoutMedium(const std::u16string &name,
         int32_t controllerPort, int32_t device, DeviceType type)
 {
     COM_StringProxy pName(name);
@@ -1039,7 +1039,7 @@ void VBox::IMachine::attachDeviceWithoutMedium(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::detachDevice(const COMString &name,
+void VBox::IMachine::detachDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device)
 {
     COM_StringProxy pName(name);
@@ -1048,7 +1048,7 @@ void VBox::IMachine::detachDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::passthroughDevice(const COMString &name,
+void VBox::IMachine::passthroughDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device, bool passthrough)
 {
     COM_StringProxy pName(name);
@@ -1058,7 +1058,7 @@ void VBox::IMachine::passthroughDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::temporaryEjectDevice(const COMString &name,
+void VBox::IMachine::temporaryEjectDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device, bool temporaryEject)
 {
     COM_StringProxy pName(name);
@@ -1068,7 +1068,7 @@ void VBox::IMachine::temporaryEjectDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::nonRotationalDevice(const COMString &name,
+void VBox::IMachine::nonRotationalDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device, bool nonRotational)
 {
     COM_StringProxy pName(name);
@@ -1078,7 +1078,7 @@ void VBox::IMachine::nonRotationalDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::setAutoDiscardForDevice(const COMString &name,
+void VBox::IMachine::setAutoDiscardForDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device, bool discard)
 {
     COM_StringProxy pName(name);
@@ -1088,7 +1088,7 @@ void VBox::IMachine::setAutoDiscardForDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::setHotPluggableForDevice(const COMString &name,
+void VBox::IMachine::setHotPluggableForDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device, bool hotPluggable)
 {
     COM_StringProxy pName(name);
@@ -1098,7 +1098,7 @@ void VBox::IMachine::setHotPluggableForDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::setBandwidthGroupForDevice(const COMString &name,
+void VBox::IMachine::setBandwidthGroupForDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device,
         const COMPtr<IBandwidthGroup> &bandwidthGroup)
 {
@@ -1109,7 +1109,7 @@ void VBox::IMachine::setBandwidthGroupForDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::setNoBandwidthGroupForDevice(const COMString &name,
+void VBox::IMachine::setNoBandwidthGroupForDevice(const std::u16string &name,
         int32_t controllerPort, int32_t device)
 {
     COM_StringProxy pName(name);
@@ -1119,7 +1119,7 @@ void VBox::IMachine::setNoBandwidthGroupForDevice(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::unmountMedium(const COMString &name,
+void VBox::IMachine::unmountMedium(const std::u16string &name,
         int32_t controllerPort, int32_t device, bool force)
 {
     COM_StringProxy pName(name);
@@ -1129,7 +1129,7 @@ void VBox::IMachine::unmountMedium(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::mountMedium(const COMString &name, int32_t controllerPort,
+void VBox::IMachine::mountMedium(const std::u16string &name, int32_t controllerPort,
         int32_t device, const COMPtr<IMedium> &medium, bool force)
 {
     COM_StringProxy pName(name);
@@ -1139,7 +1139,7 @@ void VBox::IMachine::mountMedium(const COMString &name, int32_t controllerPort,
     COM_ERROR_CHECK(rc);
 }
 
-VBox::COMPtr<VBox::IMedium> VBox::IMachine::getMedium(const COMString &name,
+VBox::COMPtr<VBox::IMedium> VBox::IMachine::getMedium(const std::u16string &name,
         int32_t controllerPort, int32_t device) const
 {
     ::IMedium *cResult = nullptr;
@@ -1153,7 +1153,7 @@ VBox::COMPtr<VBox::IMedium> VBox::IMachine::getMedium(const COMString &name,
 }
 
 std::vector<VBox::COMPtr<VBox::IMediumAttachment>>
-VBox::IMachine::getMediumAttachmentsOfController(const COMString &name) const
+VBox::IMachine::getMediumAttachmentsOfController(const std::u16string &name) const
 {
     COM_ArrayProxy<::IMediumAttachment *> pResult;
     COM_StringProxy pName(name);
@@ -1168,7 +1168,7 @@ VBox::IMachine::getMediumAttachmentsOfController(const COMString &name) const
 }
 
 VBox::COMPtr<VBox::IMediumAttachment> VBox::IMachine::getMediumAttachment(
-        const COMString &name, int32_t controllerPort, int32_t device) const
+        const std::u16string &name, int32_t controllerPort, int32_t device) const
 {
     ::IMediumAttachment *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1206,7 +1206,7 @@ VBox::COMPtr<VBox::INetworkAdapter> VBox::IMachine::getNetworkAdapter(
 }
 
 VBox::COMPtr<VBox::IStorageController> VBox::IMachine::addStorageController(
-        const COMString &name, StorageBus connectionType)
+        const std::u16string &name, StorageBus connectionType)
 {
     ::IStorageController *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1220,7 +1220,7 @@ VBox::COMPtr<VBox::IStorageController> VBox::IMachine::addStorageController(
 }
 
 VBox::COMPtr<VBox::IStorageController> VBox::IMachine::getStorageControllerByName(
-        const COMString &name) const
+        const std::u16string &name) const
 {
     ::IStorageController *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1244,7 +1244,7 @@ VBox::COMPtr<VBox::IStorageController> VBox::IMachine::getStorageControllerByIns
     return COMPtr<IStorageController>::wrap(cResult);
 }
 
-void VBox::IMachine::removeStorageController(const COMString &name)
+void VBox::IMachine::removeStorageController(const std::u16string &name)
 {
     COM_StringProxy pName(name);
 
@@ -1252,7 +1252,7 @@ void VBox::IMachine::removeStorageController(const COMString &name)
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::setStorageControllerBootable(const COMString &name,
+void VBox::IMachine::setStorageControllerBootable(const std::u16string &name,
         bool bootable)
 {
     COM_StringProxy pName(name);
@@ -1262,7 +1262,7 @@ void VBox::IMachine::setStorageControllerBootable(const COMString &name,
 }
 
 VBox::COMPtr<VBox::IUSBController> VBox::IMachine::addUSBController(
-        const COMString &name, USBControllerType type)
+        const std::u16string &name, USBControllerType type)
 {
     ::IUSBController *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1274,7 +1274,7 @@ VBox::COMPtr<VBox::IUSBController> VBox::IMachine::addUSBController(
     return COMPtr<IUSBController>::wrap(cResult);
 }
 
-void VBox::IMachine::removeUSBController(const COMString &name)
+void VBox::IMachine::removeUSBController(const std::u16string &name)
 {
     COM_StringProxy pName(name);
 
@@ -1283,7 +1283,7 @@ void VBox::IMachine::removeUSBController(const COMString &name)
 }
 
 VBox::COMPtr<VBox::IUSBController> VBox::IMachine::getUSBControllerByName(
-        const COMString &name) const
+        const std::u16string &name) const
 {
     ::IUSBController *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1326,19 +1326,19 @@ VBox::COMPtr<VBox::IParallelPort> VBox::IMachine::getParallelPort(
     return COMPtr<IParallelPort>::wrap(cResult);
 }
 
-std::vector<VBox::COMString> VBox::IMachine::getExtraDataKeys()
+std::vector<std::u16string> VBox::IMachine::getExtraDataKeys()
 {
     COM_StringArrayProxy pResult;
 
     auto rc = get_IFC()->GetExtraDataKeys(COM_ArrayParameterRef(pResult));
     COM_ERROR_CHECK(rc);
 
-    std::vector<COMString> result;
+    std::vector<std::u16string> result;
     pResult.toVector(result);
     return result;
 }
 
-VBox::COMString VBox::IMachine::getExtraData(const COMString &key)
+std::u16string VBox::IMachine::getExtraData(const std::u16string &key)
 {
     COM_StringProxy pResult;
     COM_StringProxy pKey(key);
@@ -1349,7 +1349,7 @@ VBox::COMString VBox::IMachine::getExtraData(const COMString &key)
     return pResult.toString();
 }
 
-void VBox::IMachine::setExtraData(const COMString &key, const COMString &value)
+void VBox::IMachine::setExtraData(const std::u16string &key, const std::u16string &value)
 {
     COM_StringProxy pKey(key);
     COM_StringProxy pValue(value);
@@ -1490,7 +1490,7 @@ void VBox::IMachine::setHWVirtExProperty(HWVirtExPropertyType property, bool val
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::setSettingsFilePath(
-        const COMString &settingsFilePath)
+        const std::u16string &settingsFilePath)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pSettingsFilePath(settingsFilePath);
@@ -1540,7 +1540,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::deleteConfig(
 }
 
 VBox::COMPtr<VBox::IVirtualSystemDescription> VBox::IMachine::exportTo(
-        const COMPtr<IAppliance> &appliance, const COMString &location)
+        const COMPtr<IAppliance> &appliance, const std::u16string &location)
 {
     ::IVirtualSystemDescription *cResult = nullptr;
     COM_StringProxy pLocation(location);
@@ -1553,7 +1553,7 @@ VBox::COMPtr<VBox::IVirtualSystemDescription> VBox::IMachine::exportTo(
 }
 
 VBox::COMPtr<VBox::ISnapshot> VBox::IMachine::findSnapshot(
-        const COMString &nameOrId)
+        const std::u16string &nameOrId)
 {
     ::ISnapshot *cResult = nullptr;
     COM_StringProxy pNameOrId(nameOrId);
@@ -1564,10 +1564,10 @@ VBox::COMPtr<VBox::ISnapshot> VBox::IMachine::findSnapshot(
     return COMPtr<ISnapshot>::wrap(cResult);
 }
 
-void VBox::IMachine::createSharedFolder(const COMString &name,
-        const COMString &hostPath, bool writable, bool automount
+void VBox::IMachine::createSharedFolder(const std::u16string &name,
+        const std::u16string &hostPath, bool writable, bool automount
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-      , const COMString &autoMountPoint
+      , const std::u16string &autoMountPoint
 #endif
         )
 {
@@ -1586,7 +1586,7 @@ void VBox::IMachine::createSharedFolder(const COMString &name,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::removeSharedFolder(const COMString &name)
+void VBox::IMachine::removeSharedFolder(const std::u16string &name)
 {
     COM_StringProxy pName(name);
 
@@ -1614,8 +1614,8 @@ int64_t VBox::IMachine::showConsoleWindow()
     return static_cast<int64_t>(cResult);
 }
 
-void VBox::IMachine::getGuestProperty(const COMString &name,
-        COMString *value, int64_t *timestamp, COMString *flags) const
+void VBox::IMachine::getGuestProperty(const std::u16string &name,
+        std::u16string *value, int64_t *timestamp, std::u16string *flags) const
 {
     COM_StringProxy pName(name);
     COM_StringProxy pValue;
@@ -1634,7 +1634,7 @@ void VBox::IMachine::getGuestProperty(const COMString &name,
         *flags = pFlags.toString();
 }
 
-VBox::COMString VBox::IMachine::getGuestPropertyValue(const COMString &property) const
+std::u16string VBox::IMachine::getGuestPropertyValue(const std::u16string &property) const
 {
     COM_StringProxy pResult;
     COM_StringProxy pProperty(property);
@@ -1645,7 +1645,7 @@ VBox::COMString VBox::IMachine::getGuestPropertyValue(const COMString &property)
     return pResult.toString();
 }
 
-int64_t VBox::IMachine::getGuestPropertyTimestamp(const COMString &property) const
+int64_t VBox::IMachine::getGuestPropertyTimestamp(const std::u16string &property) const
 {
     COM_Long64 cResult;
     COM_StringProxy pProperty(property);
@@ -1656,8 +1656,8 @@ int64_t VBox::IMachine::getGuestPropertyTimestamp(const COMString &property) con
     return static_cast<int64_t>(cResult);
 }
 
-void VBox::IMachine::setGuestProperty(const COMString &property,
-        const COMString &value, const COMString &flags)
+void VBox::IMachine::setGuestProperty(const std::u16string &property,
+        const std::u16string &value, const std::u16string &flags)
 {
     COM_StringProxy pProperty(property);
     COM_StringProxy pValue(value);
@@ -1668,8 +1668,8 @@ void VBox::IMachine::setGuestProperty(const COMString &property,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::setGuestPropertyValue(const COMString &property,
-        const COMString &value)
+void VBox::IMachine::setGuestPropertyValue(const std::u16string &property,
+        const std::u16string &value)
 {
     COM_StringProxy pProperty(property);
     COM_StringProxy pValue(value);
@@ -1678,7 +1678,7 @@ void VBox::IMachine::setGuestPropertyValue(const COMString &property,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::deleteGuestProperty(const COMString &name) const
+void VBox::IMachine::deleteGuestProperty(const std::u16string &name) const
 {
     COM_StringProxy pName(name);
 
@@ -1686,9 +1686,9 @@ void VBox::IMachine::deleteGuestProperty(const COMString &name) const
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMachine::enumerateGuestProperties(const COMString &patterns,
-        std::vector<COMString> *names, std::vector<COMString> *values,
-        std::vector<int64_t> *timestamps, std::vector<COMString> *flags) const
+void VBox::IMachine::enumerateGuestProperties(const std::u16string &patterns,
+        std::vector<std::u16string> *names, std::vector<std::u16string> *values,
+        std::vector<int64_t> *timestamps, std::vector<std::u16string> *flags) const
 {
     COM_StringProxy pPatterns(patterns);
     COM_StringArrayProxy pNames;
@@ -1832,7 +1832,7 @@ VBox::ParavirtProvider VBox::IMachine::getEffectiveParavirtProvider() const
     return static_cast<ParavirtProvider>(cResult);
 }
 
-VBox::COMString VBox::IMachine::queryLogFilename(uint32_t idx)
+std::u16string VBox::IMachine::queryLogFilename(uint32_t idx)
 {
     COM_StringProxy pResult;
 
@@ -1871,8 +1871,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::cloneTo(
 }
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-VBox::COMPtr<VBox::IProgress> VBox::IMachine::moveTo(const COMString &folder,
-        const COMString &type)
+VBox::COMPtr<VBox::IProgress> VBox::IMachine::moveTo(const std::u16string &folder,
+        const std::u16string &type)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pFolder(folder);
@@ -1895,7 +1895,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::saveState()
     return COMPtr<IProgress>::wrap(cResult);
 }
 
-void VBox::IMachine::adoptSavedState(const COMString &savedStateFile)
+void VBox::IMachine::adoptSavedState(const std::u16string &savedStateFile)
 {
     COM_StringProxy pSavedStateFile(savedStateFile);
 
@@ -1910,8 +1910,8 @@ void VBox::IMachine::discardSavedState(bool fRemoveFile)
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::takeSnapshot(
-        const COMString &name, const COMString &description,
-        bool pause, COMString *id)
+        const std::u16string &name, const std::u16string &description,
+        bool pause, std::u16string *id)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pName(name);
@@ -1928,7 +1928,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::takeSnapshot(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::deleteSnapshot(
-        const COMString &id)
+        const std::u16string &id)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pId(id);
@@ -1940,7 +1940,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::deleteSnapshot(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::deleteSnapshotAndAllChildren(
-        const COMString &id)
+        const std::u16string &id)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pId(id);
@@ -1952,8 +1952,8 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::deleteSnapshotAndAllChildren(
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::deleteSnapshotRange(
-        const COMString &startId,
-        const COMString &endId)
+        const std::u16string &startId,
+        const std::u16string &endId)
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pStartId(startId);
@@ -1977,7 +1977,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IMachine::restoreSnapshot(
     return COMPtr<IProgress>::wrap(cResult);
 }
 
-void VBox::IMachine::applyDefaults(const COMString &flags)
+void VBox::IMachine::applyDefaults(const std::u16string &flags)
 {
     COM_StringProxy pFlags(flags);
 

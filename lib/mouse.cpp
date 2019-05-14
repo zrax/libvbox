@@ -89,7 +89,7 @@ void VBox::IMouse::putEventMultiTouch(int32_t count,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMouse::putEventMultiTouchString(int32_t count, const COMString &contacts,
+void VBox::IMouse::putEventMultiTouchString(int32_t count, const std::u16string &contacts,
         uint32_t scanTime)
 {
     COM_StringProxy pContacts(contacts);
