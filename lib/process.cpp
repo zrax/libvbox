@@ -18,15 +18,8 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IProcess::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IProcess);
-}
-
-const void *VBox::IGuestProcess::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IGuestProcess);
-}
+COM_WRAP_IFC(IProcess)
+COM_WRAP_IFC(IGuestProcess)
 
 std::vector<std::u16string> VBox::IProcess::arguments() const
 {

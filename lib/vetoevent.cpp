@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IVetoEvent::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IVetoEvent);
-}
+COM_WRAP_IFC(IVetoEvent)
 
 void VBox::IVetoEvent::addVeto(const std::u16string &reason)
 {

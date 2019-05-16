@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IDisplay::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IDisplay);
-}
+COM_WRAP_IFC(IDisplay)
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
 std::vector<VBox::COMPtr<VBox::IGuestScreenInfo>> VBox::IDisplay::guestScreenLayout() const

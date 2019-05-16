@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IMousePointerShape::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IMousePointerShape);
-}
+COM_WRAP_IFC(IMousePointerShape)
 
 bool VBox::IMousePointerShape::visible() const
 {

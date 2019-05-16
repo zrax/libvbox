@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IEvent::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IEvent);
-}
+COM_WRAP_IFC(IEvent)
 
 VBox::VBoxEventType VBox::IEvent::type() const
 {

@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IGuestSession::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IGuestSession);
-}
+COM_WRAP_IFC(IGuestSession)
 
 std::u16string VBox::IGuestSession::user() const
 {

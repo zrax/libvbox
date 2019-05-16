@@ -20,10 +20,7 @@
 
 #include <cwchar>
 
-const void *VBox::IVirtualBoxErrorInfo::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IVirtualBoxErrorInfo);
-}
+COM_WRAP_IFC(IVirtualBoxErrorInfo)
 
 int32_t VBox::IVirtualBoxErrorInfo::resultCode() const
 {

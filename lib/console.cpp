@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IConsole::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IConsole);
-}
+COM_WRAP_IFC(IConsole)
 
 VBox::COMPtr<VBox::IMachine> VBox::IConsole::machine() const
 {

@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IHost::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IHost);
-}
+COM_WRAP_IFC(IHost)
 
 std::vector<VBox::COMPtr<VBox::IMedium>> VBox::IHost::DVDDrives() const
 {

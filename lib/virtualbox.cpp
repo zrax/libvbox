@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IVirtualBox::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IVirtualBox);
-}
+COM_WRAP_IFC(IVirtualBox)
 
 std::u16string VBox::IVirtualBox::version() const
 {

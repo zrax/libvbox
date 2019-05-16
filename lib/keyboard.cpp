@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IKeyboard::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IKeyboard);
-}
+COM_WRAP_IFC(IKeyboard)
 
 std::vector<VBox::KeyboardLED> VBox::IKeyboard::keyboardLEDs() const
 {

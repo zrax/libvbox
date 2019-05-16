@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IMouse::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IMouse);
-}
+COM_WRAP_IFC(IMouse)
 
 bool VBox::IMouse::absoluteSupported() const
 {

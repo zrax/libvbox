@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IMachine::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IMachine);
-}
+COM_WRAP_IFC(IMachine)
 
 VBox::COMPtr<VBox::IVirtualBox> VBox::IMachine::parent() const
 {

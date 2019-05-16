@@ -564,3 +564,9 @@ namespace VBox
 #endif
     };
 }
+
+#define COM_WRAP_IFC(COMType)                                           \
+    const void *VBox::COMType::get_IID()                                \
+    {                                                                   \
+        return reinterpret_cast<const void *>(&IID_##COMType);          \
+    }

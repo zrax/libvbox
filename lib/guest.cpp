@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IGuest::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IGuest);
-}
+COM_WRAP_IFC(IGuest)
 
 std::u16string VBox::IGuest::OSTypeId() const
 {

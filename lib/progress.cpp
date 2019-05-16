@@ -18,10 +18,7 @@
 
 #include "libvbox_p.h"
 
-const void *VBox::IProgress::get_IID()
-{
-    return reinterpret_cast<const void *>(&IID_IProgress);
-}
+COM_WRAP_IFC(IProgress)
 
 std::u16string VBox::IProgress::id() const
 {

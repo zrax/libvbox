@@ -95,6 +95,15 @@ namespace VBox
     }
 }
 
+const void *VBox::COMUnknown::get_IID()
+{
+#if defined(VBOX_XPCOM)
+    return reinterpret_cast<const void *>(&NS_GET_IID(nsISupports));
+#elif defined(VBOX_MSCOM)
+    return reinterpret_cast<const void *>(&IID_IUnknown);
+#endif
+}
+
 uint32_t VBox::COMUnknown::AddRef()
 {
     return get_IFC()->AddRef();
@@ -125,7 +134,7 @@ void VBox::COMUnknown::_QueryInterface(const void *iid, void **pContainer)
 const void *VBox::COMErrorInfo::get_IID()
 {
 #if defined(VBOX_XPCOM)
-    return reinterpret_cast<const void *>(&nsIException::GetIID());
+    return reinterpret_cast<const void *>(&NS_GET_IID(nsIException));
 #elif defined(VBOX_MSCOM)
     return reinterpret_cast<const void *>(&IID_IErrorInfo);
 #endif
