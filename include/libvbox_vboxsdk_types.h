@@ -300,6 +300,12 @@ namespace VBox
         L1DFlushOnEMTScheduling = 11,
         L1DFlushOnVMEntry = 12,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 8)                 \
+    || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
+         && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 30) )
+        MDSClearOnEMTScheduling = 13,
+        MDSClearOnVMEntry = 14,
+#endif
     };
 
     enum class DataFlags
