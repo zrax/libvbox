@@ -115,11 +115,13 @@ target_sources(vbox
         lib/natnetworkchangedevent.cpp
         lib/natredirectevent.cpp
         lib/objchangedevent.cpp
+        lib/parallelport.cpp
         lib/process.cpp
         lib/progress.cpp
         lib/progressevent.cpp
         lib/reusableevent.cpp
         lib/runtimeerrorevent.cpp
+        lib/serialport.cpp
         lib/session.cpp
         lib/showwindowevent.cpp
         lib/snapshotevent.cpp
