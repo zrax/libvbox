@@ -79,6 +79,9 @@ target_sources(vbox
         lib/cpuchangedevent.cpp
         lib/cursorpositionchangedevent.cpp
         lib/display.cpp
+        lib/dndbase.cpp
+        lib/dndsource.cpp
+        lib/dndtarget.cpp
         lib/errorwrap.cpp
         lib/event.cpp
         lib/eventlistener.cpp
