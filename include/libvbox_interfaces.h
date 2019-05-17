@@ -3903,31 +3903,6 @@ namespace VBox
     };
 #endif
 
-#if defined(VBOX_MSCOM) && (VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0))
-    class LIBVBOX_API IVBoxSVCRegistration : public COMUnknown
-    {
-    public:
-        VBox_COM_WRAPPED(::IVBoxSVCRegistration)
-
-        // Methods
-        COMPtr<COMUnknown> getVirtualBox();
-    };
-
-    class LIBVBOX_API IVirtualBoxSDS : public COMUnknown
-    {
-    public:
-        VBox_COM_WRAPPED(::IVirtualBoxSDS)
-
-        // Methods
-        COMPtr<COMUnknown> registerVBoxSVC(
-                /* in */ const COMPtr<IVBoxSVCRegistration> &vboxSVC,
-                /* in */ int32_t pid);
-        void deregisterVBoxSVC(
-                /* in */ const COMPtr<IVBoxSVCRegistration> &vboxSVC,
-                /* in */ int32_t pid);
-    };
-#endif
-
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     class LIBVBOX_API ICursorPositionChangedEvent : public IEvent
     {
