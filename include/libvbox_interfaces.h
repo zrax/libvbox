@@ -3448,8 +3448,8 @@ namespace VBox
         VBox_PROPERTY_RO(int32_t, contactCount)
         VBox_PROPERTY_RO(std::vector<int16_t>, xPositions)
         VBox_PROPERTY_RO(std::vector<int16_t>, yPositions)
-        VBox_PROPERTY_RO(std::vector<int16_t>, contactIds)
-        VBox_PROPERTY_RO(std::vector<int16_t>, contactFlags)
+        VBox_PROPERTY_RO(std::vector<uint16_t>, contactIds)
+        VBox_PROPERTY_RO(std::vector<uint16_t>, contactFlags)
         VBox_PROPERTY_RO(uint32_t, scanTime)
     };
 

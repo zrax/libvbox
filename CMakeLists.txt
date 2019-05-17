@@ -76,21 +76,50 @@ target_sources(vbox
         lib/libvbox_p.h
         lib/comstring.cpp
         lib/console.cpp
+        lib/cpuchangedevent.cpp
+        lib/cursorpositionchangedevent.cpp
         lib/display.cpp
         lib/errorwrap.cpp
         lib/event.cpp
         lib/eventlistener.cpp
         lib/eventsource.cpp
+        lib/extradatachangedevent.cpp
         lib/guest.cpp
+        lib/guestfileevent.cpp
+        lib/guestfileioevent.cpp
+        lib/guestkeyboardevent.cpp
+        lib/guestmonitorchangedevent.cpp
+        lib/guestmouseevent.cpp
+        lib/guestmultitouchevent.cpp
+        lib/guestprocessevent.cpp
+        lib/guestprocessioevent.cpp
         lib/guestsession.cpp
+        lib/guestsessionevent.cpp
+        lib/guestuserstatechangedevent.cpp
         lib/host.cpp
+        lib/hostpcideviceplugevent.cpp
         lib/keyboard.cpp
+        lib/keyboardledschangedevent.cpp
         lib/machine.cpp
+        lib/machineevent.cpp
+        lib/mediumevent.cpp
+        lib/modechangedevent.cpp
         lib/mouse.cpp
+        lib/mousecapabilitychangedevent.cpp
         lib/mousepointershape.cpp
+        lib/mousepointershapechangedevent.cpp
+        lib/natnetworkchangedevent.cpp
+        lib/natredirectevent.cpp
+        lib/objchangedevent.cpp
         lib/process.cpp
         lib/progress.cpp
+        lib/progressevent.cpp
+        lib/reusableevent.cpp
+        lib/runtimeerrorevent.cpp
         lib/session.cpp
+        lib/showwindowevent.cpp
+        lib/snapshotevent.cpp
+        lib/statechangedevent.cpp
         lib/vetoevent.cpp
         lib/virtualbox.cpp
         lib/virtualboxclient.cpp
