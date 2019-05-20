@@ -90,6 +90,9 @@ target_sources(vbox
         lib/event.cpp
         lib/eventlistener.cpp
         lib/eventsource.cpp
+        lib/extpack.cpp
+        lib/extpackmanager.cpp
+        lib/extpackplugin.cpp
         lib/extradatachangedevent.cpp
         lib/guest.cpp
         lib/guestfileevent.cpp

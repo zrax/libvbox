@@ -3012,7 +3012,7 @@ namespace VBox
 
         // Methods
         COMPtr<COMUnknown> queryObject(
-                /* in */ const std::u16string objUuid);
+                /* in */ const std::u16string &objUuid);
     };
 
     class LIBVBOX_API IExtPackFile : public IExtPackBase
@@ -3035,7 +3035,7 @@ namespace VBox
         VBox_COM_WRAPPED(::IExtPackManager)
 
         // Attributes
-        VBox_PROPERTY_RO(std::vector<IExtPack>, installedExtPacks)
+        VBox_PROPERTY_RO(std::vector<COMPtr<IExtPack>>, installedExtPacks)
 
         // Methods
         COMPtr<IExtPack> find(
