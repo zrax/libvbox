@@ -110,6 +110,7 @@ target_sources(vbox
         lib/keyboard.cpp
         lib/keyboardledschangedevent.cpp
         lib/machine.cpp
+        lib/machinedebugger.cpp
         lib/machineevent.cpp
         lib/mediumevent.cpp
         lib/modechangedevent.cpp
