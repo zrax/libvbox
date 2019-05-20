@@ -44,7 +44,7 @@ configure_file(
     @ONLY
 )
 
-add_library(vbox SHARED lib/vboxwrap.cpp)
+add_library(vbox SHARED "")
 
 if(MSVC)
     # Keep the "libvbox" name even on MSVC
@@ -135,6 +135,12 @@ target_sources(vbox
         lib/showwindowevent.cpp
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
+        lib/usbcontroller.cpp
+        lib/usbdevice.cpp
+        lib/usbdevicefilter.cpp
+        lib/usbdevicefilters.cpp
+        lib/usbproxybackend.cpp
+        lib/vboxwrap.cpp
         lib/vetoevent.cpp
         lib/virtualbox.cpp
         lib/virtualboxclient.cpp
