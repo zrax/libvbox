@@ -74,10 +74,13 @@ target_sources(vbox
         include/libvbox_vboxsdk_version.h
         include/libvbox_wrap.h
         lib/libvbox_p.h
+        lib/bandwidthcontrol.cpp
+        lib/bandwidthgroup.cpp
         lib/comstring.cpp
         lib/console.cpp
         lib/cpuchangedevent.cpp
         lib/cursorpositionchangedevent.cpp
+        lib/dhcpserver.cpp
         lib/display.cpp
         lib/displaysourcebitmap.cpp
         lib/dndbase.cpp
@@ -102,6 +105,7 @@ target_sources(vbox
         lib/guestsessionevent.cpp
         lib/guestuserstatechangedevent.cpp
         lib/host.cpp
+        lib/hostnetworkinterface.cpp
         lib/hostpcideviceplugevent.cpp
         lib/keyboard.cpp
         lib/keyboardledschangedevent.cpp
@@ -113,8 +117,11 @@ target_sources(vbox
         lib/mousecapabilitychangedevent.cpp
         lib/mousepointershape.cpp
         lib/mousepointershapechangedevent.cpp
+        lib/natengine.cpp
+        lib/natnetwork.cpp
         lib/natnetworkchangedevent.cpp
         lib/natredirectevent.cpp
+        lib/networkadapter.cpp
         lib/objchangedevent.cpp
         lib/parallelport.cpp
         lib/process.cpp
