@@ -95,6 +95,7 @@ target_sources(vbox
         lib/guestmonitorchangedevent.cpp
         lib/guestmouseevent.cpp
         lib/guestmultitouchevent.cpp
+        lib/guestostype.cpp
         lib/guestprocessevent.cpp
         lib/guestprocessioevent.cpp
         lib/guestsession.cpp
