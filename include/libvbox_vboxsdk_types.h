@@ -1643,6 +1643,5 @@ VBox_FORWARD_DECL_IFC(IVRDEServer);
 VBox_FORWARD_DECL_IFC(IVRDEServerChangedEvent);
 VBox_FORWARD_DECL_IFC(IVRDEServerInfo);
 VBox_FORWARD_DECL_IFC(IVRDEServerInfoChangedEvent);
-VBox_FORWARD_DECL_IFC(IWebsessionManager);
 
 #endif /* _LIBVBOX_VBOXSDK_TYPES_H */

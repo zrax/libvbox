@@ -81,6 +81,7 @@ target_sources(vbox
         lib/cpuchangedevent.cpp
         lib/cursorpositionchangedevent.cpp
         lib/dhcpserver.cpp
+        lib/directory.cpp
         lib/display.cpp
         lib/displaysourcebitmap.cpp
         lib/dndbase.cpp
@@ -94,6 +95,8 @@ target_sources(vbox
         lib/extpackmanager.cpp
         lib/extpackplugin.cpp
         lib/extradatachangedevent.cpp
+        lib/file.cpp
+        lib/fsobjinfo.cpp
         lib/guest.cpp
         lib/guestfileevent.cpp
         lib/guestfileioevent.cpp
