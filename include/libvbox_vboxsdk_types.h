@@ -1553,7 +1553,6 @@ VBox_FORWARD_DECL_IFC(IMachineDebugger);
 VBox_FORWARD_DECL_IFC(IMachineEvent);
 VBox_FORWARD_DECL_IFC(IMachineRegisteredEvent);
 VBox_FORWARD_DECL_IFC(IMachineStateChangedEvent);
-VBox_FORWARD_DECL_IFC(IManagedObjectRef);
 VBox_FORWARD_DECL_IFC(IMedium);
 VBox_FORWARD_DECL_IFC(IMediumAttachment);
 VBox_FORWARD_DECL_IFC(IMediumChangedEvent);

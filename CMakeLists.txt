@@ -120,7 +120,10 @@ target_sources(vbox
         lib/machine.cpp
         lib/machinedebugger.cpp
         lib/machineevent.cpp
+        lib/medium.cpp
+        lib/mediumattachment.cpp
         lib/mediumevent.cpp
+        lib/mediumformat.cpp
         lib/modechangedevent.cpp
         lib/mouse.cpp
         lib/mousecapabilitychangedevent.cpp
@@ -143,6 +146,7 @@ target_sources(vbox
         lib/showwindowevent.cpp
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
+        lib/token.cpp
         lib/usbcontroller.cpp
         lib/usbdevice.cpp
         lib/usbdevicefilter.cpp
