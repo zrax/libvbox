@@ -74,8 +74,10 @@ target_sources(vbox
         include/libvbox_vboxsdk_version.h
         include/libvbox_wrap.h
         lib/libvbox_p.h
+        lib/appliance.cpp
         lib/bandwidthcontrol.cpp
         lib/bandwidthgroup.cpp
+        lib/certificate.cpp
         lib/comstring.cpp
         lib/console.cpp
         lib/cpuchangedevent.cpp
@@ -151,6 +153,7 @@ target_sources(vbox
         lib/virtualbox.cpp
         lib/virtualboxclient.cpp
         lib/virtualboxerrorinfo.cpp
+        lib/virtualsystemdescription.cpp
         ${VirtualBoxSDK_IID_LIB}
 )
 

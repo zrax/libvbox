@@ -18,8 +18,6 @@
 
 #include "libvbox_p.h"
 
-#include <cwchar>
-
 COM_WRAP_IFC(IVirtualBoxErrorInfo)
 
 int32_t VBox::IVirtualBoxErrorInfo::resultCode() const
