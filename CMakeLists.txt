@@ -78,6 +78,10 @@ target_sources(vbox
         lib/bandwidthcontrol.cpp
         lib/bandwidthgroup.cpp
         lib/certificate.cpp
+        lib/cloudclient.cpp
+        lib/cloudprofile.cpp
+        lib/cloudprovider.cpp
+        lib/cloudprovidermanager.cpp
         lib/comstring.cpp
         lib/console.cpp
         lib/cpuchangedevent.cpp
