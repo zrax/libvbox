@@ -527,7 +527,7 @@ namespace VBox
         VBox_COM_WRAPPED(::IRecordingScreenSettings)
 
         // Attributes
-        VBox_PROPERTY_RW_V(uint32_t, id)
+        VBox_PROPERTY_RO(uint32_t, id)
         VBox_PROPERTY_RW_V(bool, enabled)
         VBox_PROPERTY_RW_V(uint32_t, features)
         VBox_PROPERTY_RW_V(RecordingDestination, destination)

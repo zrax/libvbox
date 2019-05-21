@@ -86,6 +86,7 @@ target_sources(vbox
         lib/console.cpp
         lib/cpuchangedevent.cpp
         lib/cursorpositionchangedevent.cpp
+        lib/datastream.cpp
         lib/dhcpserver.cpp
         lib/directory.cpp
         lib/display.cpp
@@ -119,6 +120,7 @@ target_sources(vbox
         lib/host.cpp
         lib/hostnetworkinterface.cpp
         lib/hostpcideviceplugevent.cpp
+        lib/internalprogresscontrol.cpp
         lib/keyboard.cpp
         lib/keyboardledschangedevent.cpp
         lib/machine.cpp
@@ -128,6 +130,7 @@ target_sources(vbox
         lib/mediumattachment.cpp
         lib/mediumevent.cpp
         lib/mediumformat.cpp
+        lib/mediumio.cpp
         lib/modechangedevent.cpp
         lib/mouse.cpp
         lib/mousecapabilitychangedevent.cpp
@@ -143,6 +146,8 @@ target_sources(vbox
         lib/process.cpp
         lib/progress.cpp
         lib/progressevent.cpp
+        lib/recordingscreensettings.cpp
+        lib/recordingsettings.cpp
         lib/reusableevent.cpp
         lib/runtimeerrorevent.cpp
         lib/serialport.cpp
@@ -151,6 +156,7 @@ target_sources(vbox
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
         lib/token.cpp
+        lib/unattended.cpp
         lib/usbcontroller.cpp
         lib/usbdevice.cpp
         lib/usbdevicefilter.cpp
