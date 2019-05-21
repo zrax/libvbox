@@ -173,6 +173,8 @@ target_sources(vbox
         lib/virtualboxclient.cpp
         lib/virtualboxerrorinfo.cpp
         lib/virtualsystemdescription.cpp
+        lib/vrdeserver.cpp
+        lib/vrdeserverinfo.cpp
         ${VirtualBoxSDK_IID_LIB}
 )
 
