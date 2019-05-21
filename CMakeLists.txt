@@ -74,7 +74,9 @@ target_sources(vbox
         include/libvbox_vboxsdk_version.h
         include/libvbox_wrap.h
         lib/libvbox_p.h
+        lib/additionsfacility.cpp
         lib/appliance.cpp
+        lib/audioadapter.cpp
         lib/bandwidthcontrol.cpp
         lib/bandwidthgroup.cpp
         lib/certificate.cpp
@@ -103,6 +105,8 @@ target_sources(vbox
         lib/extpackplugin.cpp
         lib/extradatachangedevent.cpp
         lib/file.cpp
+        lib/framebuffer.cpp
+        lib/framebufferoverlay.cpp
         lib/fsobjinfo.cpp
         lib/guest.cpp
         lib/guestfileevent.cpp
@@ -114,6 +118,7 @@ target_sources(vbox
         lib/guestostype.cpp
         lib/guestprocessevent.cpp
         lib/guestprocessioevent.cpp
+        lib/guestscreeninfo.cpp
         lib/guestsession.cpp
         lib/guestsessionevent.cpp
         lib/guestuserstatechangedevent.cpp
