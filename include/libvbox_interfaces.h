@@ -1245,7 +1245,7 @@ namespace VBox
         VBox_PROPERTY_RO(std::vector<COMPtr<IMediumFormat>>, mediumFormats)
         VBox_PROPERTY_RW_R(std::u16string, defaultHardDiskFormat)
         VBox_PROPERTY_RW_V(int64_t, freeDiskSpaceWarning)
-        VBox_PROPERTY_RW_V(uint32_t, freeDiskPercentWarning)
+        VBox_PROPERTY_RW_V(uint32_t, freeDiskSpacePercentWarning)
         VBox_PROPERTY_RW_V(int64_t, freeDiskSpaceError)
         VBox_PROPERTY_RW_V(uint32_t, freeDiskSpacePercentError)
         VBox_PROPERTY_RW_R(std::u16string, VRDEAuthLibrary)

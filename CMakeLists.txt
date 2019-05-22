@@ -128,7 +128,9 @@ target_sources(vbox
         lib/hostnetworkinterface.cpp
         lib/hostpcideviceplugevent.cpp
         lib/hostvideoinputdevice.cpp
+        lib/internalmachinecontrol.cpp
         lib/internalprogresscontrol.cpp
+        lib/internalsessioncontrol.cpp
         lib/keyboard.cpp
         lib/keyboardledschangedevent.cpp
         lib/machine.cpp
@@ -170,6 +172,7 @@ target_sources(vbox
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
         lib/storagecontroller.cpp
+        lib/systemproperties.cpp
         lib/token.cpp
         lib/unattended.cpp
         lib/usbcontroller.cpp
