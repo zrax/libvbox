@@ -157,7 +157,9 @@ target_sources(vbox
         lib/runtimeerrorevent.cpp
         lib/serialport.cpp
         lib/session.cpp
+        lib/sharedfolder.cpp
         lib/showwindowevent.cpp
+        lib/snapshot.cpp
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
         lib/token.cpp
@@ -169,6 +171,7 @@ target_sources(vbox
         lib/usbproxybackend.cpp
         lib/vboxwrap.cpp
         lib/vetoevent.cpp
+        lib/vfsexplorer.cpp
         lib/virtualbox.cpp
         lib/virtualboxclient.cpp
         lib/virtualboxerrorinfo.cpp

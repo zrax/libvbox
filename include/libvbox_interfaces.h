@@ -1910,14 +1910,10 @@ namespace VBox
         VBox_PROPERTY_RO(COMPtr<IMachine>, machine)
         VBox_PROPERTY_RO(COMPtr<ISnapshot>, parent)
         VBox_PROPERTY_RO(std::vector<COMPtr<ISnapshot>>, children)
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         VBox_PROPERTY_RO(uint32_t, childrenCount)
-#endif
 
         // Methods
-#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
-        uint32_t getChildrenCount() const;
-#endif
+        uint32_t getChildrenCount() const;  // Old name for childrenCount property
     };
 
     class LIBVBOX_API IMediumAttachment : public COMUnknown
