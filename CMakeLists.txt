@@ -79,6 +79,7 @@ target_sources(vbox
         lib/audioadapter.cpp
         lib/bandwidthcontrol.cpp
         lib/bandwidthgroup.cpp
+        lib/biossettings.cpp
         lib/certificate.cpp
         lib/cloudclient.cpp
         lib/cloudprofile.cpp
@@ -96,6 +97,7 @@ target_sources(vbox
         lib/dndbase.cpp
         lib/dndsource.cpp
         lib/dndtarget.cpp
+        lib/emulatedusb.cpp
         lib/errorwrap.cpp
         lib/event.cpp
         lib/eventlistener.cpp
@@ -125,6 +127,7 @@ target_sources(vbox
         lib/host.cpp
         lib/hostnetworkinterface.cpp
         lib/hostpcideviceplugevent.cpp
+        lib/hostvideoinputdevice.cpp
         lib/internalprogresscontrol.cpp
         lib/keyboard.cpp
         lib/keyboardledschangedevent.cpp
@@ -148,6 +151,10 @@ target_sources(vbox
         lib/networkadapter.cpp
         lib/objchangedevent.cpp
         lib/parallelport.cpp
+        lib/pciaddress.cpp
+        lib/pcideviceattachment.cpp
+        lib/performancecollector.cpp
+        lib/performancemetric.cpp
         lib/process.cpp
         lib/progress.cpp
         lib/progressevent.cpp
@@ -162,6 +169,7 @@ target_sources(vbox
         lib/snapshot.cpp
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
+        lib/storagecontroller.cpp
         lib/token.cpp
         lib/unattended.cpp
         lib/usbcontroller.cpp

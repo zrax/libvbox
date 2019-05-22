@@ -517,7 +517,7 @@ namespace VBox
 #endif
         VBox_PROPERTY_RW_V(int64_t, timeOffset)
         VBox_PROPERTY_RW_V(bool, PXEDebugEnabled)
-        VBox_PROPERTY_RW_R(std::u16string, nonVolatileStorageFile)
+        VBox_PROPERTY_RO(std::u16string, nonVolatileStorageFile)
     };
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
