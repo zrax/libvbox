@@ -63,6 +63,33 @@ if (machine) {
 }
 ~~~
 
+**Event Listener**
+~~~c++
+#include <libvbox.h>
+#include <thread>
+
+auto evSource = someObject->eventSource();
+auto listener = evSource->createListener();
+evSource->registerListener(listener, {VBox::VBoxEventType::Any}, false);
+
+std::thread event_thread([evSource, listener]() {
+    for ( ;; ) {
+        auto event = evSource->getEvent(listener, 500);
+        if (!event)
+            continue;
+
+        std::wcout << L"Got event type " << static_cast<int>(event->type())
+                   << std::endl;
+        if (auto stateChangedEvent = event->QueryInterface<VBox::IStateChangedEvent>()) {
+            std::wcout << L"    State change: "
+                       << static_cast<int>(stateChangedEvent->state())
+                       << std::endl;
+        }
+        evSource->eventProcessed(listener, event);
+    }
+});
+~~~
+
 ## Enumerations
 
 libvbox wraps all enumerations described in the VirtualBox SDK in a
