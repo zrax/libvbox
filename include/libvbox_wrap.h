@@ -116,6 +116,33 @@ namespace VBox
 
         operator bool() const { return m_wrap.have_IFC(); }
 
+        bool operator==(std::nullptr_t) const { return m_wrap.get_IFC() == nullptr; }
+        bool operator!=(std::nullptr_t) const { return m_wrap.get_IFC() != nullptr; }
+
+        template <class Ifc>
+        bool operator==(const COMPtr<Ifc> &other) const
+        {
+            return m_wrap.get_IFC() == other.m_wrap.get_IFC();
+        }
+
+        template <class Ifc>
+        bool operator!=(const COMPtr<Ifc> &other) const
+        {
+            return m_wrap.get_IFC() != other.m_wrap.get_IFC();
+        }
+
+        template <class COM_Ifc>
+        bool operator==(COM_Ifc *other) const
+        {
+            return m_wrap.get_IFC() == other;
+        }
+
+        template <class COM_Ifc>
+        bool operator!=(COM_Ifc *other) const
+        {
+            return m_wrap.get_IFC() != other;
+        }
+
     private:
         // Mutable because Wrapped is treated like a pointer, since its
         // only member is an opaque pointer to the wrapped COM object.
