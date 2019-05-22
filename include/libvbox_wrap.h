@@ -131,6 +131,9 @@ namespace VBox
         VBox_COM_WRAPPED(::IUnknown)
 #endif
 
+        COMUnknown() : m_ifc() { }
+        ~COMUnknown() { }
+
         bool have_IFC() const { return m_ifc != nullptr; }
         void clear_IFC() { m_ifc = nullptr; }
 
