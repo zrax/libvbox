@@ -18,52 +18,42 @@
 
 #include "libvbox_p.h"
 
-COM_WRAP_IFC(IGuestFileEvent)
-COM_WRAP_IFC(IGuestFileRegisteredEvent)
-COM_WRAP_IFC(IGuestFileStateChangedEvent)
-
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)                \
     || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
          && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
-COM_WRAP_IFC(IGuestFileSizeChangedEvent)
-#endif
+COM_WRAP_IFC(IGuestAdditionsStatusChangedEvent)
 
-VBox::COMPtr<VBox::IGuestFile> VBox::IGuestFileEvent::file() const
+VBox::AdditionsFacilityType VBox::IGuestAdditionsStatusChangedEvent::facility() const
 {
-    COMPtr<IGuestFile> result;
-    COM_GetValue_Wrap(get_IFC(), File, result);
-    return result;
+    COM_Enum(::AdditionsFacilityType) result;
+    COM_GetValue(get_IFC(), Facility, result);
+    return static_cast<AdditionsFacilityType>(result);
 }
 
-bool VBox::IGuestFileRegisteredEvent::registered() const
+void VBox::IGuestAdditionsStatusChangedEvent::set_facility(AdditionsFacilityType value)
 {
-    COM_Bool result;
-    COM_GetValue(get_IFC(), Registered, result);
-    return static_cast<bool>(result);
+    COM_SetValue(get_IFC(), Facility,
+                 static_cast<COM_Enum(::AdditionsFacilityType)>(value));
 }
 
-VBox::FileStatus VBox::IGuestFileStateChangedEvent::status() const
+VBox::AdditionsFacilityStatus VBox::IGuestAdditionsStatusChangedEvent::status() const
 {
-    COM_Enum(::FileStatus) result;
+    COM_Enum(::AdditionsFacilityStatus) result;
     COM_GetValue(get_IFC(), Status, result);
-    return static_cast<FileStatus>(result);
+    return static_cast<AdditionsFacilityStatus>(result);
 }
 
-VBox::COMPtr<VBox::IVirtualBoxErrorInfo>
-VBox::IGuestFileStateChangedEvent::error() const
+VBox::AdditionsRunLevelType VBox::IGuestAdditionsStatusChangedEvent::runLevel() const
 {
-    COMPtr<IVirtualBoxErrorInfo> result;
-    COM_GetValue_Wrap(get_IFC(), Error, result);
-    return result;
+    COM_Enum(::AdditionsRunLevelType) result;
+    COM_GetValue(get_IFC(), RunLevel, result);
+    return static_cast<AdditionsRunLevelType>(result);
 }
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)                \
-    || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
-         && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
-int64_t VBox::IGuestFileSizeChangedEvent::newSize() const
+int64_t VBox::ICursorPositionChangedEvent::timestamp() const
 {
     COM_Long64 result;
-    COM_GetValue(get_IFC(), NewSize, result);
+    COM_GetValue(get_IFC(), Timestamp, result);
     return static_cast<int64_t>(result);
 }
 #endif

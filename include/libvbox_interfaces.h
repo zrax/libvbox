@@ -3579,6 +3579,19 @@ namespace VBox
         VBox_COM_WRAPPED(::IGuestFileOffsetChangedEvent)
     };
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)                \
+    || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
+         && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
+    class LIBVBOX_API IGuestFileSizeChangedEvent : public IGuestFileEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IGuestFileSizeChangedEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(int64_t, newSize);
+    };
+#endif
+
     class LIBVBOX_API IGuestFileReadEvent : public IGuestFileIOEvent
     {
     public:
@@ -3909,6 +3922,22 @@ namespace VBox
         VBox_PROPERTY_RO(bool, hasData)
         VBox_PROPERTY_RO(uint32_t, x)
         VBox_PROPERTY_RO(uint32_t, y)
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)                \
+    || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
+         && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
+    class LIBVBOX_API IGuestAdditionsStatusChangedEvent : public IEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IGuestAdditionsStatusChangedEvent)
+
+        // Attributes
+        VBox_PROPERTY_RW_V(AdditionsFacilityType, facility);
+        VBox_PROPERTY_RO(AdditionsFacilityStatus, status);
+        VBox_PROPERTY_RO(AdditionsRunLevelType, runLevel);
+        VBox_PROPERTY_RO(int64_t, timestamp);
     };
 #endif
 

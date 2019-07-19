@@ -1347,11 +1347,24 @@ namespace VBox
         OnProgressPercentageChanged = 98,
         OnProgressTaskCompleted = 99,
 #endif
+#if (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)             \
+      && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
+        OnGuestAdditionsStatusChanged = 100,
+        OnGuestFileSizeChanged = 101,
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         OnCursorPositionChanged = 100,
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)
+        OnGuestAdditionsStatusChanged = 101,
+        OnGuestFileSizeChanged = 102,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)
+        Last = 103,
+#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         Last = 101,
+#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32)
+        Last = 102,
 #elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
         Last = 100,
 #else
@@ -1500,6 +1513,7 @@ VBox_FORWARD_DECL_IFC(IFramebuffer);
 VBox_FORWARD_DECL_IFC(IFramebufferOverlay);
 VBox_FORWARD_DECL_IFC(IFsObjInfo);
 VBox_FORWARD_DECL_IFC(IGuest);
+VBox_FORWARD_DECL_IFC(IGuestAdditionsStatusChangedEvent);
 VBox_FORWARD_DECL_IFC(IGuestDirectory);
 VBox_FORWARD_DECL_IFC(IGuestDnDSource);
 VBox_FORWARD_DECL_IFC(IGuestDnDTarget);
@@ -1509,6 +1523,7 @@ VBox_FORWARD_DECL_IFC(IGuestFileIOEvent);
 VBox_FORWARD_DECL_IFC(IGuestFileOffsetChangedEvent);
 VBox_FORWARD_DECL_IFC(IGuestFileReadEvent);
 VBox_FORWARD_DECL_IFC(IGuestFileRegisteredEvent);
+VBox_FORWARD_DECL_IFC(IGuestFileSizeChangedEvent);
 VBox_FORWARD_DECL_IFC(IGuestFileStateChangedEvent);
 VBox_FORWARD_DECL_IFC(IGuestFileWriteEvent);
 VBox_FORWARD_DECL_IFC(IGuestFsObjInfo);
