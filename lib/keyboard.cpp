@@ -62,3 +62,12 @@ void VBox::IKeyboard::releaseKeys()
     auto rc = get_IFC()->ReleaseKeys();
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+void VBox::IKeyboard::putUsageCode(int32_t usageCode, int32_t usagePage,
+        bool keyRelease)
+{
+    auto rc = get_IFC()->PutUsageCode(usageCode, usagePage, keyRelease);
+    COM_ERROR_CHECK(rc);
+}
+#endif

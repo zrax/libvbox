@@ -468,3 +468,26 @@ std::u16string VBox::IMachineDebugger::getStats(const std::u16string &pattern,
 
     return pResult.toString();
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+int64_t VBox::IMachineDebugger::getCPULoad(uint32_t cpuId,
+        uint32_t *pctExecuting, uint32_t *pctHalted, uint32_t *pctOther)
+{
+    COM_Long64 cResult;
+    COM_ULong cPctExecuting;
+    COM_ULong cPctHalted;
+    COM_ULong cPctOther;
+
+    auto rc = get_IFC()->GetCPULoad(cpuId, &cPctExecuting, &cPctHalted,
+                &cPctOther, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (pctExecuting)
+        *pctExecuting = static_cast<uint32_t>(cPctExecuting);
+    if (pctHalted)
+        *pctHalted = static_cast<uint32_t>(cPctHalted);
+    if (pctOther)
+        *pctOther = static_cast<uint32_t>(cPctOther);
+    return static_cast<int64_t>(cResult);
+}
+#endif

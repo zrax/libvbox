@@ -82,6 +82,7 @@ target_sources(vbox
         lib/biossettings.cpp
         lib/certificate.cpp
         lib/cloudclient.cpp
+        lib/cloudnetwork.cpp
         lib/cloudprofile.cpp
         lib/cloudprovider.cpp
         lib/cloudprovidermanager.cpp
@@ -90,6 +91,8 @@ target_sources(vbox
         lib/cpuchangedevent.cpp
         lib/cursorpositionchangedevent.cpp
         lib/datastream.cpp
+        lib/dhcpconfig.cpp
+        lib/dhcpgroupcondition.cpp
         lib/dhcpserver.cpp
         lib/directory.cpp
         lib/display.cpp
@@ -107,9 +110,12 @@ target_sources(vbox
         lib/extpackplugin.cpp
         lib/extradatachangedevent.cpp
         lib/file.cpp
+        lib/form.cpp
+        lib/formvalue.cpp
         lib/framebuffer.cpp
         lib/framebufferoverlay.cpp
         lib/fsobjinfo.cpp
+        lib/graphicsadapter.cpp
         lib/guest.cpp
         lib/guestfileevent.cpp
         lib/guestfileioevent.cpp
@@ -172,6 +178,7 @@ target_sources(vbox
         lib/snapshotevent.cpp
         lib/statechangedevent.cpp
         lib/storagecontroller.cpp
+        lib/stringarray.cpp
         lib/systemproperties.cpp
         lib/token.cpp
         lib/unattended.cpp

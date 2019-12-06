@@ -74,6 +74,7 @@ std::u16string VBox::IDHCPServer::upperIP() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 std::vector<std::u16string> VBox::IDHCPServer::globalOptions() const
 {
     std::vector<std::u16string> result;
@@ -87,7 +88,32 @@ std::vector<std::u16string> VBox::IDHCPServer::vmConfigs() const
     COM_GetStringArray(get_IFC(), VmConfigs, result);
     return result;
 }
+#else
+VBox::COMPtr<VBox::IDHCPGlobalConfig> VBox::IDHCPServer::globalConfig() const
+{
+    COMPtr<IDHCPGlobalConfig> result;
+    COM_GetValue_Wrap(get_IFC(), GlobalConfig, result);
+    return result;
+}
 
+std::vector<VBox::COMPtr<VBox::IDHCPGroupConfig>>
+VBox::IDHCPServer::groupConfigs() const
+{
+    std::vector<COMPtr<IDHCPGroupConfig>> result;
+    COM_GetArray_Wrap(get_IFC(), GroupConfigs, result);
+    return result;
+}
+
+std::vector<VBox::COMPtr<VBox::IDHCPIndividualConfig>>
+VBox::IDHCPServer::individualConfigs() const
+{
+    std::vector<COMPtr<IDHCPIndividualConfig>> result;
+    COM_GetArray_Wrap(get_IFC(), IndividualConfigs, result);
+    return result;
+}
+#endif
+
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 void VBox::IDHCPServer::addGlobalOption(DhcpOpt option,
         const std::u16string &value)
 {
@@ -174,6 +200,7 @@ std::vector<std::u16string> VBox::IDHCPServer::getMacOptions(
     pResult.toVector(result);
     return result;
 }
+#endif
 
 void VBox::IDHCPServer::setConfiguration(const std::u16string &IPAddress,
         const std::u16string &networkMask, const std::u16string &FromIPAddress,
@@ -189,15 +216,23 @@ void VBox::IDHCPServer::setConfiguration(const std::u16string &IPAddress,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IDHCPServer::start(const std::u16string &networkName,
+void VBox::IDHCPServer::start(
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+        const std::u16string &networkName,
+#endif
         const std::u16string &trunkName, const std::u16string &trunkType)
 {
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
     COM_StringProxy pNetworkName(networkName);
+#endif
     COM_StringProxy pTrunkName(trunkName);
     COM_StringProxy pTrunkType(trunkType);
 
-    auto rc = get_IFC()->Start(pNetworkName.m_text, pTrunkName.m_text,
-                pTrunkType.m_text);
+    auto rc = get_IFC()->Start(
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+                pNetworkName.m_text,
+#endif
+                pTrunkName.m_text, pTrunkType.m_text);
     COM_ERROR_CHECK(rc);
 }
 
@@ -212,5 +247,45 @@ void VBox::IDHCPServer::restart()
 {
     auto rc = get_IFC()->Restart();
     COM_ERROR_CHECK(rc);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+void VBox::IDHCPServer::findLeaseByMAC(const std::u16string &mac, int32_t type,
+        std::u16string *address, std::u16string *state, int64_t *issued,
+        int64_t *expire)
+{
+    COM_StringProxy pMac(mac);
+    COM_StringProxy pAddress;
+    COM_StringProxy pState;
+    COM_Long64 cIssued;
+    COM_Long64 cExpire;
+
+    auto rc = get_IFC()->FindLeaseByMAC(pMac.m_text, type, &pAddress.m_text,
+                &pState.m_text, &cIssued, &cExpire);
+    COM_ERROR_CHECK(rc);
+
+    if (address)
+        *address = pAddress.toString();
+    if (state)
+        *state = pState.toString();
+    if (issued)
+        *issued = static_cast<int64_t>(cIssued);
+    if (expire)
+        *expire = static_cast<int64_t>(cExpire);
+}
+
+VBox::COMPtr<VBox::IDHCPConfig> VBox::IDHCPServer::getConfig(
+        DHCPConfigScope scope, const std::u16string &name, uint32_t slot,
+        bool mayAdd)
+{
+    ::IDHCPConfig *cResult = nullptr;
+    COM_StringProxy pName(name);
+
+    auto rc = get_IFC()->GetConfig(static_cast<COM_Enum(::DHCPConfigScope)>(scope),
+                pName.m_text, slot, mayAdd, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IDHCPConfig>::wrap(cResult);
 }
 #endif

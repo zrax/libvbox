@@ -21,6 +21,7 @@
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 COM_WRAP_IFC(ICloudClient)
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 std::u16string VBox::ICloudClient::getExportLaunchParameters() const
 {
     COM_StringProxy pResult;
@@ -39,4 +40,251 @@ void VBox::ICloudClient::exportLaunchVM(
                 virtualBox->get_IFC());
     COM_ERROR_CHECK(rc);
 }
+#else
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getExportDescriptionForm(
+        const COMPtr<IVirtualSystemDescription> &description,
+        COMPtr<IVirtualSystemDescriptionForm> *form)
+{
+    ::IProgress *cResult = nullptr;
+    ::IVirtualSystemDescriptionForm *cForm = nullptr;
+
+    auto rc = get_IFC()->GetExportDescriptionForm(description->get_IFC(),
+                &cForm, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (form)
+        *form = COMPtr<IVirtualSystemDescriptionForm>::wrap(cForm);
+    else if (cForm)
+        cForm->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+void VBox::ICloudClient::exportVM(const COMPtr<IVirtualSystemDescription> &description,
+        const COMPtr<IProgress> &progress)
+{
+    auto rc = get_IFC()->ExportVM(description->get_IFC(), progress->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getLaunchDescriptionForm(
+        const COMPtr<IVirtualSystemDescription> &description,
+        COMPtr<IVirtualSystemDescriptionForm> *form)
+{
+    ::IProgress *cResult = nullptr;
+    ::IVirtualSystemDescriptionForm *cForm = nullptr;
+
+    auto rc = get_IFC()->GetLaunchDescriptionForm(description->get_IFC(),
+                &cForm, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (form)
+        *form = COMPtr<IVirtualSystemDescriptionForm>::wrap(cForm);
+    else if (cForm)
+        cForm->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::launchVM(
+        const COMPtr<IVirtualSystemDescription> &description)
+{
+    ::IProgress *cResult = nullptr;
+
+    auto rc = get_IFC()->LaunchVM(description->get_IFC(), &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getImportDescriptionForm(
+        const COMPtr<IVirtualSystemDescription> &description,
+        COMPtr<IVirtualSystemDescriptionForm> *form)
+{
+    ::IProgress *cResult = nullptr;
+    ::IVirtualSystemDescriptionForm *cForm = nullptr;
+
+    auto rc = get_IFC()->GetImportDescriptionForm(description->get_IFC(),
+                &cForm, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (form)
+        *form = COMPtr<IVirtualSystemDescriptionForm>::wrap(cForm);
+    else if (cForm)
+        cForm->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+void VBox::ICloudClient::importInstance(
+        const COMPtr<IVirtualSystemDescription> &description,
+        const COMPtr<IProgress> &progress)
+{
+    auto rc = get_IFC()->ImportInstance(description->get_IFC(), progress->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listInstances(
+        const std::vector<CloudMachineState> &machineState,
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds)
+{
+    ::IProgress *cResult = nullptr;
+    COM_ArrayProxy<COM_Enum(::CloudMachineState)> pMachineState(machineState);
+    ::IStringArray *cReturnNames = nullptr;
+    ::IStringArray *cReturnIds = nullptr;
+
+    auto rc = get_IFC()->ListInstances(COM_ArrayParameter(pMachineState),
+                &cReturnNames, &cReturnIds, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (returnNames)
+        *returnNames = COMPtr<IStringArray>::wrap(cReturnNames);
+    else if (cReturnNames)
+        cReturnNames->Release();
+    if (returnIds)
+        *returnIds = COMPtr<IStringArray>::wrap(cReturnIds);
+    else if (cReturnIds)
+        cReturnIds->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listImages(
+        const std::vector<CloudImageState> &imageState,
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds)
+{
+    ::IProgress *cResult = nullptr;
+    COM_ArrayProxy<COM_Enum(::CloudImageState)> pImageState(imageState);
+    ::IStringArray *cReturnNames = nullptr;
+    ::IStringArray *cReturnIds = nullptr;
+
+    auto rc = get_IFC()->ListImages(COM_ArrayParameter(pImageState),
+                &cReturnNames, &cReturnIds, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (returnNames)
+        *returnNames = COMPtr<IStringArray>::wrap(cReturnNames);
+    else if (cReturnNames)
+        cReturnNames->Release();
+    if (returnIds)
+        *returnIds = COMPtr<IStringArray>::wrap(cReturnIds);
+    else if (cReturnIds)
+        cReturnIds->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getInstanceInfo(
+        const std::u16string &uid,
+        const COMPtr<IVirtualSystemDescription> &description)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+
+    auto rc = get_IFC()->GetInstanceInfo(pUid.m_text, description->get_IFC(),
+                &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::startInstance(
+        const std::u16string &uid)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+
+    auto rc = get_IFC()->StartInstance(pUid.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::pauseInstance(
+        const std::u16string &uid)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+
+    auto rc = get_IFC()->PauseInstance(pUid.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::terminateInstance(
+        const std::u16string &uid)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+
+    auto rc = get_IFC()->TerminateInstance(pUid.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::createImage(
+        std::vector<std::u16string> &parameters)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringArrayProxy pParameters(parameters);
+
+    auto rc = get_IFC()->CreateImage(COM_ArrayParameter(pParameters), &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::exportImage(
+        const COMPtr<IMedium> &image, const std::vector<std::u16string> &parameters)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringArrayProxy pParameters(parameters);
+
+    auto rc = get_IFC()->ExportImage(image->get_IFC(), COM_ArrayParameter(pParameters),
+                &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::importImage(
+        const std::u16string &uid, const std::vector<std::u16string> &parameters)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+    COM_StringArrayProxy pParameters(parameters);
+
+    auto rc = get_IFC()->ImportImage(pUid.m_text, COM_ArrayParameter(pParameters),
+                &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::deleteImage(const std::u16string &uid)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+
+    auto rc = get_IFC()->DeleteImage(pUid.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getImageInfo(
+        const std::u16string &uid, COMPtr<IStringArray> *infoArray)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+    ::IStringArray *cInfoArray;
+
+    auto rc = get_IFC()->GetImageInfo(pUid.m_text, &cInfoArray, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (infoArray)
+        *infoArray = COMPtr<IStringArray>::wrap(cInfoArray);
+    else if (cInfoArray)
+        cInfoArray->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 #endif

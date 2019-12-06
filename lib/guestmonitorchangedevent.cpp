@@ -19,6 +19,9 @@
 #include "libvbox_p.h"
 
 COM_WRAP_IFC(IGuestMonitorChangedEvent)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+COM_WRAP_IFC(IGuestMonitorInfoChangedEvent)
+#endif
 
 VBox::GuestMonitorChangedEventType VBox::IGuestMonitorChangedEvent::changeType() const
 {
@@ -61,3 +64,12 @@ uint32_t VBox::IGuestMonitorChangedEvent::height() const
     COM_GetValue(get_IFC(), Height, result);
     return static_cast<uint32_t>(result);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+uint32_t VBox::IGuestMonitorInfoChangedEvent::output() const
+{
+    COM_ULong result;
+    COM_GetValue(get_IFC(), Output, result);
+    return static_cast<uint32_t>(result);
+}
+#endif

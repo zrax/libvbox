@@ -93,9 +93,22 @@ void VBox::IInternalSessionControl::onParallelPortChange(
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IInternalSessionControl::onStorageControllerChange()
+void VBox::IInternalSessionControl::onStorageControllerChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        const std::u16string &machineId, const std::u16string &controllerName
+#endif
+        )
 {
-    auto rc = get_IFC()->OnStorageControllerChange();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+    COM_StringProxy pMachineId(machineId);
+    COM_StringProxy pControllerName(controllerName);
+#endif
+
+    auto rc = get_IFC()->OnStorageControllerChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+                pMachineId.m_text, pControllerName.m_text
+#endif
+                );
     COM_ERROR_CHECK(rc);
 }
 
@@ -115,6 +128,16 @@ void VBox::IInternalSessionControl::onStorageDeviceChange(
     COM_ERROR_CHECK(rc);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+void VBox::IInternalSessionControl::onVMProcessPriorityChange(VMProcPriority priority)
+{
+    auto cPriority = static_cast<COM_Enum(::VMProcPriority)>(priority);
+
+    auto rc = get_IFC()->OnVMProcessPriorityChange(cPriority);
+    COM_ERROR_CHECK(rc);
+}
+#endif
+
 void VBox::IInternalSessionControl::onClipboardModeChange(
         ClipboardMode clipboardMode)
 {
@@ -123,6 +146,14 @@ void VBox::IInternalSessionControl::onClipboardModeChange(
     auto rc = get_IFC()->OnClipboardModeChange(cClipboardMode);
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+void VBox::IInternalSessionControl::onClipboardFileTransferModeChange(bool enabled)
+{
+    auto rc = get_IFC()->OnClipboardFileTransferModeChange(enabled);
+    COM_ERROR_CHECK(rc);
+}
+#endif
 
 void VBox::IInternalSessionControl::onDnDModeChange(DnDMode dndMode)
 {

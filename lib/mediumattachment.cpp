@@ -20,6 +20,15 @@
 
 COM_WRAP_IFC(IMediumAttachment)
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox::COMPtr<VBox::IMachine> VBox::IMediumAttachment::machine() const
+{
+    COMPtr<IMachine> result;
+    COM_GetValue_Wrap(get_IFC(), Machine, result);
+    return result;
+}
+#endif
+
 VBox::COMPtr<VBox::IMedium> VBox::IMediumAttachment::medium() const
 {
     COMPtr<IMedium> result;

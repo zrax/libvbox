@@ -269,6 +269,32 @@ namespace VBox
 #endif
     };
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+    enum class CloudImageState
+    {
+        Invalid = 0,
+        Provisioning = 1,
+        Importing = 2,
+        Available = 3,
+        Exporting = 4,
+        Disabled = 5,
+        Deleted = 6,
+    };
+
+    enum class CloudMachineState
+    {
+        Invalid = 0,
+        Provisioning = 1,
+        Running = 2,
+        Starting = 3,
+        Stopping = 4,
+        Stopped = 5,
+        CreatingImage = 6,
+        Terminating = 7,
+        Terminated = 8,
+    };
+#endif
+
     enum class CPUPropertyType
     {
         Null = 0,
@@ -345,6 +371,7 @@ namespace VBox
         Graphics3D = 7,
     };
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
     enum class DhcpOpt
     {
         SubnetMask = 1,
@@ -411,12 +438,114 @@ namespace VBox
         Option_75 = 75,
         Option_119 = 119,
     };
+#else
+    // This is essentially the same enum, but VBox has tweaked most of the names
+    // and added several entries...
+    enum class DHCPOption
+    {
+        SubnetMask = 1,
+        TimeOffset = 2,
+        Routers = 3,
+        TimeServers = 4,
+        NameServers = 5,
+        DomainNameServers = 6,
+        LogServers = 7,
+        CookieServers = 8,
+        LPRServers = 9,
+        ImpressServers = 10,
+        ResourseLocationServers = 11,
+        HostName = 12,
+        BootFileSize = 13,
+        MeritDumpFile = 14,
+        DomainName = 15,
+        SwapServer = 16,
+        RootPath = 17,
+        ExtensionPath = 18,
+        IPForwarding = 19,
+        OptNonLocalSourceRouting = 20,
+        PolicyFilter = 21,
+        MaximumDgramReassemblySize = 22,
+        DefaultIPTTL = 23,
+        PathMTUAgingTimeout = 24,
+        PathMTUPlateauTable = 25,
+        InterfaceMTU = 26,
+        AllSubnetsAreLocal = 27,
+        BroadcastAddress = 28,
+        PerformMaskDiscovery = 29,
+        MaskSupplier = 30,
+        PerformRouterDiscovery = 31,
+        RouterSolicitationAddress = 32,
+        StaticRoute = 33,
+        TrailerEncapsulation = 34,
+        ARPCacheTimeout = 35,
+        EthernetEncapsulation = 36,
+        TCPDefaultTTL = 37,
+        TCPKeepaliveInterval = 38,
+        TCPKeepaliveGarbage = 39,
+        NISDomain = 40,
+        NISServers = 41,
+        NTPServers = 42,
+        VendorSpecificInfo = 43,
+        NetBIOSNameServers = 44,
+        NetBIOSDatagramServers = 45,
+        NetBIOSNodeType = 46,
+        NetBIOSScope = 47,
+        XWindowsFontServers = 48,
+        XWindowsDisplayManager = 49,
+        NetWareIPDomainName = 62,
+        NetWareIPInformation = 63,
+        NISPlusDomain = 64,
+        NISPlusServers = 65,
+        TFTPServerName = 66,
+        BootfileName = 67,
+        MobileIPHomeAgents = 68,
+        SMTPServers = 69,
+        POP3Servers = 70,
+        NNTPServers = 71,
+        WWWServers = 72,
+        FingerServers = 73,
+        IRCServers = 74,
+        StreetTalkServers = 75,
+        STDAServers = 76,
+        SLPDirectoryAgent = 78,
+        SLPServiceScope = 79,
+        DomainSearch = 119,
+    };
+#endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
     enum class DhcpOptEncoding
     {
         Legacy = 0,
         Hex = 1,
     };
+#else
+    enum class DHCPOptionEncoding
+    {
+        Normal = 0,
+        Hex = 1,
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+    enum class DHCPConfigScope
+    {
+        Global = 0,
+        Group = 1,
+        MachineNIC = 2,
+        MAC = 3,
+    };
+
+    enum class DHCPGroupConditionType
+    {
+        MAC = 0,
+        MACWildcard = 1,
+        vendorClassID = 2,
+        vendorClassIDWildcard = 3,
+        userClassID = 4,
+        userClassIDWildcard = 5,
+    };
+#endif
 
     enum class DirectoryCopyFlag
     {
@@ -472,12 +601,14 @@ namespace VBox
         StripAllNonNATMACs = 4,
     };
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
     enum class FaultToleranceState
     {
         Inactive = 1,
         Master = 2,
         Standby = 3,
     };
+#endif
 
     enum class FileAccessMode
     {
@@ -552,6 +683,16 @@ namespace VBox
         EFI64 = 4,
         EFIDUAL = 5,
     };
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+    enum class FormValueType
+    {
+        Boolean = 0,
+        String = 1,
+        Choice = 2,
+        RangedInteger = 3,
+    };
+#endif
 
     enum class FramebufferCapabilities
     {
@@ -750,33 +891,35 @@ namespace VBox
     enum class MachineState
     {
         Null = 0,
-        PoweredOff = 1,
-        Saved = 2,
-        Teleported = 3,
-        Aborted = 4,
-        Running = 5,
-        Paused = 6,
-        Stuck = 7,
-        Teleporting = 8,
-        LiveSnapshotting = 9,
-        Starting = 10,
-        Stopping = 11,
-        Saving = 12,
-        Restoring = 13,
-        TeleportingPausedVM = 14,
-        TeleportingIn = 15,
-        FaultTolerantSyncing = 16,
-        DeletingSnapshotOnline = 17,
-        DeletingSnapshotPaused = 18,
-        OnlineSnapshotting = 19,
-        RestoringSnapshot = 20,
-        DeletingSnapshot = 21,
-        SettingUp = 22,
-        Snapshotting = 23,
-        FirstOnline = 5,
-        LastOnline = 19,
-        FirstTransient = 8,
-        LastTransient = 23,
+        PoweredOff,
+        Saved,
+        Teleported,
+        Aborted,
+        Running,
+        Paused,
+        Stuck,
+        Teleporting,
+        LiveSnapshotting,
+        Starting,
+        Stopping,
+        Saving,
+        Restoring,
+        TeleportingPausedVM,
+        TeleportingIn,
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+        FaultTolerantSyncing,
+#endif
+        DeletingSnapshotOnline,
+        DeletingSnapshotPaused,
+        OnlineSnapshotting,
+        RestoringSnapshot,
+        DeletingSnapshot,
+        SettingUp,
+        Snapshotting,
+        FirstOnline = Running,
+        LastOnline = OnlineSnapshotting,
+        FirstTransient = Teleporting,
+        LastTransient = Snapshotting,
     };
 
     enum class MediumFormatCapabilities
@@ -882,6 +1025,9 @@ namespace VBox
         I82543GC = 4,
         I82545EM = 5,
         Virtio = 6,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        Am79C960 = 7,
+#endif
     };
 
     enum class NetworkAttachmentType
@@ -893,6 +1039,9 @@ namespace VBox
         HostOnly = 4,
         Generic = 5,
         NATNetwork = 6,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        Cloud = 7,
+#endif
     };
 
     enum class ParavirtProvider
@@ -1116,6 +1265,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
         Attach = 2,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        Silent = 3,
+#endif
     };
 #endif
 
@@ -1162,6 +1314,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
         v1_17 = 19,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        v1_18 = 20,
+#endif
         Future = 99999,
     };
 
@@ -1176,6 +1331,9 @@ namespace VBox
         USB = 6,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
         PCIe = 7,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        VirtioSCSI = 8,
 #endif
     };
 
@@ -1193,6 +1351,9 @@ namespace VBox
         USB = 9,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
         NVMe = 10,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        VirtioSCSI = 11,
 #endif
     };
 
@@ -1267,109 +1428,106 @@ namespace VBox
     enum class VBoxEventType
     {
         Invalid = 0,
-        Any = 1,
-        Vetoable = 2,
-        MachineEvent = 3,
-        SnapshotEvent = 4,
-        InputEvent = 5,
+        Any,
+        Vetoable,
+        MachineEvent,
+        SnapshotEvent,
+        InputEvent,
         LastWildcard = 31,
-        OnMachineStateChanged = 32,
-        OnMachineDataChanged = 33,
-        OnExtraDataChanged = 34,
-        OnExtraDataCanChange = 35,
-        OnMediumRegistered = 36,
-        OnMachineRegistered = 37,
-        OnSessionStateChanged = 38,
-        OnSnapshotTaken = 39,
-        OnSnapshotDeleted = 40,
-        OnSnapshotChanged = 41,
-        OnGuestPropertyChanged = 42,
-        OnMousePointerShapeChanged = 43,
-        OnMouseCapabilityChanged = 44,
-        OnKeyboardLedsChanged = 45,
-        OnStateChanged = 46,
-        OnAdditionsStateChanged = 47,
-        OnNetworkAdapterChanged = 48,
-        OnSerialPortChanged = 49,
-        OnParallelPortChanged = 50,
-        OnStorageControllerChanged = 51,
-        OnMediumChanged = 52,
-        OnVRDEServerChanged = 53,
-        OnUSBControllerChanged = 54,
-        OnUSBDeviceStateChanged = 55,
-        OnSharedFolderChanged = 56,
-        OnRuntimeError = 57,
-        OnCanShowWindow = 58,
-        OnShowWindow = 59,
-        OnCPUChanged = 60,
-        OnVRDEServerInfoChanged = 61,
-        OnEventSourceChanged = 62,
-        OnCPUExecutionCapChanged = 63,
-        OnGuestKeyboard = 64,
-        OnGuestMouse = 65,
-        OnNATRedirect = 66,
-        OnHostPCIDevicePlug = 67,
-        OnVBoxSVCAvailabilityChanged = 68,
-        OnBandwidthGroupChanged = 69,
-        OnGuestMonitorChanged = 70,
-        OnStorageDeviceChanged = 71,
-        OnClipboardModeChanged = 72,
-        OnDnDModeChanged = 73,
-        OnNATNetworkChanged = 74,
-        OnNATNetworkStartStop = 75,
-        OnNATNetworkAlter = 76,
-        OnNATNetworkCreationDeletion = 77,
-        OnNATNetworkSetting = 78,
-        OnNATNetworkPortForward = 79,
-        OnGuestSessionStateChanged = 80,
-        OnGuestSessionRegistered = 81,
-        OnGuestProcessRegistered = 82,
-        OnGuestProcessStateChanged = 83,
-        OnGuestProcessInputNotify = 84,
-        OnGuestProcessOutput = 85,
-        OnGuestFileRegistered = 86,
-        OnGuestFileStateChanged = 87,
-        OnGuestFileOffsetChanged = 88,
-        OnGuestFileRead = 89,
-        OnGuestFileWrite = 90,
+        OnMachineStateChanged,
+        OnMachineDataChanged,
+        OnExtraDataChanged,
+        OnExtraDataCanChange,
+        OnMediumRegistered,
+        OnMachineRegistered,
+        OnSessionStateChanged,
+        OnSnapshotTaken,
+        OnSnapshotDeleted,
+        OnSnapshotChanged,
+        OnGuestPropertyChanged,
+        OnMousePointerShapeChanged,
+        OnMouseCapabilityChanged,
+        OnKeyboardLedsChanged,
+        OnStateChanged,
+        OnAdditionsStateChanged,
+        OnNetworkAdapterChanged,
+        OnSerialPortChanged,
+        OnParallelPortChanged,
+        OnStorageControllerChanged,
+        OnMediumChanged,
+        OnVRDEServerChanged,
+        OnUSBControllerChanged,
+        OnUSBDeviceStateChanged,
+        OnSharedFolderChanged,
+        OnRuntimeError,
+        OnCanShowWindow,
+        OnShowWindow,
+        OnCPUChanged,
+        OnVRDEServerInfoChanged,
+        OnEventSourceChanged,
+        OnCPUExecutionCapChanged,
+        OnGuestKeyboard,
+        OnGuestMouse,
+        OnNATRedirect,
+        OnHostPCIDevicePlug,
+        OnVBoxSVCAvailabilityChanged,
+        OnBandwidthGroupChanged,
+        OnGuestMonitorChanged,
+        OnStorageDeviceChanged,
+        OnClipboardModeChanged,
+        OnDnDModeChanged,
+        OnNATNetworkChanged,
+        OnNATNetworkStartStop,
+        OnNATNetworkAlter,
+        OnNATNetworkCreationDeletion,
+        OnNATNetworkSetting,
+        OnNATNetworkPortForward,
+        OnGuestSessionStateChanged,
+        OnGuestSessionRegistered,
+        OnGuestProcessRegistered,
+        OnGuestProcessStateChanged,
+        OnGuestProcessInputNotify,
+        OnGuestProcessOutput,
+        OnGuestFileRegistered,
+        OnGuestFileStateChanged,
+        OnGuestFileOffsetChanged,
+        OnGuestFileRead,
+        OnGuestFileWrite,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-        OnRecordingChanged = 91,
+        OnRecordingChanged,
 #else
-        OnVideoCaptureChanged = 91,
+        OnVideoCaptureChanged,
 #endif
-        OnGuestUserStateChanged = 92,
-        OnGuestMultiTouch = 93,
-        OnHostNameResolutionConfigurationChange = 94,
-        OnSnapshotRestored = 95,
-        OnMediumConfigChanged = 96,
+        OnGuestUserStateChanged,
+        OnGuestMultiTouch,
+        OnHostNameResolutionConfigurationChange,
+        OnSnapshotRestored,
+        OnMediumConfigChanged,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-        OnAudioAdapterChanged = 97,
-        OnProgressPercentageChanged = 98,
-        OnProgressTaskCompleted = 99,
-#endif
-#if (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)             \
-      && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
-        OnGuestAdditionsStatusChanged = 100,
-        OnGuestFileSizeChanged = 101,
+        OnAudioAdapterChanged,
+        OnProgressPercentageChanged,
+        OnProgressTaskCompleted,
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-        OnCursorPositionChanged = 100,
+        OnCursorPositionChanged,
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)
-        OnGuestAdditionsStatusChanged = 101,
-        OnGuestFileSizeChanged = 102,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)                \
+    || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
+         && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
+        OnGuestAdditionsStatusChanged,
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)
-        Last = 103,
-#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-        Last = 101,
-#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32)
-        Last = 102,
-#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-        Last = 100,
-#else
-        Last = 97,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        OnGuestMonitorInfoChanged,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 10)                \
+    || (    VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)          \
+         && VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 32) )
+        OnGuestFileSizeChanged,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        OnClipboardFileTransferModeChanged,
+#endif
+        Last,
     };
 
     enum class VFSType
@@ -1378,7 +1536,8 @@ namespace VBox
         Cloud = 2,
         S3 = 3,
         WebDav = 4,
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)                 \
+    && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
         OCI = 5,
 #endif
     };
@@ -1423,6 +1582,20 @@ namespace VBox
         CloudKeepObject = 35,
         CloudLaunchInstance = 36,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        CloudInstanceId = 37,
+        CloudImageId = 38,
+        CloudInstanceState = 39,
+        CloudImageState = 40,
+        CloudInstanceDisplayName = 41,
+        CloudImageDisplayName = 42,
+        CloudOCILaunchMode = 43,
+        CloudPrivateIP = 44,
+        CloudBootVolumeId = 45,
+        CloudOCIVCNCompartment = 46,
+        CloudOCISubnetCompartment = 47,
+        CloudPublicSSHKey = 48,
+#endif
     };
 
     enum class VirtualSystemDescriptionValueType
@@ -1440,6 +1613,18 @@ namespace VBox
         RawMode = 1,
         HwVirt = 2,
         NativeApi = 3,
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+    enum class VMProcPriority
+    {
+        Invalid = 0,
+        Default = 1,
+        Flat = 2,
+        Low = 3,
+        Normal = 5,
+        High = 6,
     };
 #endif
 }
@@ -1468,13 +1653,27 @@ VBox_FORWARD_DECL_IFC(IBandwidthControl);
 VBox_FORWARD_DECL_IFC(IBandwidthGroup);
 VBox_FORWARD_DECL_IFC(IBandwidthGroupChangedEvent);
 VBox_FORWARD_DECL_IFC(IBIOSSettings);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IBooleanFormValue);
+#endif
 VBox_FORWARD_DECL_IFC(ICanShowWindowEvent);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
 VBox_FORWARD_DECL_IFC(ICertificate);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IChoiceFormValue);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IClipboardFileTransferModeChangedEvent);
+#endif
 VBox_FORWARD_DECL_IFC(IClipboardModeChangedEvent);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(ICloudClient);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(ICloudNetwork);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(ICloudProfile);
 VBox_FORWARD_DECL_IFC(ICloudProvider);
 VBox_FORWARD_DECL_IFC(ICloudProviderManager);
@@ -1487,6 +1686,13 @@ VBox_FORWARD_DECL_IFC(ICursorPositionChangedEvent);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(IDataStream);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IDHCPConfig);
+VBox_FORWARD_DECL_IFC(IDHCPGlobalConfig);
+VBox_FORWARD_DECL_IFC(IDHCPGroupCondition);
+VBox_FORWARD_DECL_IFC(IDHCPGroupConfig);
+VBox_FORWARD_DECL_IFC(IDHCPIndividualConfig);
 #endif
 VBox_FORWARD_DECL_IFC(IDHCPServer);
 VBox_FORWARD_DECL_IFC(IDirectory);
@@ -1509,9 +1715,16 @@ VBox_FORWARD_DECL_IFC(IExtPackPlugIn);
 VBox_FORWARD_DECL_IFC(IExtraDataCanChangeEvent);
 VBox_FORWARD_DECL_IFC(IExtraDataChangedEvent);
 VBox_FORWARD_DECL_IFC(IFile);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IForm);
+VBox_FORWARD_DECL_IFC(IFormValue);
+#endif
 VBox_FORWARD_DECL_IFC(IFramebuffer);
 VBox_FORWARD_DECL_IFC(IFramebufferOverlay);
 VBox_FORWARD_DECL_IFC(IFsObjInfo);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IGraphicsAdapter);
+#endif
 VBox_FORWARD_DECL_IFC(IGuest);
 VBox_FORWARD_DECL_IFC(IGuestAdditionsStatusChangedEvent);
 VBox_FORWARD_DECL_IFC(IGuestDirectory);
@@ -1529,6 +1742,9 @@ VBox_FORWARD_DECL_IFC(IGuestFileWriteEvent);
 VBox_FORWARD_DECL_IFC(IGuestFsObjInfo);
 VBox_FORWARD_DECL_IFC(IGuestKeyboardEvent);
 VBox_FORWARD_DECL_IFC(IGuestMonitorChangedEvent);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IGuestMonitorInfoChangedEvent);
+#endif
 VBox_FORWARD_DECL_IFC(IGuestMouseEvent);
 VBox_FORWARD_DECL_IFC(IGuestMultiTouchEvent);
 VBox_FORWARD_DECL_IFC(IGuestOSType);
@@ -1552,6 +1768,9 @@ VBox_FORWARD_DECL_IFC(IHost);
 VBox_FORWARD_DECL_IFC(IHostNameResolutionConfigurationChangeEvent);
 VBox_FORWARD_DECL_IFC(IHostNetworkInterface);
 VBox_FORWARD_DECL_IFC(IHostPCIDevicePlugEvent);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IHostUpdate);
+#endif
 VBox_FORWARD_DECL_IFC(IHostUSBDevice);
 VBox_FORWARD_DECL_IFC(IHostUSBDeviceFilter);
 VBox_FORWARD_DECL_IFC(IHostVideoInputDevice);
@@ -1605,6 +1824,9 @@ VBox_FORWARD_DECL_IFC(IProgressEvent);
 VBox_FORWARD_DECL_IFC(IProgressPercentageChangedEvent);
 VBox_FORWARD_DECL_IFC(IProgressTaskCompletedEvent);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IRangedIntegerFormValue);
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(IRecordingChangedEvent);
 VBox_FORWARD_DECL_IFC(IRecordingScreenSettings);
@@ -1629,6 +1851,10 @@ VBox_FORWARD_DECL_IFC(IStateChangedEvent);
 VBox_FORWARD_DECL_IFC(IStorageController);
 VBox_FORWARD_DECL_IFC(IStorageControllerChangedEvent);
 VBox_FORWARD_DECL_IFC(IStorageDeviceChangedEvent);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IStringArray);
+VBox_FORWARD_DECL_IFC(IStringFormValue);
+#endif
 VBox_FORWARD_DECL_IFC(ISystemProperties);
 VBox_FORWARD_DECL_IFC(IToken);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
@@ -1653,6 +1879,9 @@ VBox_FORWARD_DECL_IFC(IVirtualBox);
 VBox_FORWARD_DECL_IFC(IVirtualBoxClient);
 VBox_FORWARD_DECL_IFC(IVirtualBoxErrorInfo);
 VBox_FORWARD_DECL_IFC(IVirtualSystemDescription);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox_FORWARD_DECL_IFC(IVirtualSystemDescriptionForm);
+#endif
 VBox_FORWARD_DECL_IFC(IVRDEServer);
 VBox_FORWARD_DECL_IFC(IVRDEServerChangedEvent);
 VBox_FORWARD_DECL_IFC(IVRDEServerInfo);

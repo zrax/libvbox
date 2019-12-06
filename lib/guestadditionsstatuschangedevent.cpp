@@ -30,11 +30,13 @@ VBox::AdditionsFacilityType VBox::IGuestAdditionsStatusChangedEvent::facility() 
     return static_cast<AdditionsFacilityType>(result);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 void VBox::IGuestAdditionsStatusChangedEvent::set_facility(AdditionsFacilityType value)
 {
     COM_SetValue(get_IFC(), Facility,
                  static_cast<COM_Enum(::AdditionsFacilityType)>(value));
 }
+#endif
 
 VBox::AdditionsFacilityStatus VBox::IGuestAdditionsStatusChangedEvent::status() const
 {

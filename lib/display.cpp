@@ -90,12 +90,54 @@ VBox::COMPtr<VBox::IFramebuffer> VBox::IDisplay::queryFramebuffer(uint32_t scree
 
 void VBox::IDisplay::setVideoModeHint(uint32_t display, bool enabled,
         bool changeOrigin, int32_t originX, int32_t originY, uint32_t width,
-        uint32_t height, uint32_t bitsPerPixel)
+        uint32_t height, uint32_t bitsPerPixel
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+      , bool notify
+#endif
+        )
 {
     auto rc = get_IFC()->SetVideoModeHint(display, enabled, changeOrigin,
-                    originX, originY, width, height, bitsPerPixel);
+                    originX, originY, width, height, bitsPerPixel
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+                  , notify
+#endif
+                    );
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+void VBox::IDisplay::getVideoModeHint(uint32_t display, bool *enabled,
+        bool *changeOrigin, int32_t *originX, int32_t *originY, uint32_t *width,
+        uint32_t *height, uint32_t *bitsPerPixel)
+{
+    COM_Bool cEnabled;
+    COM_Bool cChangeOrigin;
+    COM_Long cOriginX;
+    COM_Long cOriginY;
+    COM_ULong cWidth;
+    COM_ULong cHeight;
+    COM_ULong cBitsPerPixel;
+
+    auto rc = get_IFC()->GetVideoModeHint(display, &cEnabled, &cChangeOrigin,
+                &cOriginX, &cOriginY, &cWidth, &cHeight, &cBitsPerPixel);
+    COM_ERROR_CHECK(rc);
+
+    if (enabled)
+        *enabled = static_cast<bool>(cEnabled);
+    if (changeOrigin)
+        *changeOrigin = static_cast<bool>(cChangeOrigin);
+    if (originX)
+        *originX = static_cast<int32_t>(cOriginX);
+    if (originY)
+        *originY = static_cast<int32_t>(cOriginY);
+    if (width)
+        *width = static_cast<uint32_t>(cWidth);
+    if (height)
+        *height = static_cast<uint32_t>(cHeight);
+    if (bitsPerPixel)
+        *bitsPerPixel = static_cast<uint32_t>(cBitsPerPixel);
+}
+#endif
 
 void VBox::IDisplay::setSeamlessMode(bool enabled)
 {

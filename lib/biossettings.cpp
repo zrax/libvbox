@@ -149,3 +149,17 @@ std::u16string VBox::IBIOSSettings::nonVolatileStorageFile() const
     COM_GetString(get_IFC(), NonVolatileStorageFile, result);
     return result;
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+bool VBox::IBIOSSettings::SMBIOSUuidLittleEndian() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), SMBIOSUuidLittleEndian, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::IBIOSSettings::set_SMBIOSUuidLittleEndian(bool value)
+{
+    COM_SetValue(get_IFC(), SMBIOSUuidLittleEndian, value);
+}
+#endif

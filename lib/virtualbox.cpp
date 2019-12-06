@@ -195,6 +195,15 @@ std::vector<std::u16string> VBox::IVirtualBox::genericNetworkDrivers() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+std::vector<VBox::COMPtr<VBox::ICloudNetwork>> VBox::IVirtualBox::cloudNetworks() const
+{
+    std::vector<COMPtr<ICloudNetwork>> result;
+    COM_GetArray_Wrap(get_IFC(), CloudNetworks, result);
+    return result;
+}
+#endif
+
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox::COMPtr<VBox::ICloudProviderManager> VBox::IVirtualBox::cloudProviderManager() const
 {
@@ -489,6 +498,38 @@ void VBox::IVirtualBox::removeNATNetwork(const COMPtr<INATNetwork> &network)
     auto rc = get_IFC()->RemoveNATNetwork(network->get_IFC());
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox::COMPtr<VBox::ICloudNetwork> VBox::IVirtualBox::createCloudNetwork(
+        const std::u16string &networkName)
+{
+    ::ICloudNetwork *cResult = nullptr;
+    COM_StringProxy pNetworkName(networkName);
+
+    auto rc = get_IFC()->CreateCloudNetwork(pNetworkName.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<ICloudNetwork>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::ICloudNetwork> VBox::IVirtualBox::findCloudNetworkByName(
+        const std::u16string &networkName)
+{
+    ::ICloudNetwork *cResult = nullptr;
+    COM_StringProxy pNetworkName(networkName);
+
+    auto rc = get_IFC()->FindCloudNetworkByName(pNetworkName.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<ICloudNetwork>::wrap(cResult);
+}
+
+void VBox::IVirtualBox::removeCloudNetwork(const COMPtr<ICloudNetwork> &network)
+{
+    auto rc = get_IFC()->RemoveCloudNetwork(network->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+#endif
 
 bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
         const std::u16string &version, std::u16string *url, std::u16string *file)

@@ -137,6 +137,20 @@ void VBox::INetworkAdapter::set_genericDriver(const std::u16string &value)
     COM_SetString(get_IFC(), GenericDriver, value);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+std::u16string VBox::INetworkAdapter::cloudNetwork() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), CloudNetwork, result);
+    return result;
+}
+
+void VBox::INetworkAdapter::set_cloudNetwork(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), CloudNetwork, value);
+}
+#endif
+
 bool VBox::INetworkAdapter::cableConnected() const
 {
     COM_Bool result;

@@ -84,6 +84,15 @@ uint16_t VBox::IUSBDevice::port() const
     return static_cast<uint16_t>(result);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+std::u16string VBox::IUSBDevice::portPath() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), PortPath, result);
+    return result;
+}
+#endif
+
 uint16_t VBox::IUSBDevice::version() const
 {
     COM_UShort result;
@@ -91,12 +100,14 @@ uint16_t VBox::IUSBDevice::version() const
     return static_cast<uint16_t>(result);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 uint16_t VBox::IUSBDevice::portVersion() const
 {
     COM_UShort result;
     COM_GetValue(get_IFC(), PortVersion, result);
     return static_cast<uint16_t>(result);
 }
+#endif
 
 VBox::USBConnectionSpeed VBox::IUSBDevice::speed() const
 {

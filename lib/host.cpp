@@ -19,6 +19,9 @@
 #include "libvbox_p.h"
 
 COM_WRAP_IFC(IHost)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+COM_WRAP_IFC(IHostUpdate)
+#endif
 
 std::vector<VBox::COMPtr<VBox::IMedium>> VBox::IHost::DVDDrives() const
 {
@@ -152,6 +155,15 @@ std::vector<VBox::COMPtr<VBox::IHostVideoInputDevice>> VBox::IHost::videoInputDe
     COM_GetArray_Wrap(get_IFC(), VideoInputDevices, result);
     return result;
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox::COMPtr<VBox::IHostUpdate> VBox::IHost::update() const
+{
+    COMPtr<IHostUpdate> result;
+    COM_GetValue_Wrap(get_IFC(), Update, result);
+    return result;
+}
+#endif
 
 uint32_t VBox::IHost::getProcessorSpeed(uint32_t cpuId)
 {

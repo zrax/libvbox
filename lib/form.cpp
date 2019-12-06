@@ -18,31 +18,25 @@
 
 #include "libvbox_p.h"
 
-COM_WRAP_IFC(IClipboardModeChangedEvent)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
-COM_WRAP_IFC(IClipboardFileTransferModeChangedEvent)
+COM_WRAP_IFC(IForm)
+COM_WRAP_IFC(IVirtualSystemDescriptionForm)
+
+std::vector<VBox::COMPtr<VBox::IFormValue>> VBox::IForm::values() const
+{
+    std::vector<COMPtr<IFormValue>> result;
+    COM_GetArray_Wrap(get_IFC(), Values, result);
+    return result;
+}
+
+VBox::COMPtr<VBox::IVirtualSystemDescription>
+VBox::IVirtualSystemDescriptionForm::getVirtualSystemDescription()
+{
+    ::IVirtualSystemDescription *cResult = nullptr;
+
+    auto rc = get_IFC()->GetVirtualSystemDescription(&cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IVirtualSystemDescription>::wrap(cResult);
+}
 #endif
-COM_WRAP_IFC(IDnDModeChangedEvent)
-
-VBox::ClipboardMode VBox::IClipboardModeChangedEvent::clipboardMode() const
-{
-    COM_Enum(::ClipboardMode) result;
-    COM_GetValue(get_IFC(), ClipboardMode, result);
-    return static_cast<ClipboardMode>(result);
-}
-
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
-bool VBox::IClipboardFileTransferModeChangedEvent::enabled() const
-{
-    COM_Bool result;
-    COM_GetValue(get_IFC(), Enabled, result);
-    return static_cast<bool>(result);
-}
-#endif
-
-VBox::DnDMode VBox::IDnDModeChangedEvent::dndMode() const
-{
-    COM_Enum(::DnDMode) result;
-    COM_GetValue(get_IFC(), DndMode, result);
-    return static_cast<DnDMode>(result);
-}

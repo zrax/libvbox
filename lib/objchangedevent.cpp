@@ -74,6 +74,22 @@ VBox::IParallelPortChangedEvent::parallelPort() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+std::u16string VBox::IStorageControllerChangedEvent::machinId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), MachinId, result);
+    return result;
+}
+
+std::u16string VBox::IStorageControllerChangedEvent::controllerName() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), ControllerName, result);
+    return result;
+}
+#endif
+
 VBox::COMPtr<VBox::IMediumAttachment>
 VBox::IMediumChangedEvent::mediumAttachment() const
 {

@@ -165,3 +165,15 @@ void VBox::IAppliance::addPasswords(const std::vector<std::u16string> &identifie
                 COM_ArrayParameter(pPasswords));
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+uint32_t VBox::IAppliance::createVirtualSystemDescriptions(uint32_t requested)
+{
+    COM_ULong cResult;
+
+    auto rc = get_IFC()->CreateVirtualSystemDescriptions(requested, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<uint32_t>(cResult);
+}
+#endif

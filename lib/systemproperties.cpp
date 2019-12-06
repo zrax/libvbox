@@ -332,6 +332,197 @@ void VBox::ISystemProperties::set_proxyURL(const std::u16string &value)
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+std::vector<VBox::ParavirtProvider> VBox::ISystemProperties::supportedParavirtProviders() const
+{
+    std::vector<ParavirtProvider> result;
+    COM_GetArray(get_IFC(), SupportedParavirtProviders, COM_Enum(::ParavirtProvider), result);
+    return result;
+}
+
+std::vector<VBox::ClipboardMode> VBox::ISystemProperties::supportedClipboardModes() const
+{
+    std::vector<ClipboardMode> result;
+    COM_GetArray(get_IFC(), SupportedClipboardModes, COM_Enum(::ClipboardMode), result);
+    return result;
+}
+
+std::vector<VBox::DnDMode> VBox::ISystemProperties::supportedDnDModes() const
+{
+    std::vector<DnDMode> result;
+    COM_GetArray(get_IFC(), SupportedDnDModes, COM_Enum(::DnDMode), result);
+    return result;
+}
+
+std::vector<VBox::FirmwareType> VBox::ISystemProperties::supportedFirmwareTypes() const
+{
+    std::vector<FirmwareType> result;
+    COM_GetArray(get_IFC(), SupportedFirmwareTypes, COM_Enum(::FirmwareType), result);
+    return result;
+}
+
+std::vector<VBox::PointingHIDType> VBox::ISystemProperties::supportedPointingHIDTypes() const
+{
+    std::vector<PointingHIDType> result;
+    COM_GetArray(get_IFC(), SupportedPointingHIDTypes, COM_Enum(::PointingHIDType), result);
+    return result;
+}
+
+std::vector<VBox::KeyboardHIDType> VBox::ISystemProperties::supportedKeyboardHIDTypes() const
+{
+    std::vector<KeyboardHIDType> result;
+    COM_GetArray(get_IFC(), SupportedKeyboardHIDTypes, COM_Enum(::KeyboardHIDType), result);
+    return result;
+}
+
+std::vector<VBox::VFSType> VBox::ISystemProperties::supportedVFSTypes() const
+{
+    std::vector<VFSType> result;
+    COM_GetArray(get_IFC(), SupportedVFSTypes, COM_Enum(::VFSType), result);
+    return result;
+}
+
+std::vector<VBox::ImportOptions> VBox::ISystemProperties::supportedImportOptions() const
+{
+    std::vector<ImportOptions> result;
+    COM_GetArray(get_IFC(), SupportedImportOptions, COM_Enum(::ImportOptions), result);
+    return result;
+}
+
+std::vector<VBox::ExportOptions> VBox::ISystemProperties::supportedExportOptions() const
+{
+    std::vector<ExportOptions> result;
+    COM_GetArray(get_IFC(), SupportedExportOptions, COM_Enum(::ExportOptions), result);
+    return result;
+}
+
+std::vector<VBox::RecordingAudioCodec> VBox::ISystemProperties::supportedRecordingAudioCodecs() const
+{
+    std::vector<RecordingAudioCodec> result;
+    COM_GetArray(get_IFC(), SupportedRecordingAudioCodecs, COM_Enum(::RecordingAudioCodec), result);
+    return result;
+}
+
+std::vector<VBox::RecordingVideoCodec> VBox::ISystemProperties::supportedRecordingVideoCodecs() const
+{
+    std::vector<RecordingVideoCodec> result;
+    COM_GetArray(get_IFC(), SupportedRecordingVideoCodecs, COM_Enum(::RecordingVideoCodec), result);
+    return result;
+}
+
+std::vector<VBox::RecordingVideoScalingMethod> VBox::ISystemProperties::supportedRecordingVSMethods() const
+{
+    std::vector<RecordingVideoScalingMethod> result;
+    COM_GetArray(get_IFC(), SupportedRecordingVSMethods, COM_Enum(::RecordingVideoScalingMethod), result);
+    return result;
+}
+
+std::vector<VBox::RecordingVideoRateControlMode> VBox::ISystemProperties::supportedRecordingVRCModes() const
+{
+    std::vector<RecordingVideoRateControlMode> result;
+    COM_GetArray(get_IFC(), SupportedRecordingVRCModes, COM_Enum(::RecordingVideoRateControlMode), result);
+    return result;
+}
+
+std::vector<VBox::GraphicsControllerType> VBox::ISystemProperties::supportedGraphicsControllerTypes() const
+{
+    std::vector<GraphicsControllerType> result;
+    COM_GetArray(get_IFC(), SupportedGraphicsControllerTypes, COM_Enum(::GraphicsControllerType), result);
+    return result;
+}
+
+std::vector<VBox::CloneOptions> VBox::ISystemProperties::supportedCloneOptions() const
+{
+    std::vector<CloneOptions> result;
+    COM_GetArray(get_IFC(), SupportedCloneOptions, COM_Enum(::CloneOptions), result);
+    return result;
+}
+
+std::vector<VBox::AutostopType> VBox::ISystemProperties::supportedAutostopTypes() const
+{
+    std::vector<AutostopType> result;
+    COM_GetArray(get_IFC(), SupportedAutostopTypes, COM_Enum(::AutostopType), result);
+    return result;
+}
+
+std::vector<VBox::VMProcPriority> VBox::ISystemProperties::supportedVMProcPriorities() const
+{
+    std::vector<VMProcPriority> result;
+    COM_GetArray(get_IFC(), SupportedVMProcPriorities, COM_Enum(::VMProcPriority), result);
+    return result;
+}
+
+std::vector<VBox::NetworkAttachmentType> VBox::ISystemProperties::supportedNetworkAttachmentTypes() const
+{
+    std::vector<NetworkAttachmentType> result;
+    COM_GetArray(get_IFC(), SupportedNetworkAttachmentTypes, COM_Enum(::NetworkAttachmentType), result);
+    return result;
+}
+
+std::vector<VBox::NetworkAdapterType> VBox::ISystemProperties::supportedNetworkAdapterTypes() const
+{
+    std::vector<NetworkAdapterType> result;
+    COM_GetArray(get_IFC(), SupportedNetworkAdapterTypes, COM_Enum(::NetworkAdapterType), result);
+    return result;
+}
+
+std::vector<VBox::PortMode> VBox::ISystemProperties::supportedPortModes() const
+{
+    std::vector<PortMode> result;
+    COM_GetArray(get_IFC(), SupportedPortModes, COM_Enum(::PortMode), result);
+    return result;
+}
+
+std::vector<VBox::UartType> VBox::ISystemProperties::supportedUartTypes() const
+{
+    std::vector<UartType> result;
+    COM_GetArray(get_IFC(), SupportedUartTypes, COM_Enum(::UartType), result);
+    return result;
+}
+
+std::vector<VBox::USBControllerType> VBox::ISystemProperties::supportedUSBControllerTypes() const
+{
+    std::vector<USBControllerType> result;
+    COM_GetArray(get_IFC(), SupportedUSBControllerTypes, COM_Enum(::USBControllerType), result);
+    return result;
+}
+
+std::vector<VBox::AudioDriverType> VBox::ISystemProperties::supportedAudioDriverTypes() const
+{
+    std::vector<AudioDriverType> result;
+    COM_GetArray(get_IFC(), SupportedAudioDriverTypes, COM_Enum(::AudioDriverType), result);
+    return result;
+}
+
+std::vector<VBox::AudioControllerType> VBox::ISystemProperties::supportedAudioControllerTypes() const
+{
+    std::vector<AudioControllerType> result;
+    COM_GetArray(get_IFC(), SupportedAudioControllerTypes, COM_Enum(::AudioControllerType), result);
+    return result;
+}
+
+std::vector<VBox::StorageBus> VBox::ISystemProperties::supportedStorageBuses() const
+{
+    std::vector<StorageBus> result;
+    COM_GetArray(get_IFC(), SupportedStorageBuses, COM_Enum(::StorageBus), result);
+    return result;
+}
+
+std::vector<VBox::StorageControllerType> VBox::ISystemProperties::supportedStorageControllerTypes() const
+{
+    std::vector<StorageControllerType> result;
+    COM_GetArray(get_IFC(), SupportedStorageControllerTypes, COM_Enum(::StorageControllerType), result);
+    return result;
+}
+
+std::vector<VBox::ChipsetType> VBox::ISystemProperties::supportedChipsetTypes() const
+{
+    std::vector<ChipsetType> result;
+    COM_GetArray(get_IFC(), SupportedChipsetTypes, COM_Enum(::ChipsetType), result);
+    return result;
+}
+#endif
+
 uint32_t VBox::ISystemProperties::getMaxNetworkAdapters(ChipsetType chipset)
 {
     COM_ULong cResult;

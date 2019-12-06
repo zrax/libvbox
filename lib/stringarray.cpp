@@ -18,31 +18,13 @@
 
 #include "libvbox_p.h"
 
-COM_WRAP_IFC(IClipboardModeChangedEvent)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
-COM_WRAP_IFC(IClipboardFileTransferModeChangedEvent)
-#endif
-COM_WRAP_IFC(IDnDModeChangedEvent)
+COM_WRAP_IFC(IStringArray)
 
-VBox::ClipboardMode VBox::IClipboardModeChangedEvent::clipboardMode() const
+std::vector<std::u16string> VBox::IStringArray::values() const
 {
-    COM_Enum(::ClipboardMode) result;
-    COM_GetValue(get_IFC(), ClipboardMode, result);
-    return static_cast<ClipboardMode>(result);
-}
-
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
-bool VBox::IClipboardFileTransferModeChangedEvent::enabled() const
-{
-    COM_Bool result;
-    COM_GetValue(get_IFC(), Enabled, result);
-    return static_cast<bool>(result);
+    std::vector<std::u16string> result;
+    COM_GetStringArray(get_IFC(), Values, result);
+    return result;
 }
 #endif
-
-VBox::DnDMode VBox::IDnDModeChangedEvent::dndMode() const
-{
-    COM_Enum(::DnDMode) result;
-    COM_GetValue(get_IFC(), DndMode, result);
-    return static_cast<DnDMode>(result);
-}

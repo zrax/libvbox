@@ -184,11 +184,21 @@ void VBox::INATNetwork::removePortForwardRule(bool iSipv6,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::INATNetwork::start(const std::u16string &trunkType)
+void VBox::INATNetwork::start(
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+        const std::u16string &trunkType
+#endif
+        )
 {
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
     COM_StringProxy pTrunkType(trunkType);
+#endif
 
-    auto rc = get_IFC()->Start(pTrunkType.m_text);
+    auto rc = get_IFC()->Start(
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+                pTrunkType.m_text
+#endif
+                );
     COM_ERROR_CHECK(rc);
 }
 

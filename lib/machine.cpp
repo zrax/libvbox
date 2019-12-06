@@ -216,6 +216,7 @@ void VBox::IMachine::set_pageFusionEnabled(bool value)
     COM_SetValue(get_IFC(), PageFusionEnabled, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 VBox::GraphicsControllerType VBox::IMachine::graphicsControllerType() const
 {
     COM_Enum(::GraphicsControllerType) result;
@@ -276,6 +277,14 @@ void VBox::IMachine::set_monitorCount(uint32_t value)
 {
     COM_SetValue(get_IFC(), MonitorCount, value);
 }
+#else
+VBox::COMPtr<VBox::IGraphicsAdapter> VBox::IMachine::graphicsAdapter() const
+{
+    COMPtr<IGraphicsAdapter> result;
+    COM_GetValue_Wrap(get_IFC(), GraphicsAdapter, result);
+    return result;
+}
+#endif
 
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
 bool VBox::IMachine::videoCaptureEnabled() const
@@ -658,6 +667,20 @@ void VBox::IMachine::set_clipboardMode(ClipboardMode value)
     COM_SetValue(get_IFC(), ClipboardMode, cValue);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+bool VBox::IMachine::clipboardFileTransfersEnabled() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), ClipboardFileTransfersEnabled, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::IMachine::set_clipboardFileTransfersEnabled(bool value)
+{
+    COM_SetValue(get_IFC(), ClipboardFileTransfersEnabled, value);
+}
+#endif
+
 VBox::DnDMode VBox::IMachine::dnDMode() const
 {
     COM_Enum(::DnDMode) result;
@@ -732,6 +755,7 @@ void VBox::IMachine::set_paravirtProvider(ParavirtProvider value)
     COM_SetValue(get_IFC(), ParavirtProvider, cValue);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 VBox::FaultToleranceState VBox::IMachine::faultToleranceState() const
 {
     COM_Enum(::FaultToleranceState) result;
@@ -792,6 +816,7 @@ void VBox::IMachine::set_faultToleranceSyncInterval(uint32_t value)
 {
     COM_SetValue(get_IFC(), FaultToleranceSyncInterval, value);
 }
+#endif
 
 bool VBox::IMachine::RTCUseUTC() const
 {
@@ -935,6 +960,7 @@ bool VBox::IMachine::USBProxyAvailable() const
     return static_cast<bool>(result);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 std::u16string VBox::IMachine::VMProcessPriority() const
 {
     std::u16string result;
@@ -946,6 +972,20 @@ void VBox::IMachine::set_VMProcessPriority(const std::u16string &value)
 {
     COM_SetString(get_IFC(), VMProcessPriority, value);
 }
+#else
+VBox::VMProcPriority VBox::IMachine::VMProcessPriority() const
+{
+    COM_Enum(::VMProcPriority) result;
+    COM_GetValue(get_IFC(), VMProcessPriority, result);
+    return static_cast<VMProcPriority>(result);
+}
+
+void VBox::IMachine::set_VMProcessPriority(VMProcPriority value)
+{
+    COM_SetValue(get_IFC(), VMProcessPriority,
+                 static_cast<COM_Enum(::VMProcPriority)>(value));
+}
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
 std::u16string VBox::IMachine::paravirtDebug() const
@@ -983,14 +1023,28 @@ void VBox::IMachine::lockMachine(const COMPtr<ISession> &session, LockType lockT
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::launchVMProcess(
         const COMPtr<ISession> &session, const std::u16string &name,
-        const std::u16string &environment)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+        const std::u16string &environment
+#else
+        const std::vector<std::u16string> &environmentChanges
+#endif
+        )
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pName(name);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
     COM_StringProxy pEnvironment(environment);
+#else
+    COM_StringArrayProxy pEnvironmentChanges(environmentChanges);
+#endif
 
     auto rc = get_IFC()->LaunchVMProcess(session->get_IFC(), pName.m_text,
-                                         pEnvironment.m_text, &cResult);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
+                                         pEnvironment.m_text,
+#else
+                                         COM_ArrayParameter(pEnvironmentChanges),
+#endif
+                                         &cResult);
     COM_ERROR_CHECK(rc);
 
     return COMPtr<IProgress>::wrap(cResult);

@@ -151,6 +151,62 @@ void VBox::IInternalMachineControl::pullGuestProperties(
         pFlags.toVector(*flags);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+void VBox::IInternalMachineControl::clipboardAreaRegister(
+        const std::vector<std::u16string> &parms, uint32_t *id)
+{
+    COM_StringArrayProxy pParms(parms);
+    COM_ULong cId;
+
+    auto rc = get_IFC()->ClipboardAreaRegister(COM_ArrayParameter(pParms), &cId);
+    COM_ERROR_CHECK(rc);
+
+    if (id)
+        *id = static_cast<uint32_t>(cId);
+}
+
+void VBox::IInternalMachineControl::clipboardAreaUnregister(uint32_t id)
+{
+    auto rc = get_IFC()->ClipboardAreaUnregister(id);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IInternalMachineControl::clipboardAreaAttach(uint32_t id)
+{
+    auto rc = get_IFC()->ClipboardAreaAttach(id);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IInternalMachineControl::clipboardAreaDetach(uint32_t id)
+{
+    auto rc = get_IFC()->ClipboardAreaDetach(id);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IInternalMachineControl::clipboardAreaGetMostRecent(uint32_t *id)
+{
+    COM_ULong cId;
+
+    auto rc = get_IFC()->ClipboardAreaGetMostRecent(&cId);
+    COM_ERROR_CHECK(rc);
+
+    if (id)
+        *id = static_cast<uint32_t>(cId);
+}
+
+void VBox::IInternalMachineControl::clipboardAreaGetRefCount(uint32_t id,
+        uint32_t *refcount)
+{
+    COM_ULong cRefcount;
+
+    auto rc = get_IFC()->ClipboardAreaGetRefCount(id, &cRefcount);
+    COM_ERROR_CHECK(rc);
+
+    if (refcount)
+        *refcount = static_cast<uint32_t>(cRefcount);
+}
+#endif
+
 void VBox::IInternalMachineControl::pushGuestProperty(const std::u16string &name,
         const std::u16string &value, int64_t timestamp, const std::u16string &flags)
 {
