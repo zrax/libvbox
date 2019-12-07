@@ -81,11 +81,12 @@ else()
         HINTS "${VirtualBoxSDK_DIR}/bindings/xpcom/lib"
     )
 
-    find_library(VirtualBox_XPCOM_LIB
-        NAMES VBoxXPCOM
+    find_file(VirtualBox_XPCOM_LIB
+        NAMES VBoxXPCOM.so VBoxXPCOM.dylib VBoxXPCOM.dll
         HINTS /usr/lib/virtualbox
               /usr/local/lib/virtualbox
-              /opt/VirtualBox/lib
+              /opt/VirtualBox
+              /Applications/VirtualBox.app/Contents/MacOS
     )
 
     mark_as_advanced(
