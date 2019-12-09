@@ -177,7 +177,7 @@ endif()
 # This isn't available anywhere in the SDK, and won't necessarily match
 # the VirtualBox version.  Therefore, we must ask the user to correctly
 # identify the SDK version :(
-set(VirtualBoxSDK_VERSION "6.0.14" CACHE STRING "VirtualBox SDK Version")
+set(VirtualBoxSDK_VERSION "6.1.0" CACHE STRING "VirtualBox SDK Version")
 set(VirtualBoxSDK_VERSION_REGEX "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
 if(NOT (VirtualBoxSDK_VERSION MATCHES "${VirtualBoxSDK_VERSION_REGEX}"))
     message(FATAL_ERROR "VirtualBoxSDK_VERSION Must be specified as Major.Minor.Patch")

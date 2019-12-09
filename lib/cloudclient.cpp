@@ -274,7 +274,7 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getImageInfo(
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pUid(uid);
-    ::IStringArray *cInfoArray;
+    ::IStringArray *cInfoArray = nullptr;
 
     auto rc = get_IFC()->GetImageInfo(pUid.m_text, &cInfoArray, &cResult);
     COM_ERROR_CHECK(rc);
@@ -283,6 +283,25 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getImageInfo(
         *infoArray = COMPtr<IStringArray>::wrap(cInfoArray);
     else if (cInfoArray)
         cInfoArray->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::startCloudNetworkGateway(
+        const COMPtr<ICloudNetwork> &network, const std::u16string &sshPublicKey,
+        COMPtr<ICloudNetworkGatewayInfo> *gatewayInfo)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pSshPublicKey(sshPublicKey);
+    ::ICloudNetworkGatewayInfo *cGatewayInfo = nullptr;
+
+    auto rc = get_IFC()->StartCloudNetworkGateway(network->get_IFC(),
+                pSshPublicKey.m_text, &cGatewayInfo, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (gatewayInfo)
+        *gatewayInfo = COMPtr<ICloudNetworkGatewayInfo>::wrap(cGatewayInfo);
+    else if (cGatewayInfo)
+        cGatewayInfo->Release();
     return COMPtr<IProgress>::wrap(cResult);
 }
 #endif

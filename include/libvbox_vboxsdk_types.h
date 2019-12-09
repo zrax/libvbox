@@ -1595,6 +1595,7 @@ namespace VBox
         CloudOCIVCNCompartment = 46,
         CloudOCISubnetCompartment = 47,
         CloudPublicSSHKey = 48,
+        BootingFirmware = 49,
 #endif
     };
 
@@ -1672,6 +1673,7 @@ VBox_FORWARD_DECL_IFC(ICloudClient);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox_FORWARD_DECL_IFC(ICloudNetwork);
+VBox_FORWARD_DECL_IFC(ICloudNetworkGatewayInfo);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(ICloudProfile);

@@ -1509,6 +1509,12 @@ namespace VBox
                 /* in */ StorageBus bus);
         std::vector<DeviceType> getDeviceTypesForStorageBus(
                 /* in */ StorageBus bus);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+        StorageBus getStorageBusForStorageControllerType(
+                /* in */ StorageControllerType storageControllerType);
+        std::vector<StorageControllerType> getStorageControllerTypesForStorageBus(
+                /* in */ StorageBus storageBus);
+#endif
         bool getDefaultIoCacheSettingForStorageController(
                 /* in */ StorageControllerType controllerType);
         bool getStorageControllerHotplugCapable(
@@ -4354,6 +4360,15 @@ namespace VBox
         // Methods
         COMPtr<IVirtualSystemDescription> getVirtualSystemDescription();
     };
+
+    class LIBVBOX_API ICloudNetworkGatewayInfo : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::ICloudNetworkGatewayInfo)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, publicIP)
+    };
 #endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
@@ -4417,6 +4432,10 @@ namespace VBox
         COMPtr<IProgress> getImageInfo(
                 /* in  */ const std::u16string &uid,
                 /* out */ COMPtr<IStringArray> *infoArray);
+        COMPtr<IProgress> startCloudNetworkGateway(
+                /* in  */ const COMPtr<ICloudNetwork> &network,
+                /* in  */ const std::u16string &sshPublicKey,
+                /* out */ COMPtr<ICloudNetworkGatewayInfo> *gatewayInfo);
 #endif
     };
 

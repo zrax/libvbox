@@ -20,6 +20,7 @@
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 COM_WRAP_IFC(ICloudNetwork)
+COM_WRAP_IFC(ICloudNetworkGatewayInfo)
 
 std::u16string VBox::ICloudNetwork::networkName() const
 {
@@ -79,5 +80,12 @@ std::u16string VBox::ICloudNetwork::networkId() const
 void VBox::ICloudNetwork::set_networkId(const std::u16string &value)
 {
     COM_SetString(get_IFC(), NetworkId, value);
+}
+
+std::u16string VBox::ICloudNetworkGatewayInfo::publicIP() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), PublicIP, result);
+    return result;
 }
 #endif

@@ -7,7 +7,7 @@ without having to deal with the messy MS COM or XPCOM layers directly.
 In fact, after building libvbox, client applications do not need any
 COM headers, nor the VirtualBox SDK itself.
 
-libvbox currently supports VirtualBox SDK versions 5.0 through 6.0.
+libvbox currently supports VirtualBox SDK versions 5.0 through 6.1.
 
 ## Building
 
@@ -25,8 +25,8 @@ to limitations in the SDK.
         -DVirtualBoxSDK_VERSION=6.0.8
     > cmake --build .
 
-NOTE: For XPCOM-based platforms, the path to the VirtualBox XPCOM library
-must also be specified:
+NOTE: For XPCOM-based platforms, you may also need to specify the path to the
+VirtualBox XPCOM library if it isn't auto-detected:
 
     $ cd /path/to/libvbox
     $ mkdir build

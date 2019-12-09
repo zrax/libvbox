@@ -608,6 +608,36 @@ std::vector<VBox::DeviceType> VBox::ISystemProperties::getDeviceTypesForStorageB
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+VBox::StorageBus VBox::ISystemProperties::getStorageBusForStorageControllerType(
+        StorageControllerType storageControllerType)
+{
+    COM_Enum(::StorageBus) cResult;
+    auto cStorageControllerType = static_cast<COM_Enum(::StorageControllerType)>(storageControllerType);
+
+    auto rc = get_IFC()->GetStorageBusForStorageControllerType(cStorageControllerType,
+                &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<StorageBus>(cResult);
+}
+
+std::vector<VBox::StorageControllerType>
+VBox::ISystemProperties::getStorageControllerTypesForStorageBus(StorageBus storageBus)
+{
+    COM_ArrayProxy<COM_Enum(::StorageControllerType)> pResult;
+    auto cStorageBus = static_cast<COM_Enum(::StorageBus)>(storageBus);
+
+    auto rc = get_IFC()->GetStorageControllerTypesForStorageBus(cStorageBus,
+                COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<StorageControllerType> result;
+    pResult.toVector(result);
+    return result;
+}
+#endif
+
 bool VBox::ISystemProperties::getDefaultIoCacheSettingForStorageController(
         StorageControllerType controllerType)
 {
