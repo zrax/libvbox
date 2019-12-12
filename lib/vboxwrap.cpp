@@ -77,7 +77,29 @@ namespace VBox
             COM_ERROR_CHECK(rc);
 #endif
 
-            return COMPtr<IVirtualBoxClient>::wrap(vboxClient);
+            auto wrapClient = COMPtr<IVirtualBoxClient>::wrap(vboxClient);
+            if (!wrapClient)
+                throw std::runtime_error("Failed to create IVirtualBoxClient");
+
+            // Check running VirtualBox version against our SDK version
+            auto vbox = wrapClient->virtualBox();
+            if (!vbox)
+                throw std::runtime_error("Failed to get IVirtualBox object for version check");
+            const int apiVersion = vbox->APIRevision() >> 40;
+            if (VirtualBoxSDK_VERSION != apiVersion) {
+                char msg[256];
+                std::snprintf(msg, sizeof(msg),
+                              "VirtualBox SDK %d.%d.%d does not match running VirtualBox API %d.%d.%d",
+                              (VirtualBoxSDK_VERSION >> 16) & 0xFF,
+                              (VirtualBoxSDK_VERSION >> 8) & 0xFF,
+                              VirtualBoxSDK_VERSION & 0xFF,
+                              (apiVersion >> 16) & 0xFF,
+                              (apiVersion >> 8) & 0xFF,
+                              apiVersion & 0xFF);
+                throw std::runtime_error(msg);
+            }
+
+            return wrapClient;
         }
 
     private:
