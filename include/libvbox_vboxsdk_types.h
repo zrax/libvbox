@@ -1028,6 +1028,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
         Am79C960 = 7,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 2)
+        Virtio_1_0 = 8,
+#endif
     };
 
     enum class NetworkAttachmentType
