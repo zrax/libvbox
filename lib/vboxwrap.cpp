@@ -24,6 +24,36 @@
 #   include <nsIExceptionService.h>
 #endif
 
+static bool isApiCompatible(int sdkVersion, int apiVersion)
+{
+    static const struct { int vLow, vHigh; } compatibility[] = {
+        { VBox_MAKE_VERSION(5, 0, 0), VBox_MAKE_VERSION(5, 0, 8) },
+        { VBox_MAKE_VERSION(5, 0, 10), VBox_MAKE_VERSION(5, 0, 40) },
+
+        { VBox_MAKE_VERSION(5, 1, 0), VBox_MAKE_VERSION(5, 1, 34) },
+        { VBox_MAKE_VERSION(5, 1, 36), VBox_MAKE_VERSION(5, 1, 38) },
+
+        { VBox_MAKE_VERSION(5, 2, 0), VBox_MAKE_VERSION(5, 2, 8) },
+        { VBox_MAKE_VERSION(5, 2, 10), VBox_MAKE_VERSION(5, 2, 36) },
+
+        { VBox_MAKE_VERSION(6, 0, 0), VBox_MAKE_VERSION(6, 0, 16) },
+
+        { VBox_MAKE_VERSION(6, 1, 0), VBox_MAKE_VERSION(6, 1, 2) },
+    };
+
+    if (sdkVersion > apiVersion)
+        return false;
+
+    for (const auto &r : compatibility) {
+        if (sdkVersion >= r.vLow && sdkVersion <= r.vHigh) {
+            return apiVersion >= r.vLow && apiVersion <= r.vHigh;
+        }
+    }
+
+    // Handle cases not in the above list by requiring an exact match
+    return sdkVersion == apiVersion;
+}
+
 namespace VBox
 {
     class API_Private
@@ -86,10 +116,10 @@ namespace VBox
             if (!vbox)
                 throw std::runtime_error("Failed to get IVirtualBox object for version check");
             const int apiVersion = vbox->APIRevision() >> 40;
-            if (VirtualBoxSDK_VERSION != apiVersion) {
+            if (!isApiCompatible(VirtualBoxSDK_VERSION, apiVersion)) {
                 char msg[256];
                 std::snprintf(msg, sizeof(msg),
-                              "VirtualBox SDK %d.%d.%d does not match running VirtualBox API %d.%d.%d",
+                              "VirtualBox SDK %d.%d.%d is not compatible with running VirtualBox API %d.%d.%d",
                               (VirtualBoxSDK_VERSION >> 16) & 0xFF,
                               (VirtualBoxSDK_VERSION >> 8) & 0xFF,
                               VirtualBoxSDK_VERSION & 0xFF,
