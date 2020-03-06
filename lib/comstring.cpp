@@ -83,7 +83,7 @@ template <typename WcType>
 typename std::enable_if<sizeof(WcType) >= sizeof(uint32_t), std::u16string>::type
 COM_FromWString(const WcType *text, size_t size)
 {
-    // C++11 provides a way to convert std::wstring UTF-16, but
+    // C++11 provides a way to convert std::wstring to UTF-16, but
     // it's cumbersome to use and is deprecated in C++17 with no
     // obvious replacement.
     size_t utf16_length = 0;

@@ -141,7 +141,7 @@ else()
 
         try_compile(VBOX_WITH_XPCOM_NAMESPACE_CLEANUP
             "${CMAKE_CURRENT_BINARY_DIR}"
-            "${CMAKE_SOURCE_DIR}/cmake/check_nscleanup.cpp"
+            "${PROJECT_SOURCE_DIR}/cmake/check_nscleanup.cpp"
             CMAKE_FLAGS
                 "-DINCLUDE_DIRECTORIES=${VirtualBoxSDK_INCLUDE_DIRS}"
             COMPILE_DEFINITIONS
