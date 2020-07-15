@@ -21,7 +21,13 @@
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 COM_WRAP_IFC(ICloudNetwork)
 COM_WRAP_IFC(ICloudNetworkGatewayInfo)
+#endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+COM_WRAP_IFC(ICloudNetworkEnvironmentInfo)
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 std::u16string VBox::ICloudNetwork::networkName() const
 {
     std::u16string result;
@@ -86,6 +92,36 @@ std::u16string VBox::ICloudNetworkGatewayInfo::publicIP() const
 {
     std::u16string result;
     COM_GetString(get_IFC(), PublicIP, result);
+    return result;
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+std::u16string VBox::ICloudNetworkGatewayInfo::secondaryPublicIP() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), SecondaryPublicIP, result);
+    return result;
+}
+
+std::u16string VBox::ICloudNetworkGatewayInfo::macAddress() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), MacAddress, result);
+    return result;
+}
+
+std::u16string VBox::ICloudNetworkGatewayInfo::instanceId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), InstanceId, result);
+    return result;
+}
+
+std::u16string VBox::ICloudNetworkEnvironmentInfo::tunnelNetworkId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), TunnelNetworkId, result);
     return result;
 }
 #endif

@@ -1678,6 +1678,9 @@ VBox_FORWARD_DECL_IFC(ICloudClient);
 VBox_FORWARD_DECL_IFC(ICloudNetwork);
 VBox_FORWARD_DECL_IFC(ICloudNetworkGatewayInfo);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+VBox_FORWARD_DECL_IFC(ICloudNetworkEnvironmentInfo);
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(ICloudProfile);
 VBox_FORWARD_DECL_IFC(ICloudProvider);

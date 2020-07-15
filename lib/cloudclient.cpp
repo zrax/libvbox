@@ -307,3 +307,33 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::startCloudNetworkGateway(
 #endif
 
 #endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::setupCloudNetworkEnvironment(
+        const std::u16string& tunnelNetworkName,
+        const std::u16string& tunnelNetworkRange,
+        const std::u16string& gatewayOsName, const std::u16string& gatewayOsVersion,
+        const std::u16string& gatewayShape,
+        COMPtr<ICloudNetworkEnvironmentInfo> *networkEnvironmentInfo)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pTunnelNetworkName(tunnelNetworkName);
+    COM_StringProxy pTunnelNetworkRange(tunnelNetworkRange);
+    COM_StringProxy pGatewayOsName(gatewayOsName);
+    COM_StringProxy pGatewayOsVersion(gatewayOsVersion);
+    COM_StringProxy pGatewayShape(gatewayShape);
+    ::ICloudNetworkEnvironmentInfo *cNetworkEnvironmentInfo = nullptr;
+
+    auto rc = get_IFC()->SetupCloudNetworkEnvironment(pTunnelNetworkName.m_text,
+                pTunnelNetworkRange.m_text, pGatewayOsName.m_text,
+                pGatewayOsVersion.m_text, pGatewayShape.m_text,
+                &cNetworkEnvironmentInfo, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (networkEnvironmentInfo)
+        *networkEnvironmentInfo = COMPtr<ICloudNetworkEnvironmentInfo>::wrap(cNetworkEnvironmentInfo);
+    else if (cNetworkEnvironmentInfo)
+        cNetworkEnvironmentInfo->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif

@@ -4368,6 +4368,22 @@ namespace VBox
 
         // Attributes
         VBox_PROPERTY_RO(std::u16string, publicIP)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+        VBox_PROPERTY_RO(std::u16string, secondaryPublicIP)
+        VBox_PROPERTY_RO(std::u16string, macAddress)
+        VBox_PROPERTY_RO(std::u16string, instanceId)
+#endif
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+    class LIBVBOX_API ICloudNetworkEnvironmentInfo : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::ICloudNetworkEnvironmentInfo)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, tunnelNetworkId)
     };
 #endif
 
@@ -4436,6 +4452,15 @@ namespace VBox
                 /* in  */ const COMPtr<ICloudNetwork> &network,
                 /* in  */ const std::u16string &sshPublicKey,
                 /* out */ COMPtr<ICloudNetworkGatewayInfo> *gatewayInfo);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 12)
+        COMPtr<IProgress> setupCloudNetworkEnvironment(
+                /* in  */ const std::u16string& tunnelNetworkName,
+                /* in  */ const std::u16string& tunnelNetworkRange,
+                /* in  */ const std::u16string& gatewayOsName,
+                /* in  */ const std::u16string& gatewayOsVersion,
+                /* in  */ const std::u16string& gatewayShape,
+                /* out */ COMPtr<ICloudNetworkEnvironmentInfo> *networkEnvironmentInfo);
 #endif
     };
 

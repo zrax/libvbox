@@ -34,11 +34,11 @@ static bool isApiCompatible(int sdkVersion, int apiVersion)
         { VBox_MAKE_VERSION(5, 1, 36), VBox_MAKE_VERSION(5, 1, 38) },
 
         { VBox_MAKE_VERSION(5, 2, 0), VBox_MAKE_VERSION(5, 2, 8) },
-        { VBox_MAKE_VERSION(5, 2, 10), VBox_MAKE_VERSION(5, 2, 42) },
+        { VBox_MAKE_VERSION(5, 2, 10), VBox_MAKE_VERSION(5, 2, 44) },
 
-        { VBox_MAKE_VERSION(6, 0, 0), VBox_MAKE_VERSION(6, 0, 22) },
+        { VBox_MAKE_VERSION(6, 0, 0), VBox_MAKE_VERSION(6, 0, 24) },
 
-        { VBox_MAKE_VERSION(6, 1, 0), VBox_MAKE_VERSION(6, 1, 10) },
+        { VBox_MAKE_VERSION(6, 1, 0), VBox_MAKE_VERSION(6, 1, 12) },
     };
 
     if (sdkVersion > apiVersion)
