@@ -123,7 +123,7 @@ void VBox::ICloudClient::importInstance(
 
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listInstances(
         const std::vector<CloudMachineState> &machineState,
-        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds)
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
 {
     ::IProgress *cResult = nullptr;
     COM_ArrayProxy<COM_Enum(::CloudMachineState)> pMachineState(machineState);
@@ -147,7 +147,7 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listInstances(
 
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listImages(
         const std::vector<CloudImageState> &imageState,
-        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds)
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
 {
     ::IProgress *cResult = nullptr;
     COM_ArrayProxy<COM_Enum(::CloudImageState)> pImageState(imageState);
@@ -171,7 +171,7 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listImages(
 
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getInstanceInfo(
         const std::u16string &uid,
-        const COMPtr<IVirtualSystemDescription> &description)
+        const COMPtr<IVirtualSystemDescription> &description) const
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pUid(uid);
@@ -270,7 +270,7 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::deleteImage(const std::u16stri
 }
 
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getImageInfo(
-        const std::u16string &uid, COMPtr<IStringArray> *infoArray)
+        const std::u16string &uid, COMPtr<IStringArray> *infoArray) const
 {
     ::IProgress *cResult = nullptr;
     COM_StringProxy pUid(uid);

@@ -269,7 +269,7 @@ void VBox::IVirtualBox::registerMachine(const COMPtr<IMachine> &machine)
 }
 
 VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::findMachine(
-        const std::u16string &nameOrId)
+        const std::u16string &nameOrId) const
 {
     ::IMachine *cResult = nullptr;
     COM_StringProxy pNameOrId(nameOrId);

@@ -315,7 +315,7 @@ namespace VBox
         void registerMachine(
                 /* in */ const COMPtr<IMachine> &machine);
         COMPtr<IMachine> findMachine(
-                /* in */ const std::u16string &nameOrId);
+                /* in */ const std::u16string &nameOrId) const;
         std::vector<COMPtr<IMachine>> getMachinesByGroups(
                 /* in */ const std::vector<std::u16string> &groups);
         std::vector<MachineState> getMachineStates(
@@ -4421,14 +4421,14 @@ namespace VBox
         COMPtr<IProgress> listInstances(
                 /* in  */ const std::vector<CloudMachineState> &machineState,
                 /* out */ COMPtr<IStringArray> *returnNames,
-                /* out */ COMPtr<IStringArray> *returnIds);
+                /* out */ COMPtr<IStringArray> *returnIds) const;
         COMPtr<IProgress> listImages(
                 /* in  */ const std::vector<CloudImageState> &imageState,
                 /* out */ COMPtr<IStringArray> *returnNames,
-                /* out */ COMPtr<IStringArray> *returnIds);
+                /* out */ COMPtr<IStringArray> *returnIds) const;
         COMPtr<IProgress> getInstanceInfo(
                 /* in */ const std::u16string &uid,
-                /* in */ const COMPtr<IVirtualSystemDescription> &description);
+                /* in */ const COMPtr<IVirtualSystemDescription> &description) const;
         COMPtr<IProgress> startInstance(
                 /* in */ const std::u16string &uid);
         COMPtr<IProgress> pauseInstance(
@@ -4447,7 +4447,7 @@ namespace VBox
                 /* in */ const std::u16string &uid);
         COMPtr<IProgress> getImageInfo(
                 /* in  */ const std::u16string &uid,
-                /* out */ COMPtr<IStringArray> *infoArray);
+                /* out */ COMPtr<IStringArray> *infoArray) const;
         COMPtr<IProgress> startCloudNetworkGateway(
                 /* in  */ const COMPtr<ICloudNetwork> &network,
                 /* in  */ const std::u16string &sshPublicKey,
