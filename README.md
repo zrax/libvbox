@@ -251,6 +251,8 @@ try {
 ### VBox::utf16ToUtf8
 
 * `std::string VBox::utf16ToUtf8(const std::u16string &)`
+* `std::string VBox::utf16ToUtf8(const char16_t *, size_t)`
+* `std::string VBox::utf16ToUtf8(const char16_t *)`
 
 Use the platform's native routines (XPCOM or Win32 API) to convert a
 libvbox `std::u16string` to UTF-8.
@@ -267,6 +269,8 @@ UTF-8 string to `std::u16string` for libvbox.
 ### VBox::utf16ToWide
 
 * `std::wstring VBox::utf16ToWide(const std::u16string &)`
+* `std::wstring VBox::utf16ToWide(const char16_t *, size_t)`
+* `std::wstring VBox::utf16ToWide(const char16_t *)`
 
 Convert a libvbox `std::u16string` to wide format (`std::wstring`), as
 appropriate for the target operating system.  This function is provided

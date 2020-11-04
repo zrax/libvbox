@@ -157,6 +157,16 @@ std::string VBox::utf16ToUtf8(const std::u16string &text)
     return COM_ToUtf8(text.c_str(), text.size());
 }
 
+std::string VBox::utf16ToUtf8(const char16_t *text, size_t size)
+{
+    return COM_ToUtf8(text, size);
+}
+
+std::string VBox::utf16ToUtf8(const char16_t *text)
+{
+    return COM_ToUtf8(text, std::char_traits<char16_t>::length(text));
+}
+
 std::u16string VBox::utf8ToUtf16(const std::string &text)
 {
     return COM_FromUtf8(text.c_str(), text.size());
@@ -175,6 +185,16 @@ std::u16string VBox::utf8ToUtf16(const char *text)
 std::wstring VBox::utf16ToWide(const std::u16string &text)
 {
     return COM_ToWString<wchar_t>(text.c_str(), text.size());
+}
+
+std::wstring VBox::utf16ToWide(const char16_t *text, size_t size)
+{
+    return COM_ToWString<wchar_t>(text, size);
+}
+
+std::wstring VBox::utf16ToWide(const char16_t *text)
+{
+    return COM_ToWString<wchar_t>(text, std::char_traits<char16_t>::length(text));
 }
 
 std::u16string VBox::wideToUtf16(const std::wstring &text)
