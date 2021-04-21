@@ -1600,6 +1600,9 @@ namespace VBox
         CloudPublicSSHKey = 48,
         BootingFirmware = 49,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 20)
+        CloudInitScriptPath = 50,
+#endif
     };
 
     enum class VirtualSystemDescriptionValueType
