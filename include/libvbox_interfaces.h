@@ -1568,6 +1568,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
         VBox_PROPERTY_RO(bool, recommendedX2APIC)
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 28)
+        VBox_PROPERTY_RO(uint32_t, recommendedCPUCount)
+#endif
     };
 
     class LIBVBOX_API IAdditionsFacility : public COMUnknown

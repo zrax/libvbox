@@ -249,3 +249,12 @@ bool VBox::IGuestOSType::recommendedX2APIC() const
     return static_cast<bool>(result);
 }
 #endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 28)
+uint32_t VBox::IGuestOSType::recommendedCPUCount() const
+{
+    COM_ULong result;
+    COM_GetValue(get_IFC(), RecommendedCPUCount, result);
+    return static_cast<uint32_t>(result);
+}
+#endif
