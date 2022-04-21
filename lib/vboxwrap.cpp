@@ -39,7 +39,7 @@ static bool isApiCompatible(int sdkVersion, int apiVersion)
         { VBox_MAKE_VERSION(6, 0, 0), VBox_MAKE_VERSION(6, 0, 24) },
 
         { VBox_MAKE_VERSION(6, 1, 0), VBox_MAKE_VERSION(6, 1, 18) },
-        { VBox_MAKE_VERSION(6, 1, 20), VBox_MAKE_VERSION(6, 1, 32) },
+        { VBox_MAKE_VERSION(6, 1, 20), VBox_MAKE_VERSION(6, 1, 34) },
     };
 
     if (sdkVersion > apiVersion)
