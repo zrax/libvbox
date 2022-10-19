@@ -1603,6 +1603,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 20)
         CloudInitScriptPath = 50,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 38)
+        HardDiskControllerVirtioSCSI = 60,
+#endif
     };
 
     enum class VirtualSystemDescriptionValueType
