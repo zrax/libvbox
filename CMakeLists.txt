@@ -38,6 +38,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif()
 
+if(POLICY CMP0115)
+    # Old versions of CMake allow you to specify file names without an extension,
+    # meaning configured file names which differ in only a ".in" suffix were
+    # ambiguous. This shuts up the warning, since we already do the right thing.
+    cmake_policy(SET CMP0115 NEW)
+endif()
+
 configure_file(
     include/libvbox_vboxsdk_version.h.in
     include/libvbox_vboxsdk_version.h
