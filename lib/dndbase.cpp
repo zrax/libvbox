@@ -27,12 +27,14 @@ std::vector<std::u16string> VBox::IDnDBase::formats() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 uint32_t VBox::IDnDBase::protocolVersion() const
 {
     COM_ULong result;
     COM_GetValue(get_IFC(), ProtocolVersion, result);
     return static_cast<uint32_t>(result);
 }
+#endif
 
 bool VBox::IDnDBase::isFormatSupported(const std::u16string &format)
 {

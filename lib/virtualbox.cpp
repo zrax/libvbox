@@ -188,6 +188,15 @@ std::vector<std::u16string> VBox::IVirtualBox::internalNetworks() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::COMPtr<VBox::IHostOnlyNetwork>> VBox::IVirtualBox::hostOnlyNetworks() const
+{
+    std::vector<COMPtr<IHostOnlyNetwork>> result;
+    COM_GetArray_Wrap(get_IFC(), HostOnlyNetworks, result);
+    return result;
+}
+#endif
+
 std::vector<std::u16string> VBox::IVirtualBox::genericNetworkDrivers() const
 {
     std::vector<std::u16string> result;
@@ -234,7 +243,12 @@ std::u16string VBox::IVirtualBox::composeMachineFilename(
 VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
         const std::u16string &settingsFile, const std::u16string &name,
         const std::vector<std::u16string> &groups, const std::u16string &osTypeId,
-        const std::u16string &flags)
+        const std::u16string &flags
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+      , const std::u16string &cipher, const std::u16string &passwordId,
+        const std::u16string &password
+#endif
+        )
 {
     ::IMachine *cResult = nullptr;
     COM_StringProxy pSettingsFile(settingsFile);
@@ -242,22 +256,42 @@ VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
     COM_StringArrayProxy pGroups(groups);
     COM_StringProxy pOsTypeId(osTypeId);
     COM_StringProxy pFlags(flags);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+    COM_StringProxy pCipher(cipher);
+    COM_StringProxy pPasswordId(passwordId);
+    COM_StringProxy pPassword(password);
+#endif
 
     auto rc = get_IFC()->CreateMachine(pSettingsFile.m_text, pName.m_text,
                                        COM_ArrayParameter(pGroups),
                                        pOsTypeId.m_text, pFlags.m_text,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+                                       pCipher.m_text, pPasswordId.m_text,
+                                       pPassword.m_text,
+#endif
                                        &cResult);
     COM_ERROR_CHECK(rc);
     return COMPtr<IMachine>::wrap(cResult);
 }
 
 VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::openMachine(
-        const std::u16string &settingsFile)
+        const std::u16string &settingsFile
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+      , const std::u16string &password
+#endif
+        )
 {
     ::IMachine *cResult = nullptr;
     COM_StringProxy pSettingsFile(settingsFile);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+    COM_StringProxy pPassword(password);
+#endif
 
-    auto rc = get_IFC()->OpenMachine(pSettingsFile.m_text, &cResult);
+    auto rc = get_IFC()->OpenMachine(pSettingsFile.m_text,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+                                     pPassword.m_text,
+#endif
+                                     &cResult);
     COM_ERROR_CHECK(rc);
     return COMPtr<IMachine>::wrap(cResult);
 }
@@ -499,6 +533,50 @@ void VBox::IVirtualBox::removeNATNetwork(const COMPtr<INATNetwork> &network)
     COM_ERROR_CHECK(rc);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IHostOnlyNetwork> VBox::IVirtualBox::createHostOnlyNetwork(
+        const std::u16string &networkName)
+{
+    ::IHostOnlyNetwork *cResult = nullptr;
+    COM_StringProxy pNetworkName(networkName);
+
+    auto rc = get_IFC()->CreateHostOnlyNetwork(pNetworkName.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IHostOnlyNetwork>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IHostOnlyNetwork> VBox::IVirtualBox::findHostOnlyNetworkByName(
+        const std::u16string &networkName)
+{
+    ::IHostOnlyNetwork *cResult = nullptr;
+    COM_StringProxy pNetworkName(networkName);
+
+    auto rc = get_IFC()->FindHostOnlyNetworkByName(pNetworkName.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IHostOnlyNetwork>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IHostOnlyNetwork> VBox::IVirtualBox::findHostOnlyNetworkById(
+        const std::u16string &id)
+{
+    ::IHostOnlyNetwork *cResult = nullptr;
+    COM_StringProxy pId(id);
+
+    auto rc = get_IFC()->FindHostOnlyNetworkById(pId.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IHostOnlyNetwork>::wrap(cResult);
+}
+
+void VBox::IVirtualBox::removeHostOnlyNetwork(const COMPtr<IHostOnlyNetwork> &network)
+{
+    auto rc = get_IFC()->RemoveHostOnlyNetwork(network->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+#endif
+
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox::COMPtr<VBox::ICloudNetwork> VBox::IVirtualBox::createCloudNetwork(
         const std::u16string &networkName)
@@ -551,3 +629,17 @@ bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
         *file = pFile.toString();
     return static_cast<bool>(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IProgress> VBox::IVirtualBox::findProgressById(
+        const std::u16string &id)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pId(id);
+
+    auto rc = get_IFC()->FindProgressById(pId.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif

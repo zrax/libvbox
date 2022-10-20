@@ -84,18 +84,23 @@ target_sources(vbox
         lib/additionsfacility.cpp
         lib/appliance.cpp
         lib/audioadapter.cpp
+        lib/audiosettings.cpp
         lib/bandwidthcontrol.cpp
         lib/bandwidthgroup.cpp
         lib/biossettings.cpp
         lib/certificate.cpp
         lib/cloudclient.cpp
+        lib/cloudmachine.cpp
         lib/cloudnetwork.cpp
         lib/cloudprofile.cpp
+        lib/cloudprofileevent.cpp
         lib/cloudprovider.cpp
+        lib/cloudproviderevent.cpp
         lib/cloudprovidermanager.cpp
         lib/comstring.cpp
         lib/console.cpp
         lib/cpuchangedevent.cpp
+        lib/cpuprofile.cpp
         lib/cursorpositionchangedevent.cpp
         lib/datastream.cpp
         lib/dhcpconfig.cpp
@@ -121,9 +126,13 @@ target_sources(vbox
         lib/formvalue.cpp
         lib/framebuffer.cpp
         lib/framebufferoverlay.cpp
+        lib/fsinfo.cpp
         lib/fsobjinfo.cpp
         lib/graphicsadapter.cpp
         lib/guest.cpp
+        lib/guestadditionsstatuschangedevent.cpp
+        lib/guestdebugcontrol.cpp
+        lib/guestdebugcontrolchangedevent.cpp
         lib/guestfileevent.cpp
         lib/guestfileioevent.cpp
         lib/guestkeyboardevent.cpp
@@ -138,7 +147,12 @@ target_sources(vbox
         lib/guestsessionevent.cpp
         lib/guestuserstatechangedevent.cpp
         lib/host.cpp
+        lib/hostaudiodevice.cpp
+        lib/hostaudiodevicechangedevent.cpp
+        lib/hostdrive.cpp
+        lib/hostdrivepartition.cpp
         lib/hostnetworkinterface.cpp
+        lib/hostonlynetwork.cpp
         lib/hostpcideviceplugevent.cpp
         lib/hostvideoinputdevice.cpp
         lib/internalmachinecontrol.cpp
@@ -146,6 +160,7 @@ target_sources(vbox
         lib/internalsessioncontrol.cpp
         lib/keyboard.cpp
         lib/keyboardledschangedevent.cpp
+        lib/languagechangedevent.cpp
         lib/machine.cpp
         lib/machinedebugger.cpp
         lib/machineevent.cpp
@@ -164,6 +179,7 @@ target_sources(vbox
         lib/natnetworkchangedevent.cpp
         lib/natredirectevent.cpp
         lib/networkadapter.cpp
+        lib/nvramstore.cpp
         lib/objchangedevent.cpp
         lib/parallelport.cpp
         lib/pciaddress.cpp
@@ -188,7 +204,12 @@ target_sources(vbox
         lib/stringarray.cpp
         lib/systemproperties.cpp
         lib/token.cpp
+        lib/trustedplatformmodule.cpp
+        lib/uefivariablestore.cpp
         lib/unattended.cpp
+        lib/updateagent.cpp
+        lib/updateagentavailableevent.cpp
+        lib/updateagentevent.cpp
         lib/usbcontroller.cpp
         lib/usbdevice.cpp
         lib/usbdevicefilter.cpp

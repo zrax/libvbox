@@ -1,5 +1,5 @@
 /* This file is part of libvbox
- * Copyright (C) 2019  Michael Hansen
+ * Copyright (C) 2022  Michael Hansen
  *
  * libvbox is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,35 +18,33 @@
 
 #include "libvbox_p.h"
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-COM_WRAP_IFC(IProgressEvent)
-COM_WRAP_IFC(IProgressPercentageChangedEvent)
-COM_WRAP_IFC(IProgressTaskCompletedEvent)
-
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
-COM_WRAP_IFC(IProgressCreatedEvent)
-#endif
+COM_WRAP_IFC(IAudioSettings)
 
-std::u16string VBox::IProgressEvent::progressId() const
+VBox::COMPtr<VBox::IAudioAdapter> VBox::IAudioSettings::adapter() const
 {
-    std::u16string result;
-    COM_GetString(get_IFC(), ProgressId, result);
+    COMPtr<IAudioAdapter> result;
+    COM_GetValue_Wrap(get_IFC(), Adapter, result);
     return result;
 }
 
-int32_t VBox::IProgressPercentageChangedEvent::percent() const
+VBox::COMPtr<VBox::IHostAudioDevice>
+VBox::IAudioSettings::getHostAudioDevice(AudioDirection usage)
 {
-    COM_Long result;
-    COM_GetValue(get_IFC(), Percent, result);
-    return static_cast<int32_t>(result);
-}
-#endif
+    ::IHostAudioDevice *cResult = nullptr;
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
-bool VBox::IProgressCreatedEvent::create() const
+    auto rc = get_IFC()->GetHostAudioDevice(
+                static_cast<COM_Enum(::AudioDirection)>(usage), &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IHostAudioDevice>::wrap(cResult);
+}
+
+void VBox::IAudioSettings::setHostAudioDevice(
+        const COMPtr<IHostAudioDevice> &device, AudioDirection usage)
 {
-    COM_Bool result;
-    COM_GetValue(get_IFC(), Create, result);
-    return static_cast<bool>(result);
+    auto rc = get_IFC()->SetHostAudioDevice(device->get_IFC(),
+                static_cast<COM_Enum(::AudioDirection)>(usage));
+    COM_ERROR_CHECK(rc);
 }
 #endif

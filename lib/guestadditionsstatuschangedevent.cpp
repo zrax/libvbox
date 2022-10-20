@@ -52,7 +52,7 @@ VBox::AdditionsRunLevelType VBox::IGuestAdditionsStatusChangedEvent::runLevel() 
     return static_cast<AdditionsRunLevelType>(result);
 }
 
-int64_t VBox::ICursorPositionChangedEvent::timestamp() const
+int64_t VBox::IGuestAdditionsStatusChangedEvent::timestamp() const
 {
     COM_Long64 result;
     COM_GetValue(get_IFC(), Timestamp, result);

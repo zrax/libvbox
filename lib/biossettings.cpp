@@ -143,12 +143,14 @@ void VBox::IBIOSSettings::set_PXEDebugEnabled(bool value)
     COM_SetValue(get_IFC(), PXEDebugEnabled, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 std::u16string VBox::IBIOSSettings::nonVolatileStorageFile() const
 {
     std::u16string result;
     COM_GetString(get_IFC(), NonVolatileStorageFile, result);
     return result;
 }
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 bool VBox::IBIOSSettings::SMBIOSUuidLittleEndian() const

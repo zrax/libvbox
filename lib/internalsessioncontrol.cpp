@@ -79,6 +79,17 @@ void VBox::IInternalSessionControl::onAudioAdapterChange(
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+void VBox::IInternalSessionControl::onHostAudioDeviceChange(
+        const COMPtr<IHostAudioDevice> &device, bool isNew,
+        AudioDeviceState state, const COMPtr<IVirtualBoxErrorInfo> &errorInfo)
+{
+    auto rc = get_IFC()->OnHostAudioDeviceChange(device->get_IFC(), isNew,
+                static_cast<COM_Enum(::AudioDeviceState)>(state), errorInfo->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+#endif
+
 void VBox::IInternalSessionControl::onSerialPortChange(
         const COMPtr<ISerialPort> &serialPort)
 {
@@ -206,6 +217,15 @@ void VBox::IInternalSessionControl::onSharedFolderChange(bool global)
     auto rc = get_IFC()->OnSharedFolderChange(global);
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+void VBox::IInternalSessionControl::onGuestDebugControlChange(
+        const COMPtr<IGuestDebugControl> &guestDebugControl)
+{
+    auto rc = get_IFC()->OnGuestDebugControlChange(guestDebugControl->get_IFC());
+    COM_ERROR_CHECK(rc);
+}
+#endif
 
 void VBox::IInternalSessionControl::onUSBDeviceAttach(
         const COMPtr<IUSBDevice> &device,

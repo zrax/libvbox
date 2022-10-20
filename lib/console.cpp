@@ -316,6 +316,7 @@ VBox::COMPtr<VBox::IProgress> VBox::IConsole::teleport(
     return COMPtr<IProgress>::wrap(cResult);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 void VBox::IConsole::addDiskEncryptionPassword(const std::u16string &id,
         const std::u16string &password, bool clearOnSuspend)
 {
@@ -352,3 +353,42 @@ void VBox::IConsole::clearAllDiskEncryptionPasswords()
     auto rc = get_IFC()->ClearAllDiskEncryptionPasswords();
     COM_ERROR_CHECK(rc);
 }
+#else
+void VBox::IConsole::addEncryptionPassword(const std::u16string &id,
+        const std::u16string &password, bool clearOnSuspend)
+{
+    COM_StringProxy pId(id);
+    COM_StringProxy pPassword(password);
+
+    auto rc = get_IFC()->AddEncryptionPassword(pId.m_text, pPassword.m_text,
+                static_cast<COM_Bool>(clearOnSuspend));
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IConsole::addEncryptionPasswords(
+        const std::vector<std::u16string> &ids,
+        const std::vector<std::u16string> &passwords, bool clearOnSuspend)
+{
+    COM_StringArrayProxy pIds(ids);
+    COM_StringArrayProxy pPasswords(passwords);
+
+    auto rc = get_IFC()->AddEncryptionPasswords(COM_ArrayParameter(pIds),
+                    COM_ArrayParameter(pPasswords),
+                    static_cast<COM_Bool>(clearOnSuspend));
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IConsole::removeEncryptionPassword(const std::u16string &id)
+{
+    COM_StringProxy pId(id);
+
+    auto rc = get_IFC()->RemoveEncryptionPassword(pId.m_text);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IConsole::clearAllEncryptionPasswords()
+{
+    auto rc = get_IFC()->ClearAllEncryptionPasswords();
+    COM_ERROR_CHECK(rc);
+}
+#endif

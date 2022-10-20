@@ -64,6 +64,15 @@ std::u16string VBox::IExtPackBase::VRDEModule() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::u16string VBox::IExtPackBase::CryptoModule() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), CryptoModule, result);
+    return result;
+}
+#endif
+
 std::vector<VBox::COMPtr<VBox::IExtPackPlugIn>> VBox::IExtPackBase::plugIns() const
 {
     std::vector<COMPtr<IExtPackPlugIn>> result;

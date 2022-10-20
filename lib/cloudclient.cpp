@@ -21,6 +21,22 @@
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 COM_WRAP_IFC(ICloudClient)
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::COMPtr<VBox::ICloudMachine>> VBox::ICloudClient::cloudMachineList() const
+{
+    std::vector<COMPtr<ICloudMachine>> result;
+    COM_GetArray_Wrap(get_IFC(), CloudMachineList, result);
+    return result;
+}
+
+std::vector<VBox::COMPtr<VBox::ICloudMachine>> VBox::ICloudClient::cloudMachineStubList() const
+{
+    std::vector<COMPtr<ICloudMachine>> result;
+    COM_GetArray_Wrap(get_IFC(), CloudMachineStubList, result);
+    return result;
+}
+#endif
+
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
 std::u16string VBox::ICloudClient::getExportLaunchParameters() const
 {
@@ -121,6 +137,74 @@ void VBox::ICloudClient::importInstance(
     COM_ERROR_CHECK(rc);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::ICloudMachine> VBox::ICloudClient::getCloudMachine(
+        const std::u16string &id)
+{
+    ::ICloudMachine *cResult = nullptr;
+    COM_StringProxy pId(id);
+
+    auto rc = get_IFC()->GetCloudMachine(pId.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<ICloudMachine>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::readCloudMachineList()
+{
+    ::IProgress *cResult = nullptr;
+
+    auto rc = get_IFC()->ReadCloudMachineList(&cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::readCloudMachineStubList()
+{
+    ::IProgress *cResult = nullptr;
+
+    auto rc = get_IFC()->ReadCloudMachineStubList(&cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::addCloudMachine(
+        const std::u16string &instanceId, COMPtr<ICloudMachine> *machine)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pInstanceId(instanceId);
+    ::ICloudMachine *cMachine = nullptr;
+
+    auto rc = get_IFC()->AddCloudMachine(pInstanceId.m_text, &cMachine, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (machine)
+        *machine = COMPtr<ICloudMachine>::wrap(cMachine);
+    else if (cMachine)
+        cMachine->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::createCloudMachine(
+        const COMPtr<IVirtualSystemDescription> &description,
+        COMPtr<ICloudMachine> *machine)
+{
+    ::IProgress *cResult = nullptr;
+    ::ICloudMachine *cMachine = nullptr;
+
+    auto rc = get_IFC()->CreateCloudMachine(description->get_IFC(), &cMachine, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (machine)
+        *machine = COMPtr<ICloudMachine>::wrap(cMachine);
+    else if (cMachine)
+        cMachine->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listInstances(
         const std::vector<CloudMachineState> &machineState,
         COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
@@ -145,6 +229,29 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listInstances(
     return COMPtr<IProgress>::wrap(cResult);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listSourceInstances(
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
+{
+    ::IProgress *cResult = nullptr;
+    ::IStringArray *cReturnNames = nullptr;
+    ::IStringArray *cReturnIds = nullptr;
+
+    auto rc = get_IFC()->ListSourceInstances(&cReturnNames, &cReturnIds, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (returnNames)
+        *returnNames = COMPtr<IStringArray>::wrap(cReturnNames);
+    else if (cReturnNames)
+        cReturnNames->Release();
+    if (returnIds)
+        *returnIds = COMPtr<IStringArray>::wrap(cReturnIds);
+    else if (cReturnIds)
+        cReturnIds->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listImages(
         const std::vector<CloudImageState> &imageState,
         COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
@@ -168,6 +275,75 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listImages(
         cReturnIds->Release();
     return COMPtr<IProgress>::wrap(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listBootVolumes(
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
+{
+    ::IProgress *cResult = nullptr;
+    ::IStringArray *cReturnNames = nullptr;
+    ::IStringArray *cReturnIds = nullptr;
+
+    auto rc = get_IFC()->ListBootVolumes(&cReturnNames, &cReturnIds, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (returnNames)
+        *returnNames = COMPtr<IStringArray>::wrap(cReturnNames);
+    else if (cReturnNames)
+        cReturnNames->Release();
+    if (returnIds)
+        *returnIds = COMPtr<IStringArray>::wrap(cReturnIds);
+    else if (cReturnIds)
+        cReturnIds->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listSourceBootVolumes(
+        COMPtr<IStringArray> *returnNames, COMPtr<IStringArray> *returnIds) const
+{
+    ::IProgress *cResult = nullptr;
+    ::IStringArray *cReturnNames = nullptr;
+    ::IStringArray *cReturnIds = nullptr;
+
+    auto rc = get_IFC()->ListSourceBootVolumes(&cReturnNames, &cReturnIds, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (returnNames)
+        *returnNames = COMPtr<IStringArray>::wrap(cReturnNames);
+    else if (cReturnNames)
+        cReturnNames->Release();
+    if (returnIds)
+        *returnIds = COMPtr<IStringArray>::wrap(cReturnIds);
+    else if (cReturnIds)
+        cReturnIds->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::listVnicAttachments(
+        const std::vector<std::u16string> &parameters,
+        COMPtr<IStringArray> *returnVnicAttachmentIds,
+        COMPtr<IStringArray> *returnVnicIds) const
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringArrayProxy pParameters(parameters);
+    ::IStringArray *cReturnVnicAttachmentIds = nullptr;
+    ::IStringArray *cReturnVnicIds = nullptr;
+
+    auto rc = get_IFC()->ListVnicAttachments(COM_ArrayParameter(pParameters),
+                &cReturnVnicAttachmentIds, &cReturnVnicIds, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (returnVnicAttachmentIds)
+        *returnVnicAttachmentIds = COMPtr<IStringArray>::wrap(cReturnVnicAttachmentIds);
+    else if (cReturnVnicAttachmentIds)
+        cReturnVnicAttachmentIds->Release();
+    if (returnVnicIds)
+        *returnVnicIds = COMPtr<IStringArray>::wrap(cReturnVnicIds);
+    else if (cReturnVnicIds)
+        cReturnVnicIds->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
 
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getInstanceInfo(
         const std::u16string &uid,
@@ -335,5 +511,43 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::setupCloudNetworkEnvironment(
     else if (cNetworkEnvironmentInfo)
         cNetworkEnvironmentInfo->Release();
     return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getVnicInfo(
+        const std::u16string &uid, COMPtr<IStringArray> *infoArray) const
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+    ::IStringArray *cInfoArray = nullptr;
+
+    auto rc = get_IFC()->GetVnicInfo(pUid.m_text, &cInfoArray, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (infoArray)
+        *infoArray = COMPtr<IStringArray>::wrap(cInfoArray);
+    else if (cInfoArray)
+        cInfoArray->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getSubnetSelectionForm(
+        const COMPtr<IVirtualSystemDescription> &description,
+        COMPtr<IVirtualSystemDescriptionForm> *form)
+{
+    ::IProgress *cResult = nullptr;
+    ::IVirtualSystemDescriptionForm *cForm = nullptr;
+
+    auto rc = get_IFC()->GetSubnetSelectionForm(description->get_IFC(), &cForm, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (form)
+        *form = COMPtr<IVirtualSystemDescriptionForm>::wrap(cForm);
+    else if (cForm)
+        cForm->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+
 }
 #endif

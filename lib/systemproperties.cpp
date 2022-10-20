@@ -244,6 +244,20 @@ void VBox::ISystemProperties::set_defaultVRDEExtPack(const std::u16string &value
     COM_SetString(get_IFC(), DefaultVRDEExtPack, value);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::u16string VBox::ISystemProperties::defaultCryptoExtPack() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), DefaultCryptoExtPack, result);
+    return result;
+}
+
+void VBox::ISystemProperties::set_defaultCryptoExtPack(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), DefaultCryptoExtPack, value);
+}
+#endif
+
 uint32_t VBox::ISystemProperties::logHistoryCount() const
 {
     COM_ULong result;
@@ -396,38 +410,88 @@ std::vector<VBox::ExportOptions> VBox::ISystemProperties::supportedExportOptions
     return result;
 }
 
-std::vector<VBox::RecordingAudioCodec> VBox::ISystemProperties::supportedRecordingAudioCodecs() const
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::RecordingFeature>
+VBox::ISystemProperties::supportedRecordingFeatures() const
+{
+    std::vector<RecordingFeature> result;
+    COM_GetArray(get_IFC(), SupportedRecordingFeatures,
+                 COM_Enum(::RecordingFeature), result);
+    return result;
+}
+#endif
+
+std::vector<VBox::RecordingAudioCodec>
+VBox::ISystemProperties::supportedRecordingAudioCodecs() const
 {
     std::vector<RecordingAudioCodec> result;
-    COM_GetArray(get_IFC(), SupportedRecordingAudioCodecs, COM_Enum(::RecordingAudioCodec), result);
+    COM_GetArray(get_IFC(), SupportedRecordingAudioCodecs,
+                 COM_Enum(::RecordingAudioCodec), result);
     return result;
 }
 
-std::vector<VBox::RecordingVideoCodec> VBox::ISystemProperties::supportedRecordingVideoCodecs() const
+std::vector<VBox::RecordingVideoCodec>
+VBox::ISystemProperties::supportedRecordingVideoCodecs() const
 {
     std::vector<RecordingVideoCodec> result;
-    COM_GetArray(get_IFC(), SupportedRecordingVideoCodecs, COM_Enum(::RecordingVideoCodec), result);
+    COM_GetArray(get_IFC(), SupportedRecordingVideoCodecs,
+                 COM_Enum(::RecordingVideoCodec), result);
     return result;
 }
 
-std::vector<VBox::RecordingVideoScalingMethod> VBox::ISystemProperties::supportedRecordingVSMethods() const
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::RecordingVideoScalingMethod>
+VBox::ISystemProperties::supportedRecordingVSMethods() const
 {
     std::vector<RecordingVideoScalingMethod> result;
-    COM_GetArray(get_IFC(), SupportedRecordingVSMethods, COM_Enum(::RecordingVideoScalingMethod), result);
+    COM_GetArray(get_IFC(), SupportedRecordingVSMethods,
+                 COM_Enum(::RecordingVideoScalingMethod), result);
     return result;
 }
 
-std::vector<VBox::RecordingVideoRateControlMode> VBox::ISystemProperties::supportedRecordingVRCModes() const
+std::vector<VBox::RecordingVideoRateControlMode>
+VBox::ISystemProperties::supportedRecordingVRCModes() const
 {
     std::vector<RecordingVideoRateControlMode> result;
-    COM_GetArray(get_IFC(), SupportedRecordingVRCModes, COM_Enum(::RecordingVideoRateControlMode), result);
+    COM_GetArray(get_IFC(), SupportedRecordingVRCModes,
+                 COM_Enum(::RecordingVideoRateControlMode), result);
+    return result;
+}
+#else
+std::vector<VBox::RecordingVideoScalingMode>
+VBox::ISystemProperties::supportedRecordingVSModes() const
+{
+    std::vector<RecordingVideoScalingMode> result;
+    COM_GetArray(get_IFC(), SupportedRecordingVSModes,
+                 COM_Enum(::RecordingVideoScalingMode), result);
     return result;
 }
 
-std::vector<VBox::GraphicsControllerType> VBox::ISystemProperties::supportedGraphicsControllerTypes() const
+std::vector<VBox::RecordingRateControlMode>
+VBox::ISystemProperties::supportedRecordingARCModes() const
+{
+    std::vector<RecordingRateControlMode> result;
+    COM_GetArray(get_IFC(), SupportedRecordingARCModes,
+                 COM_Enum(::RecordingRateControlMode), result);
+    return result;
+}
+
+std::vector<VBox::RecordingRateControlMode>
+VBox::ISystemProperties::supportedRecordingVRCModes() const
+{
+    std::vector<RecordingRateControlMode> result;
+    COM_GetArray(get_IFC(), SupportedRecordingVRCModes,
+                 COM_Enum(::RecordingRateControlMode), result);
+    return result;
+}
+#endif
+
+std::vector<VBox::GraphicsControllerType>
+VBox::ISystemProperties::supportedGraphicsControllerTypes() const
 {
     std::vector<GraphicsControllerType> result;
-    COM_GetArray(get_IFC(), SupportedGraphicsControllerTypes, COM_Enum(::GraphicsControllerType), result);
+    COM_GetArray(get_IFC(), SupportedGraphicsControllerTypes,
+                 COM_Enum(::GraphicsControllerType), result);
     return result;
 }
 
@@ -452,17 +516,21 @@ std::vector<VBox::VMProcPriority> VBox::ISystemProperties::supportedVMProcPriori
     return result;
 }
 
-std::vector<VBox::NetworkAttachmentType> VBox::ISystemProperties::supportedNetworkAttachmentTypes() const
+std::vector<VBox::NetworkAttachmentType>
+VBox::ISystemProperties::supportedNetworkAttachmentTypes() const
 {
     std::vector<NetworkAttachmentType> result;
-    COM_GetArray(get_IFC(), SupportedNetworkAttachmentTypes, COM_Enum(::NetworkAttachmentType), result);
+    COM_GetArray(get_IFC(), SupportedNetworkAttachmentTypes,
+                 COM_Enum(::NetworkAttachmentType), result);
     return result;
 }
 
-std::vector<VBox::NetworkAdapterType> VBox::ISystemProperties::supportedNetworkAdapterTypes() const
+std::vector<VBox::NetworkAdapterType>
+VBox::ISystemProperties::supportedNetworkAdapterTypes() const
 {
     std::vector<NetworkAdapterType> result;
-    COM_GetArray(get_IFC(), SupportedNetworkAdapterTypes, COM_Enum(::NetworkAdapterType), result);
+    COM_GetArray(get_IFC(), SupportedNetworkAdapterTypes,
+                 COM_Enum(::NetworkAdapterType), result);
     return result;
 }
 
@@ -520,6 +588,34 @@ std::vector<VBox::ChipsetType> VBox::ISystemProperties::supportedChipsetTypes() 
     std::vector<ChipsetType> result;
     COM_GetArray(get_IFC(), SupportedChipsetTypes, COM_Enum(::ChipsetType), result);
     return result;
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::IommuType> VBox::ISystemProperties::supportedIommuTypes() const
+{
+    std::vector<IommuType> result;
+    COM_GetArray(get_IFC(), SupportedIommuTypes, COM_Enum(::IommuType), result);
+    return result;
+}
+
+std::vector<VBox::TpmType> VBox::ISystemProperties::supportedTpmTypes() const
+{
+    std::vector<TpmType> result;
+    COM_GetArray(get_IFC(), SupportedTpmTypes, COM_Enum(::TpmType), result);
+    return result;
+}
+
+std::u16string VBox::ISystemProperties::languageId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), LanguageId, result);
+    return result;
+}
+
+void VBox::ISystemProperties::set_languageId(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), LanguageId, value);
 }
 #endif
 
@@ -677,3 +773,20 @@ uint32_t VBox::ISystemProperties::getMaxInstancesOfUSBControllerType(
 
     return static_cast<uint32_t>(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::COMPtr<VBox::ICPUProfile>> VBox::ISystemProperties::getCPUProfiles(
+        CPUArchitecture architecture, const std::u16string &namePattern)
+{
+    COM_ArrayProxy<::ICPUProfile *> pResult;
+    COM_StringProxy pNamePattern(namePattern);
+
+    auto rc = get_IFC()->GetCPUProfiles(static_cast<COM_Enum(::CPUArchitecture)>(architecture),
+                pNamePattern.m_text, COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<COMPtr<ICPUProfile>> result;
+    pResult.toVector(result);
+    return result;
+}
+#endif

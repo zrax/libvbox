@@ -80,3 +80,12 @@ std::u16string VBox::IGuestPropertyChangedEvent::flags() const
     COM_GetString(get_IFC(), Flags, result);
     return result;
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+bool VBox::IGuestPropertyChangedEvent::fWasDeleted() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), FWasDeleted, result);
+    return static_cast<bool>(result);
+}
+#endif

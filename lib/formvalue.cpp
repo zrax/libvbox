@@ -142,6 +142,15 @@ bool VBox::IStringFormValue::multiline() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::u16string VBox::IStringFormValue::clipboardString() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), ClipboardString, result);
+    return result;
+}
+#endif
+
 std::u16string VBox::IStringFormValue::getString()
 {
     COM_StringProxy pResult;

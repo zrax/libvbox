@@ -175,12 +175,12 @@ void VBox::INATNetwork::addPortForwardRule(bool isIpv6,
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::INATNetwork::removePortForwardRule(bool iSipv6,
+void VBox::INATNetwork::removePortForwardRule(bool isIpv6,
         const std::u16string &ruleName)
 {
     COM_StringProxy pRuleName(ruleName);
 
-    auto rc = get_IFC()->RemovePortForwardRule(iSipv6, pRuleName.m_text);
+    auto rc = get_IFC()->RemovePortForwardRule(isIpv6, pRuleName.m_text);
     COM_ERROR_CHECK(rc);
 }
 

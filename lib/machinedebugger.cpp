@@ -32,6 +32,7 @@ void VBox::IMachineDebugger::set_singleStep(bool value)
     COM_SetValue(get_IFC(), SingleStep, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 bool VBox::IMachineDebugger::recompileUser() const
 {
     COM_Bool result;
@@ -55,6 +56,7 @@ void VBox::IMachineDebugger::set_recompileSupervisor(bool value)
 {
     COM_SetValue(get_IFC(), RecompileSupervisor, value);
 }
+#endif
 
 bool VBox::IMachineDebugger::executeAllInIEM() const
 {
@@ -68,6 +70,7 @@ void VBox::IMachineDebugger::set_executeAllInIEM(bool value)
     COM_SetValue(get_IFC(), ExecuteAllInIEM, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 bool VBox::IMachineDebugger::PATMEnabled() const
 {
     COM_Bool result;
@@ -91,6 +94,7 @@ void VBox::IMachineDebugger::set_CSAMEnabled(bool value)
 {
     COM_SetValue(get_IFC(), CSAMEnabled, value);
 }
+#endif
 
 bool VBox::IMachineDebugger::logEnabled() const
 {
@@ -155,12 +159,14 @@ VBox::VMExecutionEngine VBox::IMachineDebugger::executionEngine() const
 }
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 bool VBox::IMachineDebugger::HWVirtExEnabled() const
 {
     COM_Bool result;
     COM_GetValue(get_IFC(), HWVirtExEnabled, result);
     return static_cast<bool>(result);
 }
+#endif
 
 bool VBox::IMachineDebugger::HWVirtExNestedPagingEnabled() const
 {
@@ -216,12 +222,14 @@ void VBox::IMachineDebugger::set_virtualTimeRate(uint32_t value)
     COM_SetValue(get_IFC(), VirtualTimeRate, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 int64_t VBox::IMachineDebugger::VM() const
 {
     COM_Long64 result;
     COM_GetValue(get_IFC(), VM, result);
     return static_cast<int64_t>(result);
 }
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 4)
 int64_t VBox::IMachineDebugger::uptime() const
@@ -489,5 +497,35 @@ int64_t VBox::IMachineDebugger::getCPULoad(uint32_t cpuId,
     if (pctOther)
         *pctOther = static_cast<uint32_t>(cPctOther);
     return static_cast<int64_t>(cResult);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IProgress> VBox::IMachineDebugger::takeGuestSample(
+        const std::u16string &filename, uint32_t usInterval, int64_t usSampleTime)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pFilename(filename);
+
+    auto rc = get_IFC()->TakeGuestSample(pFilename.m_text, usInterval, usSampleTime,
+                &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+int64_t VBox::IMachineDebugger::getUVMAndVMMFunctionTable(int64_t magicVersion,
+        int64_t *VMMFunctionTable)
+{
+    COM_Long64 cResult = 0;
+    COM_Long64 cVMMFunctionTable = 0;
+
+    auto rc = get_IFC()->GetUVMAndVMMFunctionTable(magicVersion, &cVMMFunctionTable,
+                &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (VMMFunctionTable)
+        *VMMFunctionTable = cVMMFunctionTable;
+    return cResult;
 }
 #endif

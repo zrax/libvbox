@@ -95,7 +95,7 @@
             COM_StringProxy proxy;                                      \
             auto rc = obj->Get##name(&proxy.m_text);                    \
             COM_ERROR_CHECK(rc);                                        \
-            return proxy.toString();                                    \
+            result = proxy.toString();                                  \
         } while (0)
 
 #   define COM_SetString(obj, name, value)                              \

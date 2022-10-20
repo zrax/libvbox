@@ -42,7 +42,12 @@ std::vector<VBox::MediumFormatCapabilities> VBox::IMediumFormat::capabilities() 
 }
 
 void VBox::IMediumFormat::describeFileExtensions(
-        std::vector<std::u16string> *extensions, std::vector<DeviceType> *types)
+        std::vector<std::u16string> *extensions, std::vector<DeviceType> *types
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
+        )
+#else
+        ) const
+#endif
 {
     COM_StringArrayProxy pExtensions;
     COM_ArrayProxy<COM_Enum(::DeviceType)> pTypes;

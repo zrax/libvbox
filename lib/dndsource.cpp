@@ -22,8 +22,7 @@ COM_WRAP_IFC(IDnDSource)
 COM_WRAP_IFC(IGuestDnDSource)
 
 VBox::DnDAction VBox::IDnDSource::dragIsPending(uint32_t screenId,
-        /* out */ std::vector<std::u16string> *formats,
-        /* out */ std::vector<DnDAction> *allowedActions)
+        std::vector<std::u16string> *formats, std::vector<DnDAction> *allowedActions)
 {
     COM_Enum(::DnDAction) cResult;
     COM_StringArrayProxy pFormats;

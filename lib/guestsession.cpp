@@ -621,6 +621,31 @@ void VBox::IGuestSession::fsObjSetACL(const std::u16string &path, bool followSym
     COM_ERROR_CHECK(rc);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+int64_t VBox::IGuestSession::fsQueryFreeSpace(const std::u16string &path)
+{
+    COM_Long64 cResult = 0;
+    COM_StringProxy pPath(path);
+
+    auto rc = get_IFC()->FsQueryFreeSpace(pPath.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<int64_t>(cResult);
+}
+
+VBox::COMPtr<VBox::IGuestFsInfo> VBox::IGuestSession::fsQueryInfo(
+        const std::u16string &path)
+{
+    ::IGuestFsInfo *cResult = nullptr;
+    COM_StringProxy pPath(path);
+
+    auto rc = get_IFC()->FsQueryInfo(pPath.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IGuestFsInfo>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreate(
         const std::u16string &executable, const std::vector<std::u16string> &arguments,
         const std::vector<std::u16string> &environmentChanges,

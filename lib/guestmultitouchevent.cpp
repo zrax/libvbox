@@ -55,6 +55,15 @@ std::vector<uint16_t> VBox::IGuestMultiTouchEvent::contactFlags() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+bool VBox::IGuestMultiTouchEvent::isTouchScreen() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), IsTouchScreen, result);
+    return static_cast<bool>(result);
+}
+#endif
+
 uint32_t VBox::IGuestMultiTouchEvent::scanTime() const
 {
     COM_ULong result;

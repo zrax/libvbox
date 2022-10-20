@@ -34,12 +34,28 @@ bool VBox::IMouse::relativeSupported() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 bool VBox::IMouse::multiTouchSupported() const
 {
     COM_Bool result;
     COM_GetValue(get_IFC(), MultiTouchSupported, result);
     return result;
 }
+#else
+bool VBox::IMouse::touchScreenSupported() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), TouchScreenSupported, result);
+    return result;
+}
+
+bool VBox::IMouse::touchPadSupported() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), TouchPadSupported, result);
+    return result;
+}
+#endif
 
 bool VBox::IMouse::needsHostCursor() const
 {
@@ -77,20 +93,35 @@ void VBox::IMouse::putMouseEventAbsolute(int32_t x, int32_t y, int32_t dz,
 }
 
 void VBox::IMouse::putEventMultiTouch(int32_t count,
-        const std::vector<int64_t> &contacts, uint32_t scanTime)
+        const std::vector<int64_t> &contacts,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+        bool isTouchScreen,
+#endif
+        uint32_t scanTime)
 {
     COM_ArrayProxy<COM_Long64> pContacts(contacts);
 
     auto rc = get_IFC()->PutEventMultiTouch(count, COM_ArrayParameter(pContacts),
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+                                            isTouchScreen,
+#endif
                                             scanTime);
     COM_ERROR_CHECK(rc);
 }
 
-void VBox::IMouse::putEventMultiTouchString(int32_t count, const std::u16string &contacts,
+void VBox::IMouse::putEventMultiTouchString(int32_t count,
+        const std::u16string &contacts,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+        bool isTouchScreen,
+#endif
         uint32_t scanTime)
 {
     COM_StringProxy pContacts(contacts);
 
-    auto rc = get_IFC()->PutEventMultiTouchString(count, pContacts.m_text, scanTime);
+    auto rc = get_IFC()->PutEventMultiTouchString(count, pContacts.m_text,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+                                                  isTouchScreen,
+#endif
+                                                  scanTime);
     COM_ERROR_CHECK(rc);
 }

@@ -1,5 +1,5 @@
 /* This file is part of libvbox
- * Copyright (C) 2019  Michael Hansen
+ * Copyright (C) 2022  Michael Hansen
  *
  * libvbox is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,35 +18,40 @@
 
 #include "libvbox_p.h"
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-COM_WRAP_IFC(IProgressEvent)
-COM_WRAP_IFC(IProgressPercentageChangedEvent)
-COM_WRAP_IFC(IProgressTaskCompletedEvent)
-
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
-COM_WRAP_IFC(IProgressCreatedEvent)
-#endif
+COM_WRAP_IFC(INvramStore)
 
-std::u16string VBox::IProgressEvent::progressId() const
+std::u16string VBox::INvramStore::nonVolatileStorageFile() const
 {
     std::u16string result;
-    COM_GetString(get_IFC(), ProgressId, result);
+    COM_GetString(get_IFC(), NonVolatileStorageFile, result);
     return result;
 }
 
-int32_t VBox::IProgressPercentageChangedEvent::percent() const
+VBox::COMPtr<VBox::IUefiVariableStore> VBox::INvramStore::uefiVariableStore() const
 {
-    COM_Long result;
-    COM_GetValue(get_IFC(), Percent, result);
-    return static_cast<int32_t>(result);
+    COMPtr<IUefiVariableStore> result;
+    COM_GetValue_Wrap(get_IFC(), UefiVariableStore, result);
+    return result;
 }
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
-bool VBox::IProgressCreatedEvent::create() const
+std::u16string VBox::INvramStore::keyId() const
 {
-    COM_Bool result;
-    COM_GetValue(get_IFC(), Create, result);
-    return static_cast<bool>(result);
+    std::u16string result;
+    COM_GetString(get_IFC(), KeyId, result);
+    return result;
+}
+
+std::u16string VBox::INvramStore::keyStore() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), KeyStore, result);
+    return result;
+}
+
+void VBox::INvramStore::initUefiVariableStore(uint32_t size)
+{
+    auto rc = get_IFC()->InitUefiVariableStore(static_cast<COM_ULong>(size));
+    COM_ERROR_CHECK(rc);
 }
 #endif

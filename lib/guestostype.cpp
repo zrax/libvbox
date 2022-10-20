@@ -197,6 +197,15 @@ VBox::ChipsetType VBox::IGuestOSType::recommendedChipset() const
     return static_cast<ChipsetType>(result);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::IommuType VBox::IGuestOSType::recommendedIommuType() const
+{
+    COM_Enum(::IommuType) result;
+    COM_GetValue(get_IFC(), RecommendedIommuType, result);
+    return static_cast<IommuType>(result);
+}
+#endif
+
 VBox::AudioControllerType VBox::IGuestOSType::recommendedAudioController() const
 {
     COM_Enum(::AudioControllerType) result;
@@ -256,5 +265,28 @@ uint32_t VBox::IGuestOSType::recommendedCPUCount() const
     COM_ULong result;
     COM_GetValue(get_IFC(), RecommendedCPUCount, result);
     return static_cast<uint32_t>(result);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::TpmType VBox::IGuestOSType::recommendedTpmType() const
+{
+    COM_Enum(::TpmType) result;
+    COM_GetValue(get_IFC(), RecommendedTpmType, result);
+    return static_cast<TpmType>(result);
+}
+
+bool VBox::IGuestOSType::recommendedSecureBoot() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), RecommendedSecureBoot, result);
+    return static_cast<bool>(result);
+}
+
+bool VBox::IGuestOSType::recommendedWDDMGraphics() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), RecommendedWDDMGraphics, result);
+    return static_cast<bool>(result);
 }
 #endif

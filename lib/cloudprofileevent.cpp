@@ -1,5 +1,5 @@
 /* This file is part of libvbox
- * Copyright (C) 2019  Michael Hansen
+ * Copyright (C) 2022  Michael Hansen
  *
  * libvbox is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,35 +18,42 @@
 
 #include "libvbox_p.h"
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 2, 0)
-COM_WRAP_IFC(IProgressEvent)
-COM_WRAP_IFC(IProgressPercentageChangedEvent)
-COM_WRAP_IFC(IProgressTaskCompletedEvent)
-
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
-COM_WRAP_IFC(IProgressCreatedEvent)
-#endif
+COM_WRAP_IFC(ICloudProfileRegisteredEvent)
+COM_WRAP_IFC(ICloudProfileChangedEvent)
 
-std::u16string VBox::IProgressEvent::progressId() const
+std::u16string VBox::ICloudProfileRegisteredEvent::providerId() const
 {
     std::u16string result;
-    COM_GetString(get_IFC(), ProgressId, result);
+    COM_GetString(get_IFC(), ProviderId, result);
     return result;
 }
 
-int32_t VBox::IProgressPercentageChangedEvent::percent() const
+std::u16string VBox::ICloudProfileRegisteredEvent::name() const
 {
-    COM_Long result;
-    COM_GetValue(get_IFC(), Percent, result);
-    return static_cast<int32_t>(result);
+    std::u16string result;
+    COM_GetString(get_IFC(), Name, result);
+    return result;
 }
-#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
-bool VBox::IProgressCreatedEvent::create() const
+bool VBox::ICloudProfileRegisteredEvent::registered() const
 {
     COM_Bool result;
-    COM_GetValue(get_IFC(), Create, result);
+    COM_GetValue(get_IFC(), Registered, result);
     return static_cast<bool>(result);
+}
+
+std::u16string VBox::ICloudProfileChangedEvent::providerId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), ProviderId, result);
+    return result;
+}
+
+std::u16string VBox::ICloudProfileChangedEvent::name() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), Name, result);
+    return result;
 }
 #endif

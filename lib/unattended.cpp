@@ -325,6 +325,41 @@ std::u16string VBox::IUnattended::detectedOSLanguages() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<std::u16string> VBox::IUnattended::detectedImageNames() const
+{
+    std::vector<std::u16string> result;
+    COM_GetStringArray(get_IFC(), DetectedImageNames, result);
+    return result;
+}
+
+std::vector<uint32_t> VBox::IUnattended::detectedImageIndices() const
+{
+    std::vector<uint32_t> result;
+    COM_GetArray(get_IFC(), DetectedImageIndices, COM_ULong, result);
+    return result;
+}
+
+bool VBox::IUnattended::isUnattendedInstallSupported() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), IsUnattendedInstallSupported, result);
+    return static_cast<bool>(result);
+}
+
+bool VBox::IUnattended::avoidUpdatesOverNetwork() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), AvoidUpdatesOverNetwork, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::IUnattended::set_avoidUpdatesOverNetwork(bool value)
+{
+    COM_SetValue(get_IFC(), AvoidUpdatesOverNetwork, static_cast<COM_Bool>(value));
+}
+#endif
+
 std::u16string VBox::IUnattended::detectedOSHints() const
 {
     std::u16string result;

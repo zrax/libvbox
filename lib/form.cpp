@@ -29,6 +29,31 @@ std::vector<VBox::COMPtr<VBox::IFormValue>> VBox::IForm::values() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<std::u16string> VBox::IForm::getFieldGroup(const std::u16string &field)
+{
+    COM_StringArrayProxy pResult;
+    COM_StringProxy pField(field);
+
+    auto rc = get_IFC()->GetFieldGroup(pField.m_text, COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<std::u16string> result;
+    pResult.toVector(result);
+    return result;
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::IForm::apply()
+{
+    ::IProgress *cResult = nullptr;
+
+    auto rc = get_IFC()->Apply(&cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IVirtualSystemDescription>
 VBox::IVirtualSystemDescriptionForm::getVirtualSystemDescription()
 {

@@ -7,7 +7,7 @@ without having to deal with the messy MS COM or XPCOM layers directly.
 In fact, after building libvbox, client applications do not need any
 COM headers, nor the VirtualBox SDK itself.
 
-libvbox currently supports VirtualBox SDK versions 5.0 through 6.1.
+libvbox currently supports VirtualBox SDK versions 5.0 through 7.0.
 
 ## Building
 

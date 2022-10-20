@@ -222,6 +222,16 @@ std::vector<VBox::COMPtr<VBox::IGuestSession>> VBox::IGuest::findSession(
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+void VBox::IGuest::shutdown(const std::vector<GuestShutdownFlag> &flags)
+{
+    COM_ArrayProxy<COM_Enum(::GuestShutdownFlag)> pFlags(flags);
+
+    auto rc = get_IFC()->Shutdown(COM_ArrayParameter(pFlags));
+    COM_ERROR_CHECK(rc);
+}
+#endif
+
 VBox::COMPtr<VBox::IProgress> VBox::IGuest::updateGuestAdditions(
         const std::u16string &source, const std::vector<std::u16string> &arguments,
         const std::vector<AdditionsUpdateFlag> &flags)

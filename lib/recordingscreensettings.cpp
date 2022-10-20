@@ -41,6 +41,7 @@ void VBox::IRecordingScreenSettings::set_enabled(bool value)
     COM_SetValue(get_IFC(), Enabled, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 uint32_t VBox::IRecordingScreenSettings::features() const
 {
     COM_ULong result;
@@ -52,6 +53,19 @@ void VBox::IRecordingScreenSettings::set_features(uint32_t value)
 {
     COM_SetValue(get_IFC(), Features, value);
 }
+#else
+std::vector<VBox::RecordingFeature> VBox::IRecordingScreenSettings::features() const
+{
+    std::vector<RecordingFeature> result;
+    COM_GetArray(get_IFC(), Features, COM_Enum(::RecordingFeature), result);
+    return result;
+}
+
+void VBox::IRecordingScreenSettings::set_features(const std::vector<RecordingFeature> &value)
+{
+    COM_SetArray(get_IFC(), Features, COM_Enum(::RecordingFeature), value);
+}
+#endif
 
 VBox::RecordingDestination VBox::IRecordingScreenSettings::destination() const
 {
@@ -127,6 +141,34 @@ void VBox::IRecordingScreenSettings::set_audioCodec(RecordingAudioCodec value)
                  static_cast<COM_Enum(::RecordingAudioCodec)>(value));
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::RecordingRateControlMode VBox::IRecordingScreenSettings::audioRateControlMode() const
+{
+    COM_Enum(::RecordingRateControlMode) result;
+    COM_GetValue(get_IFC(), AudioRateControlMode, result);
+    return static_cast<RecordingRateControlMode>(result);
+}
+
+void VBox::IRecordingScreenSettings::set_audioRateControlMode(RecordingRateControlMode value)
+{
+    COM_SetValue(get_IFC(), AudioRateControlMode,
+                 static_cast<COM_Enum(::RecordingRateControlMode)>(value));
+}
+
+VBox::RecordingCodecDeadline VBox::IRecordingScreenSettings::audioDeadline() const
+{
+    COM_Enum(::RecordingCodecDeadline) result;
+    COM_GetValue(get_IFC(), AudioDeadline, result);
+    return static_cast<RecordingCodecDeadline>(result);
+}
+
+void VBox::IRecordingScreenSettings::set_audioDeadline(RecordingCodecDeadline value)
+{
+    COM_SetValue(get_IFC(), AudioDeadline,
+                 static_cast<COM_Enum(::RecordingCodecDeadline)>(value));
+}
+#endif
+
 uint32_t VBox::IRecordingScreenSettings::audioHz() const
 {
     COM_ULong result;
@@ -176,6 +218,21 @@ void VBox::IRecordingScreenSettings::set_videoCodec(RecordingVideoCodec value)
                  static_cast<COM_Enum(::RecordingVideoCodec)>(value));
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::RecordingCodecDeadline VBox::IRecordingScreenSettings::videoDeadline() const
+{
+    COM_Enum(::RecordingCodecDeadline) result;
+    COM_GetValue(get_IFC(), VideoDeadline, result);
+    return static_cast<RecordingCodecDeadline>(result);
+}
+
+void VBox::IRecordingScreenSettings::set_videoDeadline(RecordingCodecDeadline value)
+{
+    COM_SetValue(get_IFC(), VideoDeadline,
+                 static_cast<COM_Enum(::RecordingCodecDeadline)>(value));
+}
+#endif
+
 uint32_t VBox::IRecordingScreenSettings::videoWidth() const
 {
     COM_ULong result;
@@ -212,19 +269,28 @@ void VBox::IRecordingScreenSettings::set_videoRate(uint32_t value)
     COM_SetValue(get_IFC(), VideoRate, value);
 }
 
-VBox::RecordingVideoRateControlMode
+VBox::RecordingRateControlMode
 VBox::IRecordingScreenSettings::videoRateControlMode() const
 {
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
     COM_Enum(::RecordingVideoRateControlMode) result;
+#else
+    COM_Enum(::RecordingRateControlMode) result;
+#endif
     COM_GetValue(get_IFC(), VideoRateControlMode, result);
-    return static_cast<RecordingVideoRateControlMode>(result);
+    return static_cast<RecordingRateControlMode>(result);
 }
 
 void VBox::IRecordingScreenSettings::set_videoRateControlMode(
-        RecordingVideoRateControlMode value)
+        RecordingRateControlMode value)
 {
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
     COM_SetValue(get_IFC(), VideoRateControlMode,
                  static_cast<COM_Enum(::RecordingVideoRateControlMode)>(value));
+#else
+    COM_SetValue(get_IFC(), VideoRateControlMode,
+                 static_cast<COM_Enum(::RecordingRateControlMode)>(value));
+#endif
 }
 
 uint32_t VBox::IRecordingScreenSettings::videoFPS() const
@@ -239,6 +305,7 @@ void VBox::IRecordingScreenSettings::set_videoFPS(uint32_t value)
     COM_SetValue(get_IFC(), VideoFPS, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 VBox::RecordingVideoScalingMethod
 VBox::IRecordingScreenSettings::videoScalingMethod() const
 {
@@ -253,6 +320,22 @@ void VBox::IRecordingScreenSettings::set_videoScalingMethod(
     COM_SetValue(get_IFC(), VideoScalingMethod,
                  static_cast<COM_Enum(::RecordingVideoScalingMethod)>(value));
 }
+#else
+VBox::RecordingVideoScalingMode
+VBox::IRecordingScreenSettings::videoScalingMode() const
+{
+    COM_Enum(::RecordingVideoScalingMode) result;
+    COM_GetValue(get_IFC(), VideoScalingMode, result);
+    return static_cast<RecordingVideoScalingMode>(result);
+}
+
+void VBox::IRecordingScreenSettings::set_videoScalingMode(
+        RecordingVideoScalingMode value)
+{
+    COM_SetValue(get_IFC(), VideoScalingMode,
+                 static_cast<COM_Enum(::RecordingVideoScalingMode)>(value));
+}
+#endif
 
 bool VBox::IRecordingScreenSettings::isFeatureEnabled(RecordingFeature feature)
 {

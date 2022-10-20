@@ -151,7 +151,8 @@ void VBox::IInternalMachineControl::pullGuestProperties(
         pFlags.toVector(*flags);
 }
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)                 \
+    && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 void VBox::IInternalMachineControl::clipboardAreaRegister(
         const std::vector<std::u16string> &parms, uint32_t *id)
 {
@@ -208,14 +209,22 @@ void VBox::IInternalMachineControl::clipboardAreaGetRefCount(uint32_t id,
 #endif
 
 void VBox::IInternalMachineControl::pushGuestProperty(const std::u16string &name,
-        const std::u16string &value, int64_t timestamp, const std::u16string &flags)
+        const std::u16string &value, int64_t timestamp, const std::u16string &flags
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+      , bool fWasDeleted
+#endif
+        )
 {
     COM_StringProxy pName(name);
     COM_StringProxy pValue(value);
     COM_StringProxy pFlags(flags);
 
     auto rc = get_IFC()->PushGuestProperty(pName.m_text, pValue.m_text,
-                timestamp, pFlags.m_text);
+                timestamp, pFlags.m_text
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+              , fWasDeleted
+#endif
+                );
     COM_ERROR_CHECK(rc);
 }
 

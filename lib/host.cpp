@@ -19,7 +19,8 @@
 #include "libvbox_p.h"
 
 COM_WRAP_IFC(IHost)
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)                 \
+    && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 COM_WRAP_IFC(IHostUpdate)
 #endif
 
@@ -36,6 +37,15 @@ std::vector<VBox::COMPtr<VBox::IMedium>> VBox::IHost::floppyDrives() const
     COM_GetArray_Wrap(get_IFC(), FloppyDrives, result);
     return result;
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::COMPtr<VBox::IHostAudioDevice>> VBox::IHost::audioDevices() const
+{
+    std::vector<COMPtr<IHostAudioDevice>> result;
+    COM_GetArray_Wrap(get_IFC(), AudioDevices, result);
+    return result;
+}
+#endif
 
 std::vector<VBox::COMPtr<VBox::IHostUSBDevice>> VBox::IHost::USBDevices() const
 {
@@ -107,6 +117,15 @@ uint32_t VBox::IHost::processorOnlineCoreCount() const
     return static_cast<uint32_t>(cResult);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::vector<VBox::COMPtr<VBox::IHostDrive>> VBox::IHost::hostDrives() const
+{
+    std::vector<COMPtr<IHostDrive>> result;
+    COM_GetArray_Wrap(get_IFC(), HostDrives, result);
+    return result;
+}
+#endif
+
 uint32_t VBox::IHost::memorySize() const
 {
     COM_ULong cResult;
@@ -156,11 +175,35 @@ std::vector<VBox::COMPtr<VBox::IHostVideoInputDevice>> VBox::IHost::videoInputDe
     return result;
 }
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)                 \
+    && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 VBox::COMPtr<VBox::IHostUpdate> VBox::IHost::update() const
 {
     COMPtr<IHostUpdate> result;
     COM_GetValue_Wrap(get_IFC(), Update, result);
+    return result;
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IUpdateAgent> VBox::IHost::updateHost() const
+{
+    COMPtr<IUpdateAgent> result;
+    COM_GetValue_Wrap(get_IFC(), UpdateHost, result);
+    return result;
+}
+
+VBox::COMPtr<VBox::IUpdateAgent> VBox::IHost::updateExtPack() const
+{
+    COMPtr<IUpdateAgent> result;
+    COM_GetValue_Wrap(get_IFC(), UpdateExtPack, result);
+    return result;
+}
+
+VBox::COMPtr<VBox::IUpdateAgent> VBox::IHost::updateGuestAdditions() const
+{
+    COMPtr<IUpdateAgent> result;
+    COM_GetValue_Wrap(get_IFC(), UpdateGuestAdditions, result);
     return result;
 }
 #endif

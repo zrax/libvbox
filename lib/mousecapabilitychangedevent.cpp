@@ -34,12 +34,28 @@ bool VBox::IMouseCapabilityChangedEvent::supportsRelative() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 bool VBox::IMouseCapabilityChangedEvent::supportsMultiTouch() const
 {
     COM_Bool result;
     COM_GetValue(get_IFC(), SupportsMultiTouch, result);
-    return result;
+    return static_cast<bool>(result);
 }
+#else
+bool VBox::IMouseCapabilityChangedEvent::supportsTouchScreen() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), SupportsTouchScreen, result);
+    return static_cast<bool>(result);
+}
+
+bool VBox::IMouseCapabilityChangedEvent::supportsTouchPad() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), SupportsTouchPad, result);
+    return static_cast<bool>(result);
+}
+#endif
 
 bool VBox::IMouseCapabilityChangedEvent::needsHostCursor() const
 {

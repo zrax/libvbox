@@ -135,6 +135,20 @@ std::vector<std::u16string> VBox::INATEngine::redirects() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+bool VBox::INATEngine::localhostReachable() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), LocalhostReachable, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::INATEngine::set_localhostReachable(bool value)
+{
+    COM_SetValue(get_IFC(), LocalhostReachable, value);
+}
+#endif
+
 void VBox::INATEngine::setNetworkSettings(uint32_t mtu, uint32_t sockSnd,
         uint32_t sockRcv, uint32_t TcpWndSnd, uint32_t TcpWndRcv)
 {

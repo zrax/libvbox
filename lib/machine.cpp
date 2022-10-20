@@ -415,6 +415,22 @@ VBox::COMPtr<VBox::IBIOSSettings> VBox::IMachine::BIOSSettings() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::ITrustedPlatformModule> VBox::IMachine::trustedPlatformModule() const
+{
+    COMPtr<ITrustedPlatformModule> result;
+    COM_GetValue_Wrap(get_IFC(), TrustedPlatformModule, result);
+    return result;
+}
+
+VBox::COMPtr<VBox::INvramStore> VBox::IMachine::nonVolatileStore() const
+{
+    COMPtr<INvramStore> result;
+    COM_GetValue_Wrap(get_IFC(), NonVolatileStore, result);
+    return result;
+}
+#endif
+
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox::COMPtr<VBox::IRecordingSettings> VBox::IMachine::recordingSettings() const
 {
@@ -482,6 +498,20 @@ VBox::ChipsetType VBox::IMachine::chipsetType() const
     return static_cast<ChipsetType>(result);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::IommuType VBox::IMachine::iommuType() const
+{
+    COM_Enum(::IommuType) result;
+    COM_GetValue(get_IFC(), IommuType, result);
+    return static_cast<IommuType>(result);
+}
+
+void VBox::IMachine::set_iommuType(IommuType value)
+{
+    COM_SetValue(get_IFC(), IommuType, static_cast<COM_Enum(::IommuType)>(value));
+}
+#endif
+
 void VBox::IMachine::set_chipsetType(ChipsetType value)
 {
     auto cValue = static_cast<COM_Enum(::ChipsetType)>(value);
@@ -540,12 +570,21 @@ VBox::COMPtr<VBox::IUSBDeviceFilters> VBox::IMachine::USBDeviceFilters() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 VBox::COMPtr<VBox::IAudioAdapter> VBox::IMachine::audioAdapter() const
 {
     COMPtr<IAudioAdapter> result;
     COM_GetValue_Wrap(get_IFC(), AudioAdapter, result);
     return result;
 }
+#else
+VBox::COMPtr<VBox::IAudioSettings> VBox::IMachine::audioSettings() const
+{
+    COMPtr<IAudioSettings> result;
+    COM_GetValue_Wrap(get_IFC(), AudioSettings, result);
+    return result;
+}
+#endif
 
 std::vector<VBox::COMPtr<VBox::IStorageController>> VBox::IMachine::storageControllers() const
 {
@@ -1010,6 +1049,43 @@ std::u16string VBox::IMachine::CPUProfile() const
 void VBox::IMachine::set_CPUProfile(const std::u16string &value)
 {
     COM_SetString(get_IFC(), CPUProfile, value);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::u16string VBox::IMachine::stateKeyId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), StateKeyId, result);
+    return result;
+}
+
+std::u16string VBox::IMachine::stateKeyStore() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), StateKeyStore, result);
+    return result;
+}
+
+std::u16string VBox::IMachine::logKeyId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), LogKeyId, result);
+    return result;
+}
+
+std::u16string VBox::IMachine::logKeyStore() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), LogKeyStore, result);
+    return result;
+}
+
+VBox::COMPtr<VBox::IGuestDebugControl> VBox::IMachine::guestDebugControl() const
+{
+    COMPtr<IGuestDebugControl> result;
+    COM_GetValue_Wrap(get_IFC(), GuestDebugControl, result);
+    return result;
 }
 #endif
 
@@ -2035,3 +2111,83 @@ void VBox::IMachine::applyDefaults(const std::u16string &flags)
     auto rc = get_IFC()->ApplyDefaults(pFlags.m_text);
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+VBox::COMPtr<VBox::IProgress> VBox::IMachine::changeEncryption(
+        const std::u16string &currentPassword, const std::u16string &cipher,
+        const std::u16string &newPassword, const std::u16string &newPasswordId,
+        bool force)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pCurrentPassword(currentPassword);
+    COM_StringProxy pCipher(cipher);
+    COM_StringProxy pNewPassword(newPassword);
+    COM_StringProxy pNewPasswordId(newPasswordId);
+
+    auto rc = get_IFC()->ChangeEncryption(pCurrentPassword.m_text, pCipher.m_text,
+                                          pNewPassword.m_text, pNewPasswordId.m_text,
+                                          static_cast<COM_Bool>(force), &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+void VBox::IMachine::getEncryptionSettings(
+        std::u16string *cipher, std::u16string *passwordId) const
+{
+    COM_StringProxy pCipher;
+    COM_StringProxy pPasswordId;
+
+    auto rc = get_IFC()->GetEncryptionSettings(&pCipher.m_text, &pPasswordId.m_text);
+    COM_ERROR_CHECK(rc);
+
+    if (cipher)
+        *cipher = pCipher.toString();
+    if (passwordId)
+        *passwordId = pPasswordId.toString();
+}
+
+void VBox::IMachine::checkEncryptionPassword(const std::u16string &password) const
+{
+    COM_StringProxy pPassword(password);
+
+    auto rc = get_IFC()->CheckEncryptionPassword(pPassword.m_text);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IMachine::addEncryptionPassword(const std::u16string &id,
+        const std::u16string &password)
+{
+    COM_StringProxy pId(id);
+    COM_StringProxy pPassword(password);
+
+    auto rc = get_IFC()->AddEncryptionPassword(pId.m_text, pPassword.m_text);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IMachine::addEncryptionPasswords(
+        const std::vector<std::u16string> &ids,
+        const std::vector<std::u16string> &passwords)
+{
+    COM_StringArrayProxy pIds(ids);
+    COM_StringArrayProxy pPasswords(passwords);
+
+    auto rc = get_IFC()->AddEncryptionPasswords(COM_ArrayParameter(pIds),
+                                                COM_ArrayParameter(pPasswords));
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IMachine::removeEncryptionPassword(const std::u16string &id)
+{
+    COM_StringProxy pId(id);
+
+    auto rc = get_IFC()->RemoveEncryptionPassword(pId.m_text);
+    COM_ERROR_CHECK(rc);
+}
+
+void VBox::IMachine::clearAllEncryptionPasswords()
+{
+    auto rc = get_IFC()->ClearAllEncryptionPasswords();
+    COM_ERROR_CHECK(rc);
+}
+#endif

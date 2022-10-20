@@ -101,6 +101,20 @@ void VBox::INetworkAdapter::set_hostOnlyInterface(const std::u16string &value)
     COM_SetString(get_IFC(), HostOnlyInterface, value);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+std::u16string VBox::INetworkAdapter::hostOnlyNetwork() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), HostOnlyNetwork, result);
+    return result;
+}
+
+void VBox::INetworkAdapter::set_hostOnlyNetwork(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), HostOnlyNetwork, value);
+}
+#endif
+
 std::u16string VBox::INetworkAdapter::internalNetwork() const
 {
     std::u16string result;
