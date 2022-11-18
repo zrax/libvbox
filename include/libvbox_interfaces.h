@@ -4848,6 +4848,14 @@ namespace VBox
     };
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 4)
+    class LIBVBOX_API IMachineGroupsChangedEvent : public IMachineEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IMachineGroupsChangedEvent)
+    };
+#endif
+
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
     class LIBVBOX_API IStringArray : public COMUnknown
     {

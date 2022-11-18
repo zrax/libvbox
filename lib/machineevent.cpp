@@ -24,6 +24,9 @@ COM_WRAP_IFC(IMachineDataChangedEvent)
 COM_WRAP_IFC(IMachineRegisteredEvent)
 COM_WRAP_IFC(ISessionStateChangedEvent)
 COM_WRAP_IFC(IGuestPropertyChangedEvent)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 4)
+COM_WRAP_IFC(IMachineGroupsChangedEvent)
+#endif
 
 std::u16string VBox::IMachineEvent::machineId() const
 {

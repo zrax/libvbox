@@ -1937,6 +1937,9 @@ namespace VBox
         OnHostAudioDeviceChanged,
         OnGuestDebugControlChanged,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 4)
+        OnMachineGroupsChanged,
+#endif
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
         Last,
 #else
@@ -2263,6 +2266,9 @@ VBox_FORWARD_DECL_IFC(IMachine);
 VBox_FORWARD_DECL_IFC(IMachineDataChangedEvent);
 VBox_FORWARD_DECL_IFC(IMachineDebugger);
 VBox_FORWARD_DECL_IFC(IMachineEvent);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 4)
+VBox_FORWARD_DECL_IFC(IMachineGroupsChangedEvent);
+#endif
 VBox_FORWARD_DECL_IFC(IMachineRegisteredEvent);
 VBox_FORWARD_DECL_IFC(IMachineStateChangedEvent);
 VBox_FORWARD_DECL_IFC(IMedium);
