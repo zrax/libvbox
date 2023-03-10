@@ -475,3 +475,19 @@ VBox::COMPtr<VBox::IMediumIO> VBox::IMedium::openForIO(bool writable,
     return COMPtr<IMediumIO>::wrap(cResult);
 }
 #endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
+VBox::COMPtr<VBox::IProgress> VBox::IMedium::resizeAndCloneTo(
+        const COMPtr<IMedium> &target, int64_t logicalSize,
+        const std::vector<MediumVariant> &variant, const COMPtr<IMedium> &parent)
+{
+    ::IProgress *cResult = nullptr;
+    COM_ArrayProxy<COM_Enum(::MediumVariant)> pVariant(variant);
+
+    auto rc = get_IFC()->ResizeAndCloneTo(target->get_IFC(), logicalSize,
+                COM_ArrayParameter(pVariant), parent->get_IFC(), &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif

@@ -221,6 +221,7 @@ will be thrown for easier exception handling by client code:
 | `E_MAXIMUM_REACHED`       | `VBox::EMaximumReached`   |
 | `E_GSTCTL_GUEST_ERROR`    | `VBox::EGstctlGuestError` |
 | `E_TIMEOUT`               | `VBox::ETimeout`          |
+| `E_DND_ERROR`             | `VBox::EDndError`         |
 
 ## libvbox Entry Points and Helpers
 

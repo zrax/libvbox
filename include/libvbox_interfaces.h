@@ -2652,6 +2652,13 @@ namespace VBox
                 /* in */ bool writable,
                 /* in */ const std::u16string &password);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
+        COMPtr<IProgress> resizeAndCloneTo(
+                /* in */ const COMPtr<IMedium> &target,
+                /* in */ int64_t logicalSize,
+                /* in */ const std::vector<MediumVariant> &variant,
+                /* in */ const COMPtr<IMedium> &parent);
+#endif
     };
 
     class LIBVBOX_API IMediumFormat : public COMUnknown

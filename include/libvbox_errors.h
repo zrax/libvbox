@@ -63,6 +63,9 @@ namespace VBox
         E_GSTCTL_GUEST_ERROR = 0x80BB000F,
         E_TIMEOUT = 0x80BB0010,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
+        E_DND_ERROR = 0x80BB0011,
+#endif
     };
 
     class COMError : public std::runtime_error
@@ -108,6 +111,9 @@ namespace VBox
     VBox_WRAP_ERROR(EMaximumReached, E_MAXIMUM_REACHED)
     VBox_WRAP_ERROR(EGstctlGuestError, E_GSTCTL_GUEST_ERROR)
     VBox_WRAP_ERROR(ETimeout, E_TIMEOUT)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
+    VBox_WRAP_ERROR(EDndError, E_DND_ERROR)
 #endif
 }
 

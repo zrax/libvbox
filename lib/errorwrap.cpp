@@ -81,6 +81,10 @@ void VBox::COMError::raise(uint32_t rc)
     case E_TIMEOUT:
         throw ETimeout();
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
+    case E_DND_ERROR:
+        throw EDndError();
+#endif
     default:
         throw COMError(rc);
     }

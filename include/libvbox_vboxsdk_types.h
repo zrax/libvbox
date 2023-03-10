@@ -282,6 +282,9 @@ namespace VBox
         DetachAllReturnNone = 2,
         DetachAllReturnHardDisksOnly = 3,
         Full = 4,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
+        DetachAllReturnHardDisksAndVMRemovable = 5,
+#endif
     };
 
     enum class ClipboardMode
