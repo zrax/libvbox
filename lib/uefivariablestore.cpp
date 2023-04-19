@@ -162,4 +162,19 @@ void VBox::IUefiVariableStore::enrollDefaultMsSignatures()
     auto rc = get_IFC()->EnrollDefaultMsSignatures();
     COM_ERROR_CHECK(rc);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 8)
+void VBox::IUefiVariableStore::addSignatureToMok(
+        const std::vector<uint8_t> &signature, const std::u16string &owner,
+        SignatureType signatureType)
+{
+    COM_ArrayProxy<COM_Byte> pSignature(signature);
+    COM_StringProxy pOwner(owner);
+
+    auto rc = get_IFC()->AddSignatureToMok(COM_ArrayParameter(pSignature), pOwner.m_text,
+                static_cast<COM_Enum(::SignatureType)>(signatureType));
+    COM_ERROR_CHECK(rc);
+}
+#endif
+
 #endif

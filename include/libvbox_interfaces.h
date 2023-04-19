@@ -897,6 +897,12 @@ namespace VBox
                 /* in */ const std::u16string &owner,
                 /* in */ SignatureType signatureType);
         void enrollDefaultMsSignatures();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 8)
+        void addSignatureToMok(
+                /* in */ const std::vector<uint8_t> &signature,
+                /* in */ const std::u16string &owner,
+                /* in */ SignatureType signatureType);
+#endif
     };
 
     class LIBVBOX_API INvramStore : public COMUnknown

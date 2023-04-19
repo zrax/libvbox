@@ -422,6 +422,9 @@ namespace VBox
         USB = 5,
         SharedFolder = 6,
         Graphics3D = 7,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 8)
+        End = 8,
+#endif
     };
 
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 1, 0)
