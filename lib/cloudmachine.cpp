@@ -151,6 +151,18 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::reboot()
     return COMPtr<IProgress>::wrap(cResult);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 10)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::reset()
+{
+    ::IProgress *cResult = nullptr;
+
+    auto rc = get_IFC()->Reset(&cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::shutdown()
 {
     ::IProgress *cResult = nullptr;

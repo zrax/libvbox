@@ -5031,6 +5031,9 @@ namespace VBox
                 /* out */ COMPtr<IForm> *form);
         COMPtr<IProgress> powerUp();
         COMPtr<IProgress> reboot();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 10)
+        COMPtr<IProgress> reset();
+#endif
         COMPtr<IProgress> shutdown();
         COMPtr<IProgress> powerDown();
         COMPtr<IProgress> terminate();
@@ -5127,6 +5130,10 @@ namespace VBox
                 /* in */ const std::u16string &uid);
         COMPtr<IProgress> terminateInstance(
                 /* in */ const std::u16string &uid);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 10)
+        COMPtr<IProgress> resetInstance(
+                /* in */ const std::u16string &uid);
+#endif
         COMPtr<IProgress> createImage(
                 /* in */ std::vector<std::u16string> &parameters);
         COMPtr<IProgress> exportImage(

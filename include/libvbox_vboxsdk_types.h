@@ -2028,6 +2028,11 @@ namespace VBox
         CloudShapeCpus = 52,
         CloudShapeMemory = 53,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 10)
+        CloudInstanceMetadata = 54,
+        CloudInstanceFreeFormTags = 55,
+        CloudImageFreeFormTags = 56,
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 38)
         HardDiskControllerVirtioSCSI = 60,
 #endif

@@ -395,6 +395,20 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::terminateInstance(
     return COMPtr<IProgress>::wrap(cResult);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 10)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::resetInstance(
+        const std::u16string &uid)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+
+    auto rc = get_IFC()->ResetInstance(pUid.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::createImage(
         std::vector<std::u16string> &parameters)
 {
