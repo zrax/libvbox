@@ -22,6 +22,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <cstdint>
 
 #include "libvbox_vboxsdk_version.h"
 

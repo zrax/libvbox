@@ -20,6 +20,7 @@
 #define _LIBVBOX_ERRORS_H
 
 #include <stdexcept>
+#include <cstdint>
 
 #include "libvbox_vboxsdk_version.h"
 
