@@ -58,7 +58,7 @@ auto vbox = vboxClient->virtualBox();
 auto session = vboxClient->session();
 auto machine = vbox->findMachine(u"Windows");
 if (machine) {
-    auto progress = machine->launchVMProcess(session, u"gui", u"");
+    auto progress = machine->launchVMProcess(session, u"gui", {});
     progress->waitForCompletion(-1);
 }
 ~~~
