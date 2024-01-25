@@ -751,6 +751,9 @@ namespace VBox
         String = 1,
         Choice = 2,
         RangedInteger = 3,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
+        RangedInteger64 = 4,
+#endif
     };
 #endif
 
@@ -2036,6 +2039,11 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 38)
         HardDiskControllerVirtioSCSI = 60,
 #endif
+#if (VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 50)               \
+        && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0))          \
+    || VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
+        HardDiskControllerNVMe = 61,
+#endif
     };
 
     enum class VirtualSystemDescriptionValueType
@@ -2327,6 +2335,9 @@ VBox_FORWARD_DECL_IFC(IProgressTaskCompletedEvent);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox_FORWARD_DECL_IFC(IRangedIntegerFormValue);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
+VBox_FORWARD_DECL_IFC(IRangedInteger64FormValue);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(IRecordingChangedEvent);

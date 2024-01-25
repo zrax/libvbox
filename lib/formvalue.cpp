@@ -22,6 +22,9 @@
 COM_WRAP_IFC(IFormValue)
 COM_WRAP_IFC(IBooleanFormValue)
 COM_WRAP_IFC(IRangedIntegerFormValue)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
+COM_WRAP_IFC(IRangedInteger64FormValue)
+#endif
 COM_WRAP_IFC(IStringFormValue)
 COM_WRAP_IFC(IChoiceFormValue)
 
@@ -134,6 +137,49 @@ VBox::COMPtr<VBox::IProgress> VBox::IRangedIntegerFormValue::setInteger(int32_t 
 
     return COMPtr<IProgress>::wrap(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
+std::u16string VBox::IRangedInteger64FormValue::suffix() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), Suffix, result);
+    return result;
+}
+
+int64_t VBox::IRangedInteger64FormValue::minimum() const
+{
+    COM_Long64 result;
+    COM_GetValue(get_IFC(), Minimum, result);
+    return static_cast<int64_t>(result);
+}
+
+int64_t VBox::IRangedInteger64FormValue::maximum() const
+{
+    COM_Long64 result;
+    COM_GetValue(get_IFC(), Maximum, result);
+    return static_cast<int64_t>(result);
+}
+
+int64_t VBox::IRangedInteger64FormValue::getInteger()
+{
+    COM_Long64 cResult;
+
+    auto rc = get_IFC()->GetInteger(&cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<int64_t>(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::IRangedInteger64FormValue::setInteger(int64_t value)
+{
+    ::IProgress *cResult = nullptr;
+
+    auto rc = get_IFC()->SetInteger(value, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
 
 bool VBox::IStringFormValue::multiline() const
 {

@@ -4923,6 +4923,24 @@ namespace VBox
                 /* in */ int32_t value);
     };
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
+    class LIBVBOX_API IRangedInteger64FormValue : public IFormValue
+    {
+    public:
+        VBox_COM_WRAPPED(::IRangedInteger64FormValue)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, suffix)
+        VBox_PROPERTY_RO(int64_t, minimum)
+        VBox_PROPERTY_RO(int64_t, maximum)
+
+        // Methods
+        int64_t getInteger();
+        COMPtr<IProgress> setInteger(
+                /* in */ int64_t value);
+    };
+#endif
+
     class LIBVBOX_API IStringFormValue : public IFormValue
     {
     public:
