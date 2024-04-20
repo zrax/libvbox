@@ -107,7 +107,9 @@ else()
     find_program(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin)
     mark_as_advanced(CMAKE_UNAME)
     if(CMAKE_UNAME)
-        exec_program(${CMAKE_UNAME} ARGS -s OUTPUT_VARIABLE _UNAME_SYSTEM)
+        execute_process(COMMAND ${CMAKE_UNAME} -s
+                        OUTPUT_VARIABLE _UNAME_SYSTEM
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
         if(_UNAME_SYSTEM STREQUAL "Linux")
             set(VirtualBoxSDK_RT_PLATFORM RT_OS_LINUX)
         elseif(_UNAME_SYSTEM STREQUAL "FreeBSD")
