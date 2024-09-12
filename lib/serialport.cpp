@@ -39,6 +39,7 @@ void VBox::ISerialPort::set_enabled(bool value)
     COM_SetValue(get_IFC(), Enabled, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 uint32_t VBox::ISerialPort::IOBase() const
 {
     COM_ULong result;
@@ -50,6 +51,19 @@ void VBox::ISerialPort::set_IOBase(uint32_t value)
 {
     COM_SetValue(get_IFC(), IOBase, value);
 }
+#else
+uint32_t VBox::ISerialPort::IOAddress() const
+{
+    COM_ULong result;
+    COM_GetValue(get_IFC(), IOAddress, result);
+    return static_cast<uint32_t>(result);
+}
+
+void VBox::ISerialPort::set_IOAddress(uint32_t value)
+{
+    COM_SetValue(get_IFC(), IOAddress, value);
+}
+#endif
 
 uint32_t VBox::ISerialPort::IRQ() const
 {

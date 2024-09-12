@@ -89,6 +89,7 @@ target_sources(vbox
         lib/bandwidthgroup.cpp
         lib/biossettings.cpp
         lib/certificate.cpp
+        lib/clipboardevent.cpp
         lib/cloudclient.cpp
         lib/cloudmachine.cpp
         lib/cloudnetwork.cpp
@@ -118,10 +119,12 @@ target_sources(vbox
         lib/eventlistener.cpp
         lib/eventsource.cpp
         lib/extpack.cpp
+        lib/extpackinstalledevent.cpp
         lib/extpackmanager.cpp
         lib/extpackplugin.cpp
         lib/extradatachangedevent.cpp
         lib/file.cpp
+        lib/firmwaresettings.cpp
         lib/form.cpp
         lib/formvalue.cpp
         lib/framebuffer.cpp
@@ -133,6 +136,7 @@ target_sources(vbox
         lib/guestadditionsstatuschangedevent.cpp
         lib/guestdebugcontrol.cpp
         lib/guestdebugcontrolchangedevent.cpp
+        lib/guestdirectoryevent.cpp
         lib/guestfileevent.cpp
         lib/guestfileioevent.cpp
         lib/guestkeyboardevent.cpp
@@ -186,11 +190,16 @@ target_sources(vbox
         lib/pcideviceattachment.cpp
         lib/performancecollector.cpp
         lib/performancemetric.cpp
+        lib/platform.cpp
+        lib/platformproperties.cpp
+        lib/platformx86.cpp
         lib/process.cpp
         lib/progress.cpp
         lib/progressevent.cpp
+        lib/recordingevent.cpp
         lib/recordingscreensettings.cpp
         lib/recordingsettings.cpp
+        lib/resourcestore.cpp
         lib/reusableevent.cpp
         lib/runtimeerrorevent.cpp
         lib/serialport.cpp

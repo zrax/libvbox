@@ -163,6 +163,9 @@ namespace VBox
         AC97 = 0,
         SB16 = 1,
         HDA = 2,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VirtioSound = 3,
+#endif
     };
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
@@ -241,7 +244,11 @@ namespace VBox
         Network = 2,
     };
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
     enum class BIOSBootMenuMode
+#else
+    enum class FirmwareBootMenuMode
+#endif
     {
         Disabled = 0,
         MenuOnly = 1,
@@ -274,6 +281,9 @@ namespace VBox
         Null = 0,
         PIIX3 = 1,
         ICH9 = 2,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        ARMv8Virtual = 3,
+#endif
     };
 
     enum class CleanupMode
@@ -345,10 +355,18 @@ namespace VBox
         Any = 0,
         x86 = 1,
         AMD64 = 2,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        ARMv8_32 = 3,
+        ARMv8_64 = 4,
+#endif
     };
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
     enum class CPUPropertyType
+#else
+    enum class CPUPropertyTypeX86
+#endif
     {
         Null = 0,
         PAE = 1,
@@ -627,6 +645,10 @@ namespace VBox
     {
         None = 0,
         NoSymlinks = 1,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        DenyAscent = 2,
+        NoFollowSymlinks = 4,
+#endif
     };
     VBox_ENUM_BITWISE(DirectoryOpenFlag)
 
@@ -636,6 +658,18 @@ namespace VBox
         ContentAndDir = 1,
         ContentOnly = 2,
     };
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    enum class DirectoryStatus
+    {
+        Undefined = 0,
+        Open = 1,
+        Close = 2,
+        Rewind = 3,
+        Down = 4,
+        Error = 5,
+    };
+#endif
 
     enum class DnDAction
     {
@@ -808,7 +842,19 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         VBoxSVGA = 3,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        QemuRamFB = 4,
+#endif
     };
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    enum class GraphicsFeature
+    {
+        None = 0,
+        Acceleration2DVideo = 1,
+        Acceleration3D = 2,
+    };
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
     enum class GuestDebugIoProvider
@@ -1090,6 +1136,19 @@ namespace VBox
     };
     VBox_ENUM_BITWISE(MediumVariant)
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    enum class MetricType
+    {
+        Invalid = 0,
+        CpuUtilization = 1,
+        MemoryUtilization = 2,
+        DiskBytesRead = 3,
+        DiskBytesWritten = 4,
+        NetworksBytesIn = 5,
+        NetworksBytesOut = 6,
+    };
+#endif
+
     enum class MouseButtonState
     {
         LeftButton = 0x1,
@@ -1357,6 +1416,15 @@ namespace VBox
         UNIX = 2,
         Unknown = 8,
     };
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    enum class PlatformArchitecture
+    {
+        None = 0,
+        x86 = 1,
+        ARM = 2,
+    };
+#endif
 
     enum class PointingHIDType
     {
@@ -1652,6 +1720,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         v1_19 = 21,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        v1_20 = 22,
+#endif
         Future = 99999,
     };
 
@@ -1699,6 +1770,17 @@ namespace VBox
         VirtioSCSI = 11,
 #endif
     };
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    enum class SymlinkPolicy
+    {
+        None = 0,
+        Forbidden = 1,
+        AllowedInShareSubtree = 2,
+        AllowedToRelativeTargets = 3,
+        AllowedToAnyTarget = 4,
+    };
+#endif
 
     enum class SymlinkReadFlag
     {
@@ -1897,10 +1979,12 @@ namespace VBox
         OnGuestFileOffsetChanged,
         OnGuestFileRead,
         OnGuestFileWrite,
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
+        OnVideoCaptureChanged,
+#elif VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         OnRecordingChanged,
 #else
-        OnVideoCaptureChanged,
+        OnRecordingStateChanged,
 #endif
         OnGuestUserStateChanged,
         OnGuestMultiTouch,
@@ -1948,6 +2032,15 @@ namespace VBox
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 4)
         OnMachineGroupsChanged,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        OnGuestDirectoryRegistered,
+        OnGuestDirectoryStateChanged,
+        OnGuestDirectoryRead,
+        OnClipboardError,
+        OnExtPackInstalled,
+        OnExtPackUninstalled,
+        OnRecordingScreenStateChanged,
 #endif
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
         Last,
@@ -2060,11 +2153,17 @@ namespace VBox
         NotSet = 0,
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
         RawMode = 1,
-#else
+#elif VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         Emulated = 1,
+#else
+        Default = 1,
 #endif
         HwVirt = 2,
         NativeApi = 3,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        Interpreter = 4,
+        Recompiler = 5,
+#endif
     };
 #endif
 
@@ -2107,7 +2206,9 @@ VBox_FORWARD_DECL_IFC(IAudioSettings);
 VBox_FORWARD_DECL_IFC(IBandwidthControl);
 VBox_FORWARD_DECL_IFC(IBandwidthGroup);
 VBox_FORWARD_DECL_IFC(IBandwidthGroupChangedEvent);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 VBox_FORWARD_DECL_IFC(IBIOSSettings);
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox_FORWARD_DECL_IFC(IBooleanFormValue);
 #endif
@@ -2117,6 +2218,10 @@ VBox_FORWARD_DECL_IFC(ICertificate);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox_FORWARD_DECL_IFC(IChoiceFormValue);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IClipboardErrorEvent);
+VBox_FORWARD_DECL_IFC(IClipboardEvent);
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox_FORWARD_DECL_IFC(IClipboardFileTransferModeChangedEvent);
@@ -2182,11 +2287,20 @@ VBox_FORWARD_DECL_IFC(IEventSourceChangedEvent);
 VBox_FORWARD_DECL_IFC(IExtPack);
 VBox_FORWARD_DECL_IFC(IExtPackBase);
 VBox_FORWARD_DECL_IFC(IExtPackFile);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IExtPackInstalledEvent);
+#endif
 VBox_FORWARD_DECL_IFC(IExtPackManager);
 VBox_FORWARD_DECL_IFC(IExtPackPlugIn);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IExtPackUninstalledEvent);
+#endif
 VBox_FORWARD_DECL_IFC(IExtraDataCanChangeEvent);
 VBox_FORWARD_DECL_IFC(IExtraDataChangedEvent);
 VBox_FORWARD_DECL_IFC(IFile);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IFirmwareSettings);
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
 VBox_FORWARD_DECL_IFC(IForm);
 VBox_FORWARD_DECL_IFC(IFormValue);
@@ -2207,6 +2321,12 @@ VBox_FORWARD_DECL_IFC(IGuestDebugControl);
 VBox_FORWARD_DECL_IFC(IGuestDebugControlChangedEvent);
 #endif
 VBox_FORWARD_DECL_IFC(IGuestDirectory);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IGuestDirectoryEvent);
+VBox_FORWARD_DECL_IFC(IGuestDirectoryReadEvent);
+VBox_FORWARD_DECL_IFC(IGuestDirectoryRegisteredEvent);
+VBox_FORWARD_DECL_IFC(IGuestDirectoryStateChangedEvent);
+#endif
 VBox_FORWARD_DECL_IFC(IGuestDnDSource);
 VBox_FORWARD_DECL_IFC(IGuestDnDTarget);
 VBox_FORWARD_DECL_IFC(IGuestFile);
@@ -2271,6 +2391,9 @@ VBox_FORWARD_DECL_IFC(IHostUpdateAgent)
 VBox_FORWARD_DECL_IFC(IHostUSBDevice);
 VBox_FORWARD_DECL_IFC(IHostUSBDeviceFilter);
 VBox_FORWARD_DECL_IFC(IHostVideoInputDevice);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IHostX86)
+#endif
 VBox_FORWARD_DECL_IFC(IInternalMachineControl);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(IInternalProgressControl);
@@ -2323,6 +2446,12 @@ VBox_FORWARD_DECL_IFC(IPCIAddress);
 VBox_FORWARD_DECL_IFC(IPCIDeviceAttachment);
 VBox_FORWARD_DECL_IFC(IPerformanceCollector);
 VBox_FORWARD_DECL_IFC(IPerformanceMetric);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IPlatform);
+VBox_FORWARD_DECL_IFC(IPlatformARM);
+VBox_FORWARD_DECL_IFC(IPlatformProperties);
+VBox_FORWARD_DECL_IFC(IPlatformX86);
+#endif
 VBox_FORWARD_DECL_IFC(IProcess);
 VBox_FORWARD_DECL_IFC(IProgress);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
@@ -2339,10 +2468,18 @@ VBox_FORWARD_DECL_IFC(IRangedIntegerFormValue);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
 VBox_FORWARD_DECL_IFC(IRangedInteger64FormValue);
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IRecordingScreenStateChangedEvent);
+VBox_FORWARD_DECL_IFC(IRecordingStateChangedEvent);
+#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(IRecordingChangedEvent);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
 VBox_FORWARD_DECL_IFC(IRecordingScreenSettings);
 VBox_FORWARD_DECL_IFC(IRecordingSettings);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox_FORWARD_DECL_IFC(IResourceStore);
 #endif
 VBox_FORWARD_DECL_IFC(IReusableEvent);
 VBox_FORWARD_DECL_IFC(IRuntimeErrorEvent);

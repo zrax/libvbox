@@ -409,6 +409,27 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::resetInstance(
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::cloneInstance(
+        const std::u16string &uid, const std::u16string &newName,
+        COMPtr<ICloudMachine> *clone)
+{
+    ::IProgress *cResult = nullptr;
+    COM_StringProxy pUid(uid);
+    COM_StringProxy pNewName(newName);
+    ::ICloudMachine *cClone = nullptr;
+
+    auto rc = get_IFC()->CloneInstance(pUid.m_text, pNewName.m_text, &cClone, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (clone)
+        *clone = COMPtr<ICloudMachine>::wrap(cClone);
+    else if (cClone)
+        cClone->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::createImage(
         std::vector<std::u16string> &parameters)
 {
@@ -563,5 +584,19 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudClient::getSubnetSelectionForm(
         cForm->Release();
     return COMPtr<IProgress>::wrap(cResult);
 
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::MetricType VBox::ICloudClient::getMetricTypeByName(
+        const std::u16string &metricName) const
+{
+    COM_Enum(::MetricType) cResult;
+    COM_StringProxy pMetricName(metricName);
+
+    auto rc = get_IFC()->GetMetricTypeByName(pMetricName.m_text, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<MetricType>(cResult);
 }
 #endif

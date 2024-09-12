@@ -300,6 +300,9 @@ namespace VBox
         VBox_PROPERTY_RO(std::vector<COMPtr<IMedium>>, floppyImages)
         VBox_PROPERTY_RO(std::vector<COMPtr<IProgress>>, progressOperations)
         VBox_PROPERTY_RO(std::vector<COMPtr<IGuestOSType>>, guestOSTypes)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(std::vector<std::u16string>, guestOSFamilies)
+#endif
         VBox_PROPERTY_RO(std::vector<COMPtr<ISharedFolder>>, sharedFolders)
         VBox_PROPERTY_RO(COMPtr<IPerformanceCollector>, performanceCollector)
         VBox_PROPERTY_RO(std::vector<COMPtr<IDHCPServer>>, DHCPServers)
@@ -324,9 +327,16 @@ namespace VBox
                 /* in */ const std::u16string &group,
                 /* in */ const std::u16string &createFlags,
                 /* in */ const std::u16string &baseFolder);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        COMPtr<IPlatformProperties> getPlatformProperties(
+                /* in */ PlatformArchitecture architecture);
+#endif
         COMPtr<IMachine> createMachine(
                 /* in */ const std::u16string &settingsFile,
                 /* in */ const std::u16string &name,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                /* in */ PlatformArchitecture platform,
+#endif
                 /* in */ const std::vector<std::u16string> &groups,
                 /* in */ const std::u16string &osTypeId,
                 /* in */ const std::u16string &flags
@@ -366,6 +376,12 @@ namespace VBox
                 /* in */ bool forceNewUuid);
         COMPtr<IGuestOSType> getGuestOSType(
                 /* in */ const std::u16string &id);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        std::vector<std::u16string> getGuestOSSubtypesByFamilyId(
+                /* in */ const std::u16string &family);
+        std::vector<std::u16string> getGuestOSDescsBySubtype(
+                /* in */ const std::u16string &OSSubtype);
+#endif
         void createSharedFolder(
                 /* in */ const std::u16string &name,
                 /* in */ const std::u16string &hostPath,
@@ -416,6 +432,9 @@ namespace VBox
                 /* in */ const COMPtr<ICloudNetwork> &network);
 #endif
         bool checkFirmwarePresent(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                /* in */  PlatformArchitecture platformArchitecture,
+#endif
                 /* in */  FirmwareType firmwareType,
                 /* in */  const std::u16string &version,
                 /* out */ std::u16string *url,
@@ -575,14 +594,27 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::u16string, isoPath)
         VBox_PROPERTY_RW_R(COMPtr<IMachine>, machine)
         VBox_PROPERTY_RW_R(std::u16string, user)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RW_R(std::u16string, password)
+#else
+        VBox_PROPERTY_RW_R(std::u16string, userPassword)
+        VBox_PROPERTY_RW_R(std::u16string, adminPassword)
+#endif
         VBox_PROPERTY_RW_R(std::u16string, fullUserName)
         VBox_PROPERTY_RW_R(std::u16string, productKey)
         VBox_PROPERTY_RW_R(std::u16string, additionsIsoPath)
         VBox_PROPERTY_RW_V(bool, installGuestAdditions)
         VBox_PROPERTY_RW_R(std::u16string, validationKitIsoPath)
         VBox_PROPERTY_RW_V(bool, installTestExecService)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RW_R(std::u16string, userPayloadIsoPath)
+        VBox_PROPERTY_RW_V(bool, installUserPayload)
+#endif
         VBox_PROPERTY_RW_R(std::u16string, timeZone)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RW_R(std::u16string, keyboardLayout)
+        VBox_PROPERTY_RW_R(std::u16string, keyboardVariant)
+#endif
         VBox_PROPERTY_RW_R(std::u16string, locale)
         VBox_PROPERTY_RW_R(std::u16string, language)
         VBox_PROPERTY_RW_R(std::u16string, country)
@@ -717,12 +749,24 @@ namespace VBox
         // Attributes
         VBox_PROPERTY_RW_V(GraphicsControllerType, graphicsControllerType)
         VBox_PROPERTY_RW_V(uint32_t, VRAMSize)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RW_V(bool, accelerate3DEnabled)
         VBox_PROPERTY_RW_V(bool, accelerate2DVideoEnabled)
+#endif
         VBox_PROPERTY_RW_V(uint32_t, monitorCount)
+
+        // Methods
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        void setFeature(
+                /* in */ GraphicsFeature feature,
+                /* in */ bool enabled);
+        bool isFeatureEnabled(
+                /* in */ GraphicsFeature feature) const;
+#endif
     };
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
     class LIBVBOX_API IBIOSSettings : public COMUnknown
     {
     public:
@@ -748,6 +792,30 @@ namespace VBox
         VBox_PROPERTY_RW_V(bool, SMBIOSUuidLittleEndian)
 #endif
     };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IFirmwareSettings : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IFirmwareSettings)
+
+        // Attributes
+        VBox_PROPERTY_RW_V(FirmwareType, firmwareType)
+        VBox_PROPERTY_RW_V(bool, logoFadeIn)
+        VBox_PROPERTY_RW_V(bool, logoFadeOut)
+        VBox_PROPERTY_RW_V(uint32_t, logoDisplayTime)
+        VBox_PROPERTY_RW_R(std::u16string, logoImagePath)
+        VBox_PROPERTY_RW_V(FirmwareBootMenuMode, bootMenuMode)
+        VBox_PROPERTY_RW_V(bool, ACPIEnabled)
+        VBox_PROPERTY_RW_V(bool, IOAPICEnabled)
+        VBox_PROPERTY_RW_V(VBox::APICMode, APICMode)
+        VBox_PROPERTY_RW_V(int64_t, timeOffset)
+        VBox_PROPERTY_RW_V(bool, PXEDebugEnabled)
+        VBox_PROPERTY_RW_V(bool, SMBIOSUuidLittleEndian)
+        VBox_PROPERTY_RW_V(bool, AutoSerialNumGen)
+    };
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
     class LIBVBOX_API ITrustedPlatformModule : public COMUnknown
@@ -816,10 +884,16 @@ namespace VBox
         // Attributes
         VBox_PROPERTY_RW_V(bool, enabled)
         VBox_PROPERTY_RO(std::vector<COMPtr<IRecordingScreenSettings>>, screens)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(COMPtr<IProgress>, progress)
+#endif
 
         // Methods
         COMPtr<IRecordingScreenSettings> getScreenSettings(
                 /* in */ uint32_t screenId);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        COMPtr<IProgress> start();
+#endif
     };
 #endif
 
@@ -922,6 +996,84 @@ namespace VBox
     };
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IResourceStore : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IResourceStore)
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IPlatform : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IPlatform)
+
+        // Attributes
+        VBox_PROPERTY_RW_V(PlatformArchitecture, architecture)
+        VBox_PROPERTY_RO(COMPtr<IPlatformProperties>, properties)
+        VBox_PROPERTY_RO(COMPtr<IPlatformX86>, x86)
+        VBox_PROPERTY_RO(COMPtr<IPlatformARM>, ARM)
+        VBox_PROPERTY_RW_V(ChipsetType, chipsetType)
+        VBox_PROPERTY_RW_V(IommuType, iommuType)
+        VBox_PROPERTY_RW_V(bool, RTCUseUTC)
+    };
+
+    class LIBVBOX_API IPlatformX86 : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IPlatformX86)
+
+        // Attributes
+        VBox_PROPERTY_RW_V(bool, HPETEnabled)
+
+        // Methods
+        bool getCPUProperty(
+                /* in */ CPUPropertyTypeX86 property) const;
+        void setCPUProperty(
+                /* in */ CPUPropertyTypeX86 property,
+                /* in */ bool value);
+        void getCPUIDLeafByOrdinal(
+                /* in  */ uint32_t ordinal,
+                /* out */ uint32_t *idx,
+                /* out */ uint32_t *idxSub,
+                /* out */ uint32_t *valEax,
+                /* out */ uint32_t *valEbx,
+                /* out */ uint32_t *valEcx,
+                /* out */ uint32_t *valEdx) const;
+        void getCPUIDLeaf(
+                /* in  */ uint32_t idx,
+                /* in  */ uint32_t idxSub,
+                /* out */ uint32_t *valEax,
+                /* out */ uint32_t *valEbx,
+                /* out */ uint32_t *valEcx,
+                /* out */ uint32_t *valEdx) const;
+        void setCPUIDLeaf(
+                /* in */ uint32_t idx,
+                /* in */ uint32_t idxSub,
+                /* in */ uint32_t valEax,
+                /* in */ uint32_t valEbx,
+                /* in */ uint32_t valEcx,
+                /* in */ uint32_t valEdx);
+        void removeCPUIDLeaf(
+                /* in */ uint32_t idx,
+                /* in */ uint32_t idxSub);
+        void removeAllCPUIDLeaves();
+        bool getHWVirtExProperty(
+                /* in */ HWVirtExPropertyType property) const;
+        void setHWVirtExProperty(
+                /* in */ HWVirtExPropertyType property,
+                /* in */ bool value);
+    };
+
+    class LIBVBOX_API IPlatformARM : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IPlatformARM)
+    };
+#endif
+
     class LIBVBOX_API IMachine : public COMUnknown
     {
     public:
@@ -967,7 +1119,14 @@ namespace VBox
         VBox_PROPERTY_RW_V(uint32_t, videoCaptureMaxFileSize)
         VBox_PROPERTY_RW_R(std::u16string, videoCaptureOptions)
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(COMPtr<IPlatform>, platform)
+#endif
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(COMPtr<IBIOSSettings>, BIOSSettings)
+#else
+        VBox_PROPERTY_RO(COMPtr<IFirmwareSettings>, firmwareSettings)
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         VBox_PROPERTY_RO(COMPtr<ITrustedPlatformModule>, trustedPlatformModule)
         VBox_PROPERTY_RO(COMPtr<INvramStore>, nonVolatileStore)
@@ -975,13 +1134,17 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         VBox_PROPERTY_RO(COMPtr<IRecordingSettings>, recordingSettings)
 #endif
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RW_V(FirmwareType, firmwareType)
+#endif
         VBox_PROPERTY_RW_V(PointingHIDType, pointingHIDType)
         VBox_PROPERTY_RW_V(KeyboardHIDType, keyboardHIDType)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RW_V(bool, HPETEnabled)
         VBox_PROPERTY_RW_V(ChipsetType, chipsetType)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         VBox_PROPERTY_RW_V(IommuType, iommuType)
+#endif
 #endif
         VBox_PROPERTY_RW_R(std::u16string, snapshotFolder)
         VBox_PROPERTY_RO(COMPtr<IVRDEServer>, VRDEServer)
@@ -1028,7 +1191,9 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::u16string, faultTolerancePassword)
         VBox_PROPERTY_RW_V(uint32_t, faultToleranceSyncInterval)
 #endif
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RW_V(bool, RTCUseUTC)
+#endif
         VBox_PROPERTY_RW_V(bool, IOCacheEnabled)
         VBox_PROPERTY_RW_V(uint32_t, IOCacheSize)
         VBox_PROPERTY_RO(std::vector<COMPtr<IPCIDeviceAttachment>>, PCIDeviceAssignments)
@@ -1045,6 +1210,9 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::u16string, VMProcessPriority)
 #else
         VBox_PROPERTY_RW_V(VMProcPriority, VMProcessPriority)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RW_V(VBox::VMExecutionEngine, VMExecutionEngine)
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 0)
         VBox_PROPERTY_RW_R(std::u16string, paravirtDebug)
@@ -1186,6 +1354,7 @@ namespace VBox
         void setExtraData(
                 /* in */ const std::u16string &key,
                 /* in */ const std::u16string &value);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         bool getCPUProperty(
                 /* in */ CPUPropertyType property) const;
         void setCPUProperty(
@@ -1231,6 +1400,7 @@ namespace VBox
         void setHWVirtExProperty(
                 /* in */ HWVirtExPropertyType property,
                 /* in */ bool value);
+#endif
         COMPtr<IProgress> setSettingsFilePath(
                 /* in */ const std::u16string &settingsFilePath);
         void saveSettings();
@@ -1628,12 +1798,34 @@ namespace VBox
     };
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IHostX86 : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IHostX86)
+
+        // Methods
+        void getProcessorCPUIDLeaf(
+                /* in  */ uint32_t cpuId,
+                /* in  */ uint32_t leaf,
+                /* in  */ uint32_t subLeaf,
+                /* out */ uint32_t *valEax,
+                /* out */ uint32_t *valEbx,
+                /* out */ uint32_t *valEcx,
+                /* out */ uint32_t *valEdx);
+    };
+#endif
+
     class LIBVBOX_API IHost : public COMUnknown
     {
     public:
         VBox_COM_WRAPPED(::IHost)
 
         // Attributes
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(PlatformArchitecture, architecture)
+        VBox_PROPERTY_RO(COMPtr<IHostX86>, x86)
+#endif
         VBox_PROPERTY_RO(std::vector<COMPtr<IMedium>>, DVDDrives)
         VBox_PROPERTY_RO(std::vector<COMPtr<IMedium>>, floppyDrives)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
@@ -1657,7 +1849,9 @@ namespace VBox
         VBox_PROPERTY_RO(std::u16string, operatingSystem)
         VBox_PROPERTY_RO(std::u16string, OSVersion)
         VBox_PROPERTY_RO(int64_t, UTCTime)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(bool, acceleration3DAvailable)
+#endif
         VBox_PROPERTY_RO(std::vector<COMPtr<IHostVideoInputDevice>>, videoInputDevices)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)                 \
     && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
@@ -1676,6 +1870,7 @@ namespace VBox
                 /* in */ ProcessorFeature feature);
         std::u16string getProcessorDescription(
                 /* in */ uint32_t cpuId);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         void getProcessorCPUIDLeaf(
                 /* in  */ uint32_t cpuId,
                 /* in  */ uint32_t leaf,
@@ -1684,6 +1879,7 @@ namespace VBox
                 /* out */ uint32_t *valEbx,
                 /* out */ uint32_t *valEcx,
                 /* out */ uint32_t *valEdx);
+#endif
         COMPtr<IProgress> createHostOnlyNetworkInterface(
                 /* out */ COMPtr<IHostNetworkInterface> *hostInterface);
         COMPtr<IProgress> removeHostOnlyNetworkInterface(
@@ -1720,6 +1916,11 @@ namespace VBox
         void removeUSBDeviceSource(
                 /* in */ const std::u16string &id);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        bool isExecutionEngineSupported(
+                /* in */ CPUArchitecture cpuArchitecture,
+                /* in */ VMExecutionEngine executionEngine);
+#endif
     };
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
@@ -1735,12 +1936,80 @@ namespace VBox
     };
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IPlatformProperties : public COMUnknown
+    {
+    public:
+        VBox_COM_WRAPPED(::IPlatformProperties)
+
+        // Attributes
+        VBox_PROPERTY_RO(bool, rawModeSupported)
+        VBox_PROPERTY_RW_V(bool, exclusiveHwVirt)
+        VBox_PROPERTY_RO(uint32_t, serialPortCount)
+        VBox_PROPERTY_RO(uint32_t, parallelPortCount)
+        VBox_PROPERTY_RO(uint32_t, maxBootPosition)
+        VBox_PROPERTY_RO(std::vector<ParavirtProvider>, supportedParavirtProviders)
+        VBox_PROPERTY_RO(std::vector<FirmwareType>, supportedFirmwareTypes)
+        VBox_PROPERTY_RO(std::vector<COMPtr<IGuestOSType>>, supportedGuestOSTypes)
+        VBox_PROPERTY_RO(std::vector<GraphicsControllerType>, supportedGfxControllerTypes)
+        VBox_PROPERTY_RO(std::vector<NetworkAdapterPromiscModePolicy>,
+                         supportedNetAdpPromiscModePols)
+        VBox_PROPERTY_RO(std::vector<NetworkAdapterType>, supportedNetworkAdapterTypes)
+        VBox_PROPERTY_RO(std::vector<UartType>, supportedUartTypes)
+        VBox_PROPERTY_RO(std::vector<USBControllerType>, supportedUSBControllerTypes)
+        VBox_PROPERTY_RO(std::vector<AudioControllerType>, supportedAudioControllerTypes)
+        VBox_PROPERTY_RO(std::vector<DeviceType>, supportedBootDevices)
+        VBox_PROPERTY_RO(std::vector<StorageBus>, supportedStorageBuses)
+        VBox_PROPERTY_RO(std::vector<StorageControllerType>, supportedStorageControllerTypes)
+        VBox_PROPERTY_RO(std::vector<ChipsetType>, supportedChipsetTypes)
+        VBox_PROPERTY_RO(std::vector<IommuType>, supportedIommuTypes)
+        VBox_PROPERTY_RO(std::vector<TpmType>, supportedTpmTypes)
+
+        // Methods
+        uint32_t getMaxNetworkAdapters(
+                /* in */ ChipsetType chipset);
+        uint32_t getMaxNetworkAdaptersOfType(
+                /* in */ ChipsetType chipset,
+                /* in */ NetworkAttachmentType type);
+        uint32_t getMaxDevicesPerPortForStorageBus(
+                /* in */ StorageBus bus);
+        uint32_t getMinPortCountForStorageBus(
+                /* in */ StorageBus bus);
+        uint32_t getMaxPortCountForStorageBus(
+                /* in */ StorageBus bus);
+        uint32_t getMaxInstancesOfStorageBus(
+                /* in */ ChipsetType chipset,
+                /* in */ StorageBus bus);
+        uint32_t getSupportedVRAMRange(
+                /* in */  GraphicsControllerType graphicsControllerType,
+                /* in */  bool accelerate3DEnabled,
+                /* out */ uint32_t *minMB,
+                /* out */ uint32_t *maxMB);
+        std::vector<GraphicsFeature> getSupportedGfxFeaturesForType(
+                /* in */ GraphicsControllerType graphicsControllerType);
+        std::vector<DeviceType> getDeviceTypesForStorageBus(
+                /* in */ StorageBus bus);
+        StorageBus getStorageBusForControllerType(
+                /* in */ StorageControllerType storageControllerType);
+        std::vector<StorageControllerType> getStorageControllerTypesForBus(
+                /* in */ StorageBus storageBus);
+        bool getStorageControllerHotplugCapable(
+                /* in */ StorageControllerType controllerType);
+        uint32_t getMaxInstancesOfUSBControllerType(
+                /* in */ ChipsetType chipset,
+                /* in */ USBControllerType type);
+    };
+#endif
+
     class LIBVBOX_API ISystemProperties : public COMUnknown
     {
     public:
         VBox_COM_WRAPPED(::ISystemProperties)
 
         // Attributes
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(COMPtr<IPlatformProperties>, platform)
+#endif
         VBox_PROPERTY_RO(uint32_t, minGuestRAM)
         VBox_PROPERTY_RO(uint32_t, maxGuestRAM)
         VBox_PROPERTY_RO(uint32_t, minGuestVRAM)
@@ -1749,11 +2018,13 @@ namespace VBox
         VBox_PROPERTY_RO(uint32_t, maxGuestCPUCount)
         VBox_PROPERTY_RO(uint32_t, maxGuestMonitors)
         VBox_PROPERTY_RO(int64_t, infoVDSize)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(uint32_t, serialPortCount)
         VBox_PROPERTY_RO(uint32_t, parallelPortCount)
         VBox_PROPERTY_RO(uint32_t, maxBootPosition)
         VBox_PROPERTY_RO(bool, rawModeSupported)
         VBox_PROPERTY_RW_V(bool, exclusiveHwVirt)
+#endif
         VBox_PROPERTY_RW_R(std::u16string, defaultMachineFolder)
         VBox_PROPERTY_RW_R(std::u16string, loggingLevel)
         VBox_PROPERTY_RO(std::vector<COMPtr<IMediumFormat>>, mediumFormats)
@@ -1779,15 +2050,24 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::u16string, proxyURL)
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(std::vector<ParavirtProvider>, supportedParavirtProviders)
+#else
+        VBox_PROPERTY_RO(std::vector<PlatformArchitecture>, supportedPlatformArchitectures)
+#endif
         VBox_PROPERTY_RO(std::vector<ClipboardMode>, supportedClipboardModes)
         VBox_PROPERTY_RO(std::vector<DnDMode>, supportedDnDModes)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(std::vector<FirmwareType>, supportedFirmwareTypes)
+#endif
         VBox_PROPERTY_RO(std::vector<PointingHIDType>, supportedPointingHIDTypes)
         VBox_PROPERTY_RO(std::vector<KeyboardHIDType>, supportedKeyboardHIDTypes)
         VBox_PROPERTY_RO(std::vector<VFSType>, supportedVFSTypes)
         VBox_PROPERTY_RO(std::vector<ImportOptions>, supportedImportOptions)
         VBox_PROPERTY_RO(std::vector<ExportOptions>, supportedExportOptions)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(std::vector<GraphicsFeature>, supportedGraphicsFeatures)
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         VBox_PROPERTY_RO(std::vector<RecordingFeature>, supportedRecordingFeatures)
 #endif
@@ -1801,28 +2081,40 @@ namespace VBox
         VBox_PROPERTY_RO(std::vector<RecordingRateControlMode>, supportedRecordingARCModes)
         VBox_PROPERTY_RO(std::vector<RecordingRateControlMode>, supportedRecordingVRCModes)
 #endif
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(std::vector<GraphicsControllerType>, supportedGraphicsControllerTypes)
+#endif
         VBox_PROPERTY_RO(std::vector<CloneOptions>, supportedCloneOptions)
         VBox_PROPERTY_RO(std::vector<AutostopType>, supportedAutostopTypes)
         VBox_PROPERTY_RO(std::vector<VMProcPriority>, supportedVMProcPriorities)
         VBox_PROPERTY_RO(std::vector<NetworkAttachmentType>, supportedNetworkAttachmentTypes)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(std::vector<NetworkAdapterType>, supportedNetworkAdapterTypes)
+#endif
         VBox_PROPERTY_RO(std::vector<PortMode>, supportedPortModes)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(std::vector<UartType>, supportedUartTypes)
         VBox_PROPERTY_RO(std::vector<USBControllerType>, supportedUSBControllerTypes)
+#endif
         VBox_PROPERTY_RO(std::vector<AudioDriverType>, supportedAudioDriverTypes)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(std::vector<AudioControllerType>, supportedAudioControllerTypes)
         VBox_PROPERTY_RO(std::vector<StorageBus>, supportedStorageBuses)
         VBox_PROPERTY_RO(std::vector<StorageControllerType>, supportedStorageControllerTypes)
         VBox_PROPERTY_RO(std::vector<ChipsetType>, supportedChipsetTypes)
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+#endif
+#if (VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)) \
+    && (VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0))
         VBox_PROPERTY_RO(std::vector<IommuType>, supportedIommuTypes)
         VBox_PROPERTY_RO(std::vector<TpmType>, supportedTpmTypes)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         VBox_PROPERTY_RW_R(std::u16string, languageId)
 #endif
 
         // Methods
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         uint32_t getMaxNetworkAdapters(
                 /* in */ ChipsetType chipset);
         uint32_t getMaxNetworkAdaptersOfType(
@@ -1845,17 +2137,24 @@ namespace VBox
         std::vector<StorageControllerType> getStorageControllerTypesForStorageBus(
                 /* in */ StorageBus storageBus);
 #endif
+#endif
         bool getDefaultIoCacheSettingForStorageController(
                 /* in */ StorageControllerType controllerType);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         bool getStorageControllerHotplugCapable(
                 /* in */ StorageControllerType controllerType);
         uint32_t getMaxInstancesOfUSBControllerType(
                 /* in */ ChipsetType chipset,
                 /* in */ USBControllerType type);
+#endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         std::vector<COMPtr<ICPUProfile>> getCPUProfiles(
                 /* in */ CPUArchitecture architecture,
                 /* in */ const std::u16string &namePattern);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        std::vector<VMExecutionEngine> getExecutionEnginesForVmCpuArchitecture(
+                /* in */ CPUArchitecture cpuArchitecture);
 #endif
     };
 
@@ -1868,8 +2167,14 @@ namespace VBox
         VBox_PROPERTY_RO(std::u16string, familyId)
         VBox_PROPERTY_RO(std::u16string, familyDescription)
         VBox_PROPERTY_RO(std::u16string, id)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(std::u16string, subtype)
+#endif
         VBox_PROPERTY_RO(std::u16string, description)
         VBox_PROPERTY_RO(bool, is64Bit)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(PlatformArchitecture, platformArchitecture)
+#endif
         VBox_PROPERTY_RO(bool, recommendedIOAPIC)
         VBox_PROPERTY_RO(bool, recommendedVirtEx)
         VBox_PROPERTY_RO(uint32_t, recommendedRAM)
@@ -1913,6 +2218,9 @@ namespace VBox
         VBox_PROPERTY_RO(TpmType, recommendedTpmType)
         VBox_PROPERTY_RO(bool, recommendedSecureBoot)
         VBox_PROPERTY_RO(bool, recommendedWDDMGraphics)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(std::u16string, guestAdditionsInstallPackageName)
 #endif
     };
 
@@ -2035,6 +2343,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
         VBox_PROPERTY_RO(std::u16string, userHome)
         VBox_PROPERTY_RO(std::u16string, userDocuments)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(std::vector<std::u16string>, mountPoints)
 #endif
         VBox_PROPERTY_RO(std::vector<COMPtr<IGuestDirectory>>, directories)
         VBox_PROPERTY_RO(std::vector<COMPtr<IGuestFile>>, files)
@@ -2175,12 +2486,18 @@ namespace VBox
         COMPtr<IGuestProcess> processCreate(
                 /* in */ const std::u16string &executable,
                 /* in */ const std::vector<std::u16string> &arguments,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                /* in */ const std::u16string &cwd,
+#endif
                 /* in */ const std::vector<std::u16string> &environmentChanges,
                 /* in */ const std::vector<ProcessCreateFlag> &flags,
                 /* in */ uint32_t timeoutMS);
         COMPtr<IGuestProcess> processCreateEx(
                 /* in */ const std::u16string &executable,
                 /* in */ const std::vector<std::u16string> &arguments,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                /* in */ const std::u16string &cwd,
+#endif
                 /* in */ const std::vector<std::u16string> &environmentChanges,
                 /* in */ const std::vector<ProcessCreateFlag> &flags,
                 /* in */ uint32_t timeoutMS,
@@ -2257,11 +2574,25 @@ namespace VBox
 
         // Attributes
         VBox_PROPERTY_RO(std::u16string, directoryName)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(COMPtr<IEventSource>, eventSource)
+#endif
         VBox_PROPERTY_RO(std::u16string, filter)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(uint32_t, id)
+        VBox_PROPERTY_RO(DirectoryStatus, status)
+#endif
 
         // Methods
         void close();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        std::vector<COMPtr<IFsObjInfo>> list(
+                /* in */ uint32_t maxEntries);
+#endif
         COMPtr<IFsObjInfo> read();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        void rewind();
+#endif
     };
 
     class LIBVBOX_API IGuestDirectory : public IDirectory
@@ -3115,7 +3446,11 @@ namespace VBox
         // Attributes
         VBox_PROPERTY_RO(uint32_t, slot)
         VBox_PROPERTY_RW_V(bool, enabled)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RW_V(uint32_t, IOBase)
+#else
+        VBox_PROPERTY_RW_V(uint32_t, IOAddress)
+#endif
         VBox_PROPERTY_RW_V(uint32_t, IRQ)
         VBox_PROPERTY_RW_V(PortMode, hostMode)
         VBox_PROPERTY_RW_V(bool, server)
@@ -3474,6 +3809,9 @@ namespace VBox
         VBox_PROPERTY_RO(bool, autoMount)
 #endif
         VBox_PROPERTY_RO(std::u16string, lastAccessError)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RW_V(SymlinkPolicy, symlinkPolicy)
+#endif
     };
 
     class LIBVBOX_API IInternalSessionControl : public COMUnknown
@@ -3543,11 +3881,18 @@ namespace VBox
                 /* in */ uint32_t executionCap);
         void onVRDEServerChange(
                 /* in */ bool restart);
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
+        void onVideoCaptureChange();
+#elif VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
         void onRecordingChange(
                 /* in */ bool enable);
 #else
-        void onVideoCaptureChange();
+        void onRecordingStateChange(
+                /* in */  bool enabled,
+                /* out */ COMPtr<IProgress> *progress);
+        void onRecordingScreenStateChange(
+                /* in */ bool enabled,
+                /* in */ uint32_t screen);
 #endif
         void onUSBControllerChange();
         void onSharedFolderChange(
@@ -3968,6 +4313,26 @@ namespace VBox
         VBox_PROPERTY_RO(MachineState, state)
     };
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IExtPackInstalledEvent : public IEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IExtPackInstalledEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, name)
+    };
+
+    class LIBVBOX_API IExtPackUninstalledEvent : public IEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IExtPackUninstalledEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, name)
+    };
+#endif
+
     class LIBVBOX_API IMachineDataChangedEvent : public IMachineEvent
     {
     public:
@@ -4199,6 +4564,27 @@ namespace VBox
     };
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IClipboardEvent : public IEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IClipboardEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, id)
+    };
+
+    class LIBVBOX_API IClipboardErrorEvent : public IClipboardEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IClipboardErrorEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, msg)
+        VBox_PROPERTY_RO(int32_t, rcError)
+    };
+#endif
+
     class LIBVBOX_API IDnDModeChangedEvent : public IEvent
     {
     public:
@@ -4353,6 +4739,48 @@ namespace VBox
         VBox_PROPERTY_RO(std::vector<uint8_t>, data)
     };
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IGuestDirectoryEvent : public IGuestSessionEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IGuestDirectoryEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(COMPtr<IGuestDirectory>, directory)
+    };
+
+    class LIBVBOX_API IGuestDirectoryRegisteredEvent : public IGuestDirectoryEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IGuestDirectoryRegisteredEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(bool, registered)
+    };
+
+    class LIBVBOX_API IGuestDirectoryStateChangedEvent : public IGuestDirectoryEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IGuestDirectoryStateChangedEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(DirectoryStatus, status)
+        VBox_PROPERTY_RO(COMPtr<IVirtualBoxErrorInfo>, error)
+    };
+
+    class LIBVBOX_API IGuestDirectoryReadEvent : public IGuestDirectoryEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IGuestDirectoryReadEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(std::u16string, path)
+        VBox_PROPERTY_RO(COMPtr<IFsObjInfo>, objInfo)
+        VBox_PROPERTY_RO(std::u16string, owner)
+        VBox_PROPERTY_RO(std::u16string, groups)
+    };
+#endif
+
     class LIBVBOX_API IGuestFileEvent : public IGuestSessionEvent
     {
     public:
@@ -4445,7 +4873,26 @@ namespace VBox
     };
 #endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    class LIBVBOX_API IRecordingStateChangedEvent : public IEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IRecordingStateChangedEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(bool, enabled)
+        VBox_PROPERTY_RO(COMPtr<IVirtualBoxErrorInfo>, error)
+    };
+
+    class LIBVBOX_API IRecordingScreenStateChangedEvent : public IRecordingStateChangedEvent
+    {
+    public:
+        VBox_COM_WRAPPED(::IRecordingScreenStateChangedEvent)
+
+        // Attributes
+        VBox_PROPERTY_RO(uint32_t, screen)
+    };
+#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     class LIBVBOX_API IRecordingChangedEvent : public IEvent
     {
     public:
@@ -5031,6 +5478,9 @@ namespace VBox
 
         // Attributes
         VBox_PROPERTY_RO(std::u16string, id)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        VBox_PROPERTY_RO(std::u16string, cloudId)
+#endif
         VBox_PROPERTY_RO(bool, accessible)
         VBox_PROPERTY_RO(COMPtr<IVirtualBoxErrorInfo>, accessError)
         VBox_PROPERTY_RO(std::u16string, name)
@@ -5062,6 +5512,16 @@ namespace VBox
         COMPtr<IProgress> createConsoleConnection(
                 /* in */ const std::u16string &sshPublicKey);
         COMPtr<IProgress> deleteConsoleConnection();
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        COMPtr<IProgress> listMetricNames(
+                /* out */ COMPtr<IStringArray> *metricNames);
+        COMPtr<IProgress> enumerateMetricData(
+                /* in */  MetricType metricType,
+                /* in */  uint32_t pointsNumber,
+                /* out */ COMPtr<IStringArray> *values,
+                /* out */ COMPtr<IStringArray> *timestamps,
+                /* out */ COMPtr<IStringArray> *unit);
+#endif
     };
 #endif
 
@@ -5152,6 +5612,12 @@ namespace VBox
         COMPtr<IProgress> resetInstance(
                 /* in */ const std::u16string &uid);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        COMPtr<IProgress> cloneInstance(
+                /* in */  const std::u16string &uid,
+                /* in */  const std::u16string &newName,
+                /* out */ COMPtr<ICloudMachine> *clone);
+#endif
         COMPtr<IProgress> createImage(
                 /* in */ std::vector<std::u16string> &parameters);
         COMPtr<IProgress> exportImage(
@@ -5186,6 +5652,10 @@ namespace VBox
         COMPtr<IProgress> getSubnetSelectionForm(
                 /* in  */ const COMPtr<IVirtualSystemDescription> &description,
                 /* out */ COMPtr<IVirtualSystemDescriptionForm> *form);
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        MetricType getMetricTypeByName(
+                /* in */ const std::u16string &metricName) const;
 #endif
     };
 

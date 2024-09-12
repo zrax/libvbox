@@ -57,6 +57,7 @@ void VBox::IUnattended::set_user(const std::u16string &value)
     COM_SetString(get_IFC(), User, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::u16string VBox::IUnattended::password() const
 {
     std::u16string result;
@@ -68,6 +69,31 @@ void VBox::IUnattended::set_password(const std::u16string &value)
 {
     COM_SetString(get_IFC(), Password, value);
 }
+#else
+std::u16string VBox::IUnattended::userPassword() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), UserPassword, result);
+    return result;
+}
+
+void VBox::IUnattended::set_userPassword(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), UserPassword, value);
+}
+
+std::u16string VBox::IUnattended::adminPassword() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), AdminPassword, result);
+    return result;
+}
+
+void VBox::IUnattended::set_adminPassword(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), AdminPassword, value);
+}
+#endif
 
 std::u16string VBox::IUnattended::fullUserName() const
 {
@@ -141,6 +167,32 @@ void VBox::IUnattended::set_installTestExecService(bool value)
     COM_SetValue(get_IFC(), InstallTestExecService, value);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::u16string VBox::IUnattended::userPayloadIsoPath() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), UserPayloadIsoPath, result);
+    return result;
+}
+
+void VBox::IUnattended::set_userPayloadIsoPath(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), UserPayloadIsoPath, value);
+}
+
+bool VBox::IUnattended::installUserPayload() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), InstallUserPayload, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::IUnattended::set_installUserPayload(bool value)
+{
+    COM_SetValue(get_IFC(), InstallUserPayload, value);
+}
+#endif
+
 std::u16string VBox::IUnattended::timeZone() const
 {
     std::u16string result;
@@ -152,6 +204,32 @@ void VBox::IUnattended::set_timeZone(const std::u16string &value)
 {
     COM_SetString(get_IFC(), TimeZone, value);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::u16string VBox::IUnattended::keyboardLayout() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), KeyboardLayout, result);
+    return result;
+}
+
+void VBox::IUnattended::set_keyboardLayout(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), KeyboardLayout, value);
+}
+
+std::u16string VBox::IUnattended::keyboardVariant() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), KeyboardVariant, result);
+    return result;
+}
+
+void VBox::IUnattended::set_keyboardVariant(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), KeyboardVariant, value);
+}
+#endif
 
 std::u16string VBox::IUnattended::locale() const
 {

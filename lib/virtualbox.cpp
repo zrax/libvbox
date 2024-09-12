@@ -139,6 +139,15 @@ std::vector<VBox::COMPtr<VBox::IGuestOSType>> VBox::IVirtualBox::guestOSTypes() 
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::vector<std::u16string> VBox::IVirtualBox::guestOSFamilies() const
+{
+    std::vector<std::u16string> result;
+    COM_GetStringArray(get_IFC(), GuestOSFamilies, result);
+    return result;
+}
+#endif
+
 std::vector<VBox::COMPtr<VBox::ISharedFolder>> VBox::IVirtualBox::sharedFolders() const
 {
     std::vector<COMPtr<ISharedFolder>> result;
@@ -240,8 +249,24 @@ std::u16string VBox::IVirtualBox::composeMachineFilename(
     return result.toString();
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::COMPtr<VBox::IPlatformProperties> VBox::IVirtualBox::getPlatformProperties(
+        PlatformArchitecture architecture)
+{
+    ::IPlatformProperties *cResult = nullptr;
+    auto cArchitecture = static_cast<COM_Enum(::PlatformArchitecture)>(architecture);
+
+    auto rc = get_IFC()->GetPlatformProperties(cArchitecture, &cResult);
+    COM_ERROR_CHECK(rc);
+    return COMPtr<IPlatformProperties>::wrap(cResult);
+}
+#endif
+
 VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
         const std::u16string &settingsFile, const std::u16string &name,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        PlatformArchitecture platform,
+#endif
         const std::vector<std::u16string> &groups, const std::u16string &osTypeId,
         const std::u16string &flags
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
@@ -253,6 +278,9 @@ VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
     ::IMachine *cResult = nullptr;
     COM_StringProxy pSettingsFile(settingsFile);
     COM_StringProxy pName(name);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    auto cPlatform = static_cast<COM_Enum(::PlatformArchitecture)>(platform);
+#endif
     COM_StringArrayProxy pGroups(groups);
     COM_StringProxy pOsTypeId(osTypeId);
     COM_StringProxy pFlags(flags);
@@ -263,6 +291,9 @@ VBox::COMPtr<VBox::IMachine> VBox::IVirtualBox::createMachine(
 #endif
 
     auto rc = get_IFC()->CreateMachine(pSettingsFile.m_text, pName.m_text,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                                       cPlatform,
+#endif
                                        COM_ArrayParameter(pGroups),
                                        pOsTypeId.m_text, pFlags.m_text,
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
@@ -406,6 +437,38 @@ VBox::COMPtr<VBox::IGuestOSType> VBox::IVirtualBox::getGuestOSType(
 
     return COMPtr<IGuestOSType>::wrap(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::vector<std::u16string> VBox::IVirtualBox::getGuestOSSubtypesByFamilyId(
+        const std::u16string &family)
+{
+    COM_StringArrayProxy pResult;
+    COM_StringProxy pFamily(family);
+
+    auto rc = get_IFC()->GetGuestOSSubtypesByFamilyId(pFamily.m_text,
+                                                      COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<std::u16string> result;
+    pResult.toVector(result);
+    return result;
+}
+
+std::vector<std::u16string> VBox::IVirtualBox::getGuestOSDescsBySubtype(
+        const std::u16string &OSSubtype)
+{
+    COM_StringArrayProxy pResult;
+    COM_StringProxy pOSSubtype(OSSubtype);
+
+    auto rc = get_IFC()->GetGuestOSDescsBySubtype(pOSSubtype.m_text,
+                                                  COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<std::u16string> result;
+    pResult.toVector(result);
+    return result;
+}
+#endif
 
 void VBox::IVirtualBox::createSharedFolder(const std::u16string &name,
         const std::u16string &hostPath, bool writable, bool automount
@@ -609,16 +672,27 @@ void VBox::IVirtualBox::removeCloudNetwork(const COMPtr<ICloudNetwork> &network)
 }
 #endif
 
-bool VBox::IVirtualBox::checkFirmwarePresent(FirmwareType firmwareType,
-        const std::u16string &version, std::u16string *url, std::u16string *file)
+bool VBox::IVirtualBox::checkFirmwarePresent(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        PlatformArchitecture platformArchitecture,
+#endif
+        FirmwareType firmwareType, const std::u16string &version,
+        std::u16string *url, std::u16string *file)
 {
     COM_Bool cResult;
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    auto cPlatformArchitecture = static_cast<COM_Enum(::PlatformArchitecture)>(platformArchitecture);
+#endif
     auto cFirmwareType = static_cast<COM_Enum(::FirmwareType)>(firmwareType);
     COM_StringProxy pVersion(version);
     COM_StringProxy pUrl;
     COM_StringProxy pFile;
 
-    auto rc = get_IFC()->CheckFirmwarePresent(cFirmwareType, pVersion.m_text,
+    auto rc = get_IFC()->CheckFirmwarePresent(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                                              cPlatformArchitecture,
+#endif
+                                              cFirmwareType, pVersion.m_text,
                                               &pUrl.m_text, &pFile.m_text,
                                               &cResult);
     COM_ERROR_CHECK(rc);

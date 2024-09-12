@@ -23,6 +23,25 @@ COM_WRAP_IFC(IHost)
     && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0)
 COM_WRAP_IFC(IHostUpdate)
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+COM_WRAP_IFC(IHostX86)
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::PlatformArchitecture VBox::IHost::architecture() const
+{
+    COM_Enum(::PlatformArchitecture) result;
+    COM_GetValue(get_IFC(), Architecture, result);
+    return static_cast<PlatformArchitecture>(result);
+}
+
+VBox::COMPtr<VBox::IHostX86> VBox::IHost::x86() const
+{
+    COMPtr<IHostX86> result;
+    COM_GetValue_Wrap(get_IFC(), X86, result);
+    return result;
+}
+#endif
 
 std::vector<VBox::COMPtr<VBox::IMedium>> VBox::IHost::DVDDrives() const
 {
@@ -161,12 +180,14 @@ int64_t VBox::IHost::UTCTime() const
     return static_cast<int64_t>(cResult);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::IHost::acceleration3DAvailable() const
 {
     COM_Bool cResult;
     COM_GetValue(get_IFC(), Acceleration3DAvailable, cResult);
     return static_cast<bool>(cResult);
 }
+#endif
 
 std::vector<VBox::COMPtr<VBox::IHostVideoInputDevice>> VBox::IHost::videoInputDevices() const
 {
@@ -239,6 +260,7 @@ std::u16string VBox::IHost::getProcessorDescription(uint32_t cpuId)
     return pResult.toString();
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 void VBox::IHost::getProcessorCPUIDLeaf(uint32_t cpuId, uint32_t leaf,
         uint32_t subLeaf, uint32_t *valEax, uint32_t *valEbx, uint32_t *valEcx,
         uint32_t *valEdx)
@@ -261,6 +283,7 @@ void VBox::IHost::getProcessorCPUIDLeaf(uint32_t cpuId, uint32_t leaf,
     if (valEdx)
         *valEdx = static_cast<uint32_t>(cValEdx);
 }
+#endif
 
 VBox::COMPtr<VBox::IProgress> VBox::IHost::createHostOnlyNetworkInterface(
         COMPtr<IHostNetworkInterface> *hostInterface)
@@ -433,5 +456,45 @@ void VBox::IHost::removeUSBDeviceSource(const std::u16string &id)
 
     auto rc = get_IFC()->RemoveUSBDeviceSource(pId.m_text);
     COM_ERROR_CHECK(rc);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+bool VBox::IHost::isExecutionEngineSupported(CPUArchitecture cpuArchitecture,
+        VMExecutionEngine executionEngine)
+{
+    COM_Bool cResult = false;
+    auto cCpuArchitecture = static_cast<COM_Enum(::CPUArchitecture)>(cpuArchitecture);
+    auto cExecutionEngine = static_cast<COM_Enum(::VMExecutionEngine)>(executionEngine);
+
+    auto rc = get_IFC()->IsExecutionEngineSupported(cCpuArchitecture, cExecutionEngine, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<bool>(cResult);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+void VBox::IHostX86::getProcessorCPUIDLeaf(uint32_t cpuId, uint32_t leaf,
+        uint32_t subLeaf, uint32_t *valEax, uint32_t *valEbx, uint32_t *valEcx,
+        uint32_t *valEdx)
+{
+    COM_ULong cValEax;
+    COM_ULong cValEbx;
+    COM_ULong cValEcx;
+    COM_ULong cValEdx;
+
+    auto rc = get_IFC()->GetProcessorCPUIDLeaf(cpuId, leaf, subLeaf,
+                    &cValEax, &cValEbx, &cValEcx, &cValEdx);
+    COM_ERROR_CHECK(rc);
+
+    if (valEax)
+        *valEax = static_cast<uint32_t>(cValEax);
+    if (valEbx)
+        *valEbx = static_cast<uint32_t>(cValEbx);
+    if (valEcx)
+        *valEcx = static_cast<uint32_t>(cValEcx);
+    if (valEdx)
+        *valEdx = static_cast<uint32_t>(cValEdx);
 }
 #endif

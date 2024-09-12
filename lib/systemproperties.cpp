@@ -20,6 +20,15 @@
 
 COM_WRAP_IFC(ISystemProperties)
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::COMPtr<VBox::IPlatformProperties> VBox::ISystemProperties::platform() const
+{
+    COMPtr<IPlatformProperties> result;
+    COM_GetValue_Wrap(get_IFC(), Platform, result);
+    return result;
+}
+#endif
+
 uint32_t VBox::ISystemProperties::minGuestRAM() const
 {
     COM_ULong result;
@@ -76,6 +85,7 @@ int64_t VBox::ISystemProperties::infoVDSize() const
     return static_cast<int64_t>(result);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 uint32_t VBox::ISystemProperties::serialPortCount() const
 {
     COM_ULong result;
@@ -115,6 +125,7 @@ void VBox::ISystemProperties::set_exclusiveHwVirt(bool value)
 {
     COM_SetValue(get_IFC(), ExclusiveHwVirt, value);
 }
+#endif
 
 std::u16string VBox::ISystemProperties::defaultMachineFolder() const
 {
@@ -347,12 +358,23 @@ void VBox::ISystemProperties::set_proxyURL(const std::u16string &value)
 #endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 1, 0)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::vector<VBox::ParavirtProvider> VBox::ISystemProperties::supportedParavirtProviders() const
 {
     std::vector<ParavirtProvider> result;
     COM_GetArray(get_IFC(), SupportedParavirtProviders, COM_Enum(::ParavirtProvider), result);
     return result;
 }
+#else
+std::vector<VBox::PlatformArchitecture>
+VBox::ISystemProperties::supportedPlatformArchitectures() const
+{
+    std::vector<PlatformArchitecture> result;
+    COM_GetArray(get_IFC(), SupportedPlatformArchitectures,
+                 COM_Enum(::PlatformArchitecture), result);
+    return result;
+}
+#endif
 
 std::vector<VBox::ClipboardMode> VBox::ISystemProperties::supportedClipboardModes() const
 {
@@ -368,12 +390,14 @@ std::vector<VBox::DnDMode> VBox::ISystemProperties::supportedDnDModes() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::vector<VBox::FirmwareType> VBox::ISystemProperties::supportedFirmwareTypes() const
 {
     std::vector<FirmwareType> result;
     COM_GetArray(get_IFC(), SupportedFirmwareTypes, COM_Enum(::FirmwareType), result);
     return result;
 }
+#endif
 
 std::vector<VBox::PointingHIDType> VBox::ISystemProperties::supportedPointingHIDTypes() const
 {
@@ -409,6 +433,17 @@ std::vector<VBox::ExportOptions> VBox::ISystemProperties::supportedExportOptions
     COM_GetArray(get_IFC(), SupportedExportOptions, COM_Enum(::ExportOptions), result);
     return result;
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::vector<VBox::GraphicsFeature>
+VBox::ISystemProperties::supportedGraphicsFeatures() const
+{
+    std::vector<GraphicsFeature> result;
+    COM_GetArray(get_IFC(), SupportedGraphicsFeatures,
+                 COM_Enum(::GraphicsFeature), result);
+    return result;
+}
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
 std::vector<VBox::RecordingFeature>
@@ -486,6 +521,7 @@ VBox::ISystemProperties::supportedRecordingVRCModes() const
 }
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::vector<VBox::GraphicsControllerType>
 VBox::ISystemProperties::supportedGraphicsControllerTypes() const
 {
@@ -494,6 +530,7 @@ VBox::ISystemProperties::supportedGraphicsControllerTypes() const
                  COM_Enum(::GraphicsControllerType), result);
     return result;
 }
+#endif
 
 std::vector<VBox::CloneOptions> VBox::ISystemProperties::supportedCloneOptions() const
 {
@@ -525,6 +562,7 @@ VBox::ISystemProperties::supportedNetworkAttachmentTypes() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::vector<VBox::NetworkAdapterType>
 VBox::ISystemProperties::supportedNetworkAdapterTypes() const
 {
@@ -533,6 +571,7 @@ VBox::ISystemProperties::supportedNetworkAdapterTypes() const
                  COM_Enum(::NetworkAdapterType), result);
     return result;
 }
+#endif
 
 std::vector<VBox::PortMode> VBox::ISystemProperties::supportedPortModes() const
 {
@@ -541,6 +580,7 @@ std::vector<VBox::PortMode> VBox::ISystemProperties::supportedPortModes() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::vector<VBox::UartType> VBox::ISystemProperties::supportedUartTypes() const
 {
     std::vector<UartType> result;
@@ -554,6 +594,7 @@ std::vector<VBox::USBControllerType> VBox::ISystemProperties::supportedUSBContro
     COM_GetArray(get_IFC(), SupportedUSBControllerTypes, COM_Enum(::USBControllerType), result);
     return result;
 }
+#endif
 
 std::vector<VBox::AudioDriverType> VBox::ISystemProperties::supportedAudioDriverTypes() const
 {
@@ -562,6 +603,7 @@ std::vector<VBox::AudioDriverType> VBox::ISystemProperties::supportedAudioDriver
     return result;
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 std::vector<VBox::AudioControllerType> VBox::ISystemProperties::supportedAudioControllerTypes() const
 {
     std::vector<AudioControllerType> result;
@@ -590,8 +632,10 @@ std::vector<VBox::ChipsetType> VBox::ISystemProperties::supportedChipsetTypes() 
     return result;
 }
 #endif
+#endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
+#if (VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)) \
+    && (VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0))
 std::vector<VBox::IommuType> VBox::ISystemProperties::supportedIommuTypes() const
 {
     std::vector<IommuType> result;
@@ -605,7 +649,9 @@ std::vector<VBox::TpmType> VBox::ISystemProperties::supportedTpmTypes() const
     COM_GetArray(get_IFC(), SupportedTpmTypes, COM_Enum(::TpmType), result);
     return result;
 }
+#endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
 std::u16string VBox::ISystemProperties::languageId() const
 {
     std::u16string result;
@@ -619,6 +665,7 @@ void VBox::ISystemProperties::set_languageId(const std::u16string &value)
 }
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 uint32_t VBox::ISystemProperties::getMaxNetworkAdapters(ChipsetType chipset)
 {
     COM_ULong cResult;
@@ -733,6 +780,7 @@ VBox::ISystemProperties::getStorageControllerTypesForStorageBus(StorageBus stora
     return result;
 }
 #endif
+#endif
 
 bool VBox::ISystemProperties::getDefaultIoCacheSettingForStorageController(
         StorageControllerType controllerType)
@@ -747,6 +795,7 @@ bool VBox::ISystemProperties::getDefaultIoCacheSettingForStorageController(
     return static_cast<bool>(cResult);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::ISystemProperties::getStorageControllerHotplugCapable(
         StorageControllerType controllerType)
 {
@@ -773,6 +822,7 @@ uint32_t VBox::ISystemProperties::getMaxInstancesOfUSBControllerType(
 
     return static_cast<uint32_t>(cResult);
 }
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
 std::vector<VBox::COMPtr<VBox::ICPUProfile>> VBox::ISystemProperties::getCPUProfiles(
@@ -786,6 +836,23 @@ std::vector<VBox::COMPtr<VBox::ICPUProfile>> VBox::ISystemProperties::getCPUProf
     COM_ERROR_CHECK(rc);
 
     std::vector<COMPtr<ICPUProfile>> result;
+    pResult.toVector(result);
+    return result;
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::vector<VBox::VMExecutionEngine>
+VBox::ISystemProperties::getExecutionEnginesForVmCpuArchitecture(CPUArchitecture cpuArchitecture)
+{
+    COM_ArrayProxy<COM_Enum(::VMExecutionEngine)> pResult;
+    auto cCpuArchitecture = static_cast<COM_Enum(::CPUArchitecture)>(cpuArchitecture);
+
+    auto rc = get_IFC()->GetExecutionEnginesForVmCpuArchitecture(cCpuArchitecture,
+                COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<VMExecutionEngine> result;
     pResult.toVector(result);
     return result;
 }

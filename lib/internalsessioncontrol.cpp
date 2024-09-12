@@ -192,16 +192,41 @@ void VBox::IInternalSessionControl::onVRDEServerChange(bool restart)
     COM_ERROR_CHECK(rc);
 }
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
+void VBox::IInternalSessionControl::onVideoCaptureChange()
+{
+    auto rc = get_IFC()->OnVideoCaptureChange();
+    COM_ERROR_CHECK(rc);
+}
+#elif VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 void VBox::IInternalSessionControl::onRecordingChange(bool enable)
 {
     auto rc = get_IFC()->OnRecordingChange(enable);
     COM_ERROR_CHECK(rc);
 }
 #else
-void VBox::IInternalSessionControl::onVideoCaptureChange()
+void VBox::IInternalSessionControl::onRecordingStateChange(bool enabled,
+        COMPtr<IProgress> *progress)
 {
-    auto rc = get_IFC()->OnVideoCaptureChange();
+    auto cEnabled = static_cast<COM_Bool>(enabled);
+    ::IProgress *cProgress = nullptr;
+
+    auto rc = get_IFC()->OnRecordingStateChange(cEnabled, &cProgress);
+    COM_ERROR_CHECK(rc);
+
+    if (progress)
+        *progress = COMPtr<IProgress>::wrap(cProgress);
+    else if (cProgress)
+        cProgress->Release();
+}
+
+void VBox::IInternalSessionControl::onRecordingScreenStateChange(bool enabled,
+        uint32_t screen)
+{
+    auto cEnabled = static_cast<COM_Bool>(enabled);
+    auto cScreen = static_cast<COM_ULong>(screen);
+
+    auto rc = get_IFC()->OnRecordingScreenStateChange(cEnabled, cScreen);
     COM_ERROR_CHECK(rc);
 }
 #endif

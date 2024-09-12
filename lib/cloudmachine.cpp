@@ -28,6 +28,15 @@ std::u16string VBox::ICloudMachine::id() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::u16string VBox::ICloudMachine::cloudId() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), CloudId, result);
+    return result;
+}
+#endif
+
 bool VBox::ICloudMachine::accessible() const
 {
     COM_Bool result;
@@ -128,6 +137,8 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::getSettingsForm(COMPtr<IForm>
 
     if (form)
         *form = COMPtr<IForm>::wrap(cForm);
+    else if (cForm)
+        cForm->Release();
     return COMPtr<IProgress>::wrap(cResult);
 }
 
@@ -250,4 +261,53 @@ VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::deleteConsoleConnection()
 
     return COMPtr<IProgress>::wrap(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::listMetricNames(
+        COMPtr<IStringArray> *metricNames)
+{
+    ::IProgress *cResult = nullptr;
+    ::IStringArray *cMetricNames = nullptr;
+
+    auto rc = get_IFC()->ListMetricNames(&cMetricNames, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (metricNames)
+        *metricNames = COMPtr<IStringArray>::wrap(cMetricNames);
+    else if (cMetricNames)
+        cMetricNames->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+
+VBox::COMPtr<VBox::IProgress> VBox::ICloudMachine::enumerateMetricData(
+        MetricType metricType, uint32_t pointsNumber, COMPtr<IStringArray> *values,
+        COMPtr<IStringArray> *timestamps, COMPtr<IStringArray> *unit)
+{
+    ::IProgress *cResult = nullptr;
+    auto cMetricType = static_cast<COM_Enum(::MetricType)>(metricType);
+    auto cPointsNumber = static_cast<COM_ULong>(pointsNumber);
+    ::IStringArray *cValues = nullptr;
+    ::IStringArray *cTimestamps = nullptr;
+    ::IStringArray *cUnit = nullptr;
+
+    auto rc = get_IFC()->EnumerateMetricData(cMetricType, cPointsNumber, &cValues,
+                                             &cTimestamps, &cUnit, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    if (values)
+        *values = COMPtr<IStringArray>::wrap(cValues);
+    else if (cValues)
+        cValues->Release();
+    if (timestamps)
+        *timestamps = COMPtr<IStringArray>::wrap(cTimestamps);
+    else if (cTimestamps)
+        cTimestamps->Release();
+    if (unit)
+        *unit = COMPtr<IStringArray>::wrap(cUnit);
+    else if (cUnit)
+        cUnit->Release();
+    return COMPtr<IProgress>::wrap(cResult);
+}
+#endif
+
 #endif

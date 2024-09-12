@@ -89,3 +89,12 @@ std::u16string VBox::ISharedFolder::lastAccessError() const
     COM_GetString(get_IFC(), LastAccessError, result);
     return result;
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::SymlinkPolicy VBox::ISharedFolder::symlinkPolicy() const
+{
+    COM_Enum(::SymlinkPolicy) result;
+    COM_GetValue(get_IFC(), SymlinkPolicy, result);
+    return static_cast<SymlinkPolicy>(result);
+}
+#endif

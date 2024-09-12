@@ -67,6 +67,10 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
         E_DND_ERROR = 0x80BB0011,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        E_PLATFORM_ARCH_NOT_SUPPORTED = 0x80BB0012,
+        E_RECORDING_ERROR = 0x80BB0013,
+#endif
     };
 
     class COMError : public std::runtime_error
@@ -115,6 +119,10 @@ namespace VBox
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 6)
     VBox_WRAP_ERROR(EDndError, E_DND_ERROR)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    VBox_WRAP_ERROR(EPlatformArchNotSupported, E_PLATFORM_ARCH_NOT_SUPPORTED)
+    VBox_WRAP_ERROR(ERecordingError, E_RECORDING_ERROR)
 #endif
 }
 

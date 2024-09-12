@@ -408,12 +408,30 @@ void VBox::IMachine::set_videoCaptureOptions(const std::u16string &value)
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::COMPtr<VBox::IPlatform> VBox::IMachine::platform() const
+{
+    COMPtr<IPlatform> result;
+    COM_GetValue_Wrap(get_IFC(), Platform, result);
+    return result;
+}
+#endif
+
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 VBox::COMPtr<VBox::IBIOSSettings> VBox::IMachine::BIOSSettings() const
 {
     COMPtr<IBIOSSettings> result;
     COM_GetValue_Wrap(get_IFC(), BIOSSettings, result);
     return result;
 }
+#else
+VBox::COMPtr<VBox::IFirmwareSettings> VBox::IMachine::firmwareSettings() const
+{
+    COMPtr<IFirmwareSettings> result;
+    COM_GetValue_Wrap(get_IFC(), FirmwareSettings, result);
+    return result;
+}
+#endif
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
 VBox::COMPtr<VBox::ITrustedPlatformModule> VBox::IMachine::trustedPlatformModule() const
@@ -440,6 +458,7 @@ VBox::COMPtr<VBox::IRecordingSettings> VBox::IMachine::recordingSettings() const
 }
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 VBox::FirmwareType VBox::IMachine::firmwareType() const
 {
     COM_Enum(::FirmwareType) result;
@@ -452,6 +471,7 @@ void VBox::IMachine::set_firmwareType(FirmwareType value)
     auto cValue = static_cast<COM_Enum(::FirmwareType)>(value);
     COM_SetValue(get_IFC(), FirmwareType, cValue);
 }
+#endif
 
 VBox::PointingHIDType VBox::IMachine::pointingHIDType() const
 {
@@ -479,6 +499,7 @@ void VBox::IMachine::set_keyboardHIDType(KeyboardHIDType value)
     COM_SetValue(get_IFC(), KeyboardHIDType, cValue);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::IMachine::HPETEnabled() const
 {
     COM_Bool result;
@@ -498,6 +519,12 @@ VBox::ChipsetType VBox::IMachine::chipsetType() const
     return static_cast<ChipsetType>(result);
 }
 
+void VBox::IMachine::set_chipsetType(ChipsetType value)
+{
+    auto cValue = static_cast<COM_Enum(::ChipsetType)>(value);
+    COM_SetValue(get_IFC(), ChipsetType, cValue);
+}
+
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
 VBox::IommuType VBox::IMachine::iommuType() const
 {
@@ -512,11 +539,7 @@ void VBox::IMachine::set_iommuType(IommuType value)
 }
 #endif
 
-void VBox::IMachine::set_chipsetType(ChipsetType value)
-{
-    auto cValue = static_cast<COM_Enum(::ChipsetType)>(value);
-    COM_SetValue(get_IFC(), ChipsetType, cValue);
-}
+#endif
 
 std::u16string VBox::IMachine::snapshotFolder() const
 {
@@ -857,6 +880,7 @@ void VBox::IMachine::set_faultToleranceSyncInterval(uint32_t value)
 }
 #endif
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::IMachine::RTCUseUTC() const
 {
     COM_Bool result;
@@ -868,6 +892,7 @@ void VBox::IMachine::set_RTCUseUTC(bool value)
 {
     COM_SetValue(get_IFC(), RTCUseUTC, value);
 }
+#endif
 
 bool VBox::IMachine::IOCacheEnabled() const
 {
@@ -1023,6 +1048,21 @@ void VBox::IMachine::set_VMProcessPriority(VMProcPriority value)
 {
     COM_SetValue(get_IFC(), VMProcessPriority,
                  static_cast<COM_Enum(::VMProcPriority)>(value));
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::VMExecutionEngine VBox::IMachine::VMExecutionEngine() const
+{
+    COM_Enum(::VMExecutionEngine) result;
+    COM_GetValue(get_IFC(), VMExecutionEngine, result);
+    return static_cast<VBox::VMExecutionEngine>(result);
+}
+
+void VBox::IMachine::set_VMExecutionEngine(VBox::VMExecutionEngine value)
+{
+    COM_SetValue(get_IFC(), VMExecutionEngine,
+                 static_cast<COM_Enum(::VMExecutionEngine)>(value));
 }
 #endif
 
@@ -1485,6 +1525,7 @@ void VBox::IMachine::setExtraData(const std::u16string &key, const std::u16strin
     COM_ERROR_CHECK(rc);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::IMachine::getCPUProperty(CPUPropertyType property) const
 {
     COM_Bool cResult;
@@ -1615,6 +1656,7 @@ void VBox::IMachine::setHWVirtExProperty(HWVirtExPropertyType property, bool val
     auto rc = get_IFC()->SetHWVirtExProperty(cProperty, value);
     COM_ERROR_CHECK(rc);
 }
+#endif
 
 VBox::COMPtr<VBox::IProgress> VBox::IMachine::setSettingsFilePath(
         const std::u16string &settingsFilePath)

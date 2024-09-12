@@ -7,7 +7,7 @@ without having to deal with the messy MS COM or XPCOM layers directly.
 In fact, after building libvbox, client applications do not need any
 COM headers, nor the VirtualBox SDK itself.
 
-libvbox currently supports VirtualBox SDK versions 5.0 through 7.0.
+libvbox currently supports VirtualBox SDK versions 5.0 through 7.1.
 
 ## Building
 
@@ -22,7 +22,7 @@ to limitations in the SDK.
     > mkdir build
     > cd build
     > cmake .. -DVirtualBoxSDK_DIR=C:/path/to/virtualbox/sdk \
-        -DVirtualBoxSDK_VERSION=6.0.8
+        -DVirtualBoxSDK_VERSION=7.0.20
     > cmake --build .
 
 NOTE: For XPCOM-based platforms, you may also need to specify the path to the
@@ -32,7 +32,7 @@ VirtualBox XPCOM library if it isn't auto-detected:
     $ mkdir build
     $ cd build
     $ cmake .. -DVirtualBoxSDK_DIR=/path/to/virtualbox/sdk \
-        -DVirtualBoxSDK_VERSION=6.0.8 \
+        -DVirtualBoxSDK_VERSION=7.0.20 \
         -DVirtualBox_XPCOM_LIB=/usr/lib/virtualbox/VBoxXPCOM.so
     $ cmake --build .
 
@@ -222,6 +222,8 @@ will be thrown for easier exception handling by client code:
 | `E_GSTCTL_GUEST_ERROR`    | `VBox::EGstctlGuestError` |
 | `E_TIMEOUT`               | `VBox::ETimeout`          |
 | `E_DND_ERROR`             | `VBox::EDndError`         |
+| `E_PLATFORM_ARCH_NOT_SUPPORTED` | `VBox::EPlatformArchNotSupported` |
+| `E_RECORDING_ERROR`       | `VBox::ERecordingError`   |
 
 ## libvbox Entry Points and Helpers
 

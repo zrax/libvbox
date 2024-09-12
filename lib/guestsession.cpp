@@ -135,6 +135,15 @@ std::u16string VBox::IGuestSession::userDocuments() const
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::vector<std::u16string> VBox::IGuestSession::mountPoints() const
+{
+    std::vector<std::u16string> result;
+    COM_GetStringArray(get_IFC(), MountPoints, result);
+    return result;
+}
+#endif
+
 std::vector<VBox::COMPtr<VBox::IGuestDirectory>> VBox::IGuestSession::directories() const
 {
     std::vector<COMPtr<IGuestDirectory>> result;
@@ -648,16 +657,25 @@ VBox::COMPtr<VBox::IGuestFsInfo> VBox::IGuestSession::fsQueryInfo(
 
 VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreate(
         const std::u16string &executable, const std::vector<std::u16string> &arguments,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        const std::u16string &cwd,
+#endif
         const std::vector<std::u16string> &environmentChanges,
         const std::vector<ProcessCreateFlag> &flags, uint32_t timeoutMS)
 {
     ::IGuestProcess *cResult = nullptr;
     COM_StringProxy pExecutable(executable);
     COM_StringArrayProxy pArguments(arguments);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    COM_StringProxy pCwd(cwd);
+#endif
     COM_StringArrayProxy pEnvironmentChanges(environmentChanges);
     COM_ArrayProxy<COM_Enum(::ProcessCreateFlag)> pFlags(flags);
 
     auto rc = get_IFC()->ProcessCreate(pExecutable.m_text, COM_ArrayParameter(pArguments),
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                pCwd.m_text,
+#endif
                 COM_ArrayParameter(pEnvironmentChanges), COM_ArrayParameter(pFlags),
                 timeoutMS, &cResult);
     COM_ERROR_CHECK(rc);
@@ -667,6 +685,9 @@ VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreate(
 
 VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreateEx(
         const std::u16string &executable, const std::vector<std::u16string> &arguments,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+        const std::u16string &cwd,
+#endif
         const std::vector<std::u16string> &environmentChanges,
         const std::vector<ProcessCreateFlag> &flags, uint32_t timeoutMS,
         ProcessPriority priority, const std::vector<int32_t> &affinity)
@@ -674,13 +695,20 @@ VBox::COMPtr<VBox::IGuestProcess> VBox::IGuestSession::processCreateEx(
     ::IGuestProcess *cResult = nullptr;
     COM_StringProxy pExecutable(executable);
     COM_StringArrayProxy pArguments(arguments);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+    COM_StringProxy pCwd(cwd);
+#endif
     COM_StringArrayProxy pEnvironmentChanges(environmentChanges);
     COM_ArrayProxy<COM_Enum(::ProcessCreateFlag)> pFlags(flags);
     auto cPriority = static_cast<COM_Enum(::ProcessPriority)>(priority);
     COM_ArrayProxy<COM_Long> pAffinity(affinity);
 
     auto rc = get_IFC()->ProcessCreateEx(pExecutable.m_text,
-                COM_ArrayParameter(pArguments), COM_ArrayParameter(pEnvironmentChanges),
+                COM_ArrayParameter(pArguments),
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+                pCwd.m_text,
+#endif
+                COM_ArrayParameter(pEnvironmentChanges),
                 COM_ArrayParameter(pFlags), timeoutMS, cPriority,
                 COM_ArrayParameter(pAffinity), &cResult);
     COM_ERROR_CHECK(rc);

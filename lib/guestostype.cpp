@@ -41,6 +41,15 @@ std::u16string VBox::IGuestOSType::id() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::u16string VBox::IGuestOSType::subtype() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), Subtype, result);
+    return result;
+}
+#endif
+
 std::u16string VBox::IGuestOSType::description() const
 {
     std::u16string result;
@@ -54,6 +63,15 @@ bool VBox::IGuestOSType::is64Bit() const
     COM_GetValue(get_IFC(), Is64Bit, result);
     return static_cast<bool>(result);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+VBox::PlatformArchitecture VBox::IGuestOSType::platformArchitecture() const
+{
+    COM_Enum(::PlatformArchitecture) result;
+    COM_GetValue(get_IFC(), PlatformArchitecture, result);
+    return static_cast<PlatformArchitecture>(result);
+}
+#endif
 
 bool VBox::IGuestOSType::recommendedIOAPIC() const
 {
@@ -288,5 +306,14 @@ bool VBox::IGuestOSType::recommendedWDDMGraphics() const
     COM_Bool result;
     COM_GetValue(get_IFC(), RecommendedWDDMGraphics, result);
     return static_cast<bool>(result);
+}
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+std::u16string VBox::IGuestOSType::guestAdditionsInstallPackageName() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), GuestAdditionsInstallPackageName, result);
+    return result;
 }
 #endif

@@ -46,6 +46,7 @@ void VBox::IGraphicsAdapter::set_VRAMSize(uint32_t value)
     COM_SetValue(get_IFC(), VRAMSize, value);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::IGraphicsAdapter::accelerate3DEnabled() const
 {
     COM_Bool result;
@@ -69,6 +70,7 @@ void VBox::IGraphicsAdapter::set_accelerate2DVideoEnabled(bool value)
 {
     COM_SetValue(get_IFC(), Accelerate2DVideoEnabled, value);
 }
+#endif
 
 uint32_t VBox::IGraphicsAdapter::monitorCount() const
 {
@@ -81,4 +83,27 @@ void VBox::IGraphicsAdapter::set_monitorCount(uint32_t value)
 {
     COM_SetValue(get_IFC(), MonitorCount, value);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+void VBox::IGraphicsAdapter::setFeature(GraphicsFeature feature, bool enabled)
+{
+    auto cFeature = static_cast<COM_Enum(::GraphicsFeature)>(feature);
+    auto cEnabled = static_cast<COM_Bool>(enabled);
+
+    auto rc = get_IFC()->SetFeature(cFeature, cEnabled);
+    COM_ERROR_CHECK(rc);
+}
+
+bool VBox::IGraphicsAdapter::isFeatureEnabled(GraphicsFeature feature) const
+{
+    COM_Bool cResult = false;
+    auto cFeature = static_cast<COM_Enum(::GraphicsFeature)>(feature);
+
+    auto rc = get_IFC()->IsFeatureEnabled(cFeature, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<bool>(cResult);
+}
+#endif
+
 #endif

@@ -31,9 +31,6 @@ COM_WRAP_IFC(IVRDEServerInfoChangedEvent)
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(6, 0, 0)
 COM_WRAP_IFC(IVideoCaptureChangedEvent)
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
-COM_WRAP_IFC(IRecordingChangedEvent)
-#endif
 COM_WRAP_IFC(IUSBControllerChangedEvent)
 COM_WRAP_IFC(ISharedFolderChangedEvent)
 COM_WRAP_IFC(IEventSourceChangedEvent)
