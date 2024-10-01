@@ -15,7 +15,7 @@
 # License along with libvbox; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 project(libvbox)
 
 include(FeatureSummary)
