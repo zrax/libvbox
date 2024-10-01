@@ -1862,7 +1862,7 @@ void VBox::IMachine::enumerateGuestProperties(const std::u16string &patterns,
     COM_StringProxy pPatterns(patterns);
     COM_StringArrayProxy pNames;
     COM_StringArrayProxy pValues;
-    COM_ArrayProxy<int64_t> pTimestamps;
+    COM_ArrayProxy<COM_Long64> pTimestamps;
     COM_StringArrayProxy pFlags;
 
     auto rc = get_IFC()->EnumerateGuestProperties(pPatterns.m_text,
