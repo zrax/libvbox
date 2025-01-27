@@ -149,6 +149,20 @@ void VBox::INATEngine::set_localhostReachable(bool value)
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 6)
+bool VBox::INATEngine::forwardBroadcast() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), ForwardBroadcast, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::INATEngine::set_forwardBroadcast(bool value)
+{
+    COM_SetValue(get_IFC(), ForwardBroadcast, value);
+}
+#endif
+
 void VBox::INATEngine::setNetworkSettings(uint32_t mtu, uint32_t sockSnd,
         uint32_t sockRcv, uint32_t TcpWndSnd, uint32_t TcpWndRcv)
 {

@@ -4057,6 +4057,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         VBox_PROPERTY_RW_V(bool, localhostReachable)
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 6)
+        VBox_PROPERTY_RW_V(bool, forwardBroadcast)
+#endif
 
         // Methods
         void setNetworkSettings(
