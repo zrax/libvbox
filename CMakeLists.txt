@@ -245,8 +245,6 @@ endif()
 
 install(TARGETS vbox
     EXPORT vbox-targets
-    RUNTIME DESTINATION bin COMPONENT shlib
-    LIBRARY DESTINATION lib COMPONENT shlib
 )
 install(
     FILES
