@@ -143,6 +143,15 @@ void VBox::IUnattended::set_installGuestAdditions(bool value)
     COM_SetValue(get_IFC(), InstallGuestAdditions, value);
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+bool VBox::IUnattended::productKeyRequired() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), ProductKeyRequired, result);
+    return static_cast<bool>(result);
+}
+#endif
+
 std::u16string VBox::IUnattended::validationKitIsoPath() const
 {
     std::u16string result;

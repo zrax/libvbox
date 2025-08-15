@@ -92,3 +92,24 @@ void VBox::IPlatform::set_RTCUseUTC(bool value)
     COM_SetValue(get_IFC(), RTCUseUTC, static_cast<COM_Bool>(value));
 }
 #endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+bool VBox::IPlatformARM::getCPUProperty(CPUPropertyTypeARM property) const
+{
+    COM_Bool cResult;
+    auto cProperty = static_cast<COM_Enum(::CPUPropertyTypeARM)>(property);
+
+    auto rc = get_IFC()->GetCPUProperty(cProperty, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<bool>(cResult);
+}
+
+void VBox::IPlatformARM::setCPUProperty(CPUPropertyTypeARM property, bool value)
+{
+    auto cProperty = static_cast<COM_Enum(::CPUPropertyTypeARM)>(property);
+
+    auto rc = get_IFC()->SetCPUProperty(cProperty, value);
+    COM_ERROR_CHECK(rc);
+}
+#endif

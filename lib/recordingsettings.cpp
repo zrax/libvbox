@@ -50,6 +50,20 @@ VBox::COMPtr<VBox::IProgress> VBox::IRecordingSettings::progress() const
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+bool VBox::IRecordingSettings::paused() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), Paused, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::IRecordingSettings::set_paused(bool value)
+{
+    COM_SetValue(get_IFC(), Paused, value);
+}
+#endif
+
 VBox::COMPtr<VBox::IRecordingScreenSettings>
 VBox::IRecordingSettings::getScreenSettings(uint32_t screenId)
 {
@@ -71,6 +85,15 @@ VBox::COMPtr<VBox::IProgress> VBox::IRecordingSettings::start()
 
     return COMPtr<IProgress>::wrap(cResult);
 }
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+void VBox::IRecordingSettings::resume()
+{
+    auto rc = get_IFC()->Resume();
+    COM_ERROR_CHECK(rc);
+}
+
 #endif
 
 #endif

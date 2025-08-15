@@ -132,6 +132,56 @@ std::vector<std::u16string> VBox::INATNetwork::localMappings() const
     return result;
 }
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+bool VBox::INATNetwork::localhostReachable() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), LocalhostReachable, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::INATNetwork::set_localhostReachable(bool value)
+{
+    COM_SetValue(get_IFC(), LocalhostReachable, value);
+}
+
+bool VBox::INATNetwork::forwardBroadcast() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), ForwardBroadcast, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::INATNetwork::set_forwardBroadcast(bool value)
+{
+    COM_SetValue(get_IFC(), ForwardBroadcast, value);
+}
+
+uint32_t VBox::INATNetwork::natMTU() const
+{
+    COM_ULong result;
+    COM_GetValue(get_IFC(), NatMTU, result);
+    return static_cast<uint32_t>(result);
+}
+
+void VBox::INATNetwork::set_natMTU(uint32_t value)
+{
+    COM_SetValue(get_IFC(), NatMTU, static_cast<COM_ULong>(value));
+}
+
+uint32_t VBox::INATNetwork::natMRU() const
+{
+    COM_ULong result;
+    COM_GetValue(get_IFC(), NatMRU, result);
+    return static_cast<uint32_t>(result);
+}
+
+void VBox::INATNetwork::set_natMRU(uint32_t value)
+{
+    COM_SetValue(get_IFC(), NatMRU, static_cast<COM_ULong>(value));
+}
+#endif
+
 int32_t VBox::INATNetwork::loopbackIp6() const
 {
     COM_Long result;

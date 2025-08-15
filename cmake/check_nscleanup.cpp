@@ -19,17 +19,8 @@
 #include <nsIServiceManager.h>
 #include <VirtualBox_XPCOM.h>
 
-#include <cstdio>
-
-int main(int argc, char *argv[])
+int main()
 {
-    nsCOMPtr<nsIServiceManager> serviceManager;
-    nsresult rc = NS_InitXPCOM2(getter_AddRefs(serviceManager), nsnull, nsnull);
-    if (NS_FAILED(rc)) {
-        fprintf(stderr, "Error: XPCOM could not be initialized (%#x)\n", rc);
-        return 1;
-    }
-
     NS_ShutdownXPCOM(nsnull);
     return 0;
 }

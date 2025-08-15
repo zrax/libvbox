@@ -163,6 +163,56 @@ void VBox::INATEngine::set_forwardBroadcast(bool value)
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+bool VBox::INATEngine::enableTFTP() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), EnableTFTP, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::INATEngine::set_enableTFTP(bool value)
+{
+    COM_SetValue(get_IFC(), EnableTFTP, value);
+}
+
+uint32_t VBox::INATEngine::natMRU() const
+{
+    COM_ULong result;
+    COM_GetValue(get_IFC(), NatMRU, result);
+    return static_cast<uint32_t>(result);
+}
+
+void VBox::INATEngine::set_natMRU(uint32_t value)
+{
+    COM_SetValue(get_IFC(), NatMRU, static_cast<COM_ULong>(value));
+}
+
+bool VBox::INATEngine::IPv6Enabled() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), IPv6Enabled, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::INATEngine::set_IPv6Enabled(bool value)
+{
+    COM_SetValue(get_IFC(), IPv6Enabled, value);
+}
+
+std::u16string VBox::INATEngine::IPv6Prefix() const
+{
+    std::u16string result;
+    COM_GetString(get_IFC(), IPv6Prefix, result);
+    return result;
+}
+
+void VBox::INATEngine::set_IPv6Prefix(const std::u16string &value)
+{
+    COM_SetString(get_IFC(), IPv6Prefix, value);
+}
+#endif
+
 void VBox::INATEngine::setNetworkSettings(uint32_t mtu, uint32_t sockSnd,
         uint32_t sockRcv, uint32_t TcpWndSnd, uint32_t TcpWndRcv)
 {

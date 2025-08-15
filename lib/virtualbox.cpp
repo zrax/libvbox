@@ -717,3 +717,45 @@ VBox::COMPtr<VBox::IProgress> VBox::IVirtualBox::findProgressById(
     return COMPtr<IProgress>::wrap(cResult);
 }
 #endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+void VBox::IVirtualBox::getTrackedObject(const std::u16string &trObjId,
+        COMPtr<COMUnknown> *pIface, TrackedObjectState *state,
+        int64_t *creationTime, int64_t *deletionTime)
+{
+    COM_StringProxy pTrObjId(trObjId);
+    COMUnknown::COM_Ifc *cpIface = nullptr;
+    COM_Enum(::TrackedObjectState) cState;
+    COM_Long64 cCreationTime;
+    COM_Long64 cDeletionTime;
+
+    auto rc = get_IFC()->GetTrackedObject(pTrObjId.m_text, &cpIface, &cState,
+                                          &cCreationTime, &cDeletionTime);
+    COM_ERROR_CHECK(rc);
+
+    if (pIface)
+        *pIface = COMPtr<COMUnknown>::wrap(cpIface);
+    else if (cpIface)
+        cpIface->Release();
+    if (state)
+        *state = static_cast<TrackedObjectState>(cState);
+    if (creationTime)
+        *creationTime = static_cast<int64_t>(cCreationTime);
+    if (deletionTime)
+        *deletionTime = static_cast<int64_t>(cDeletionTime);
+}
+
+std::vector<std::u16string> VBox::IVirtualBox::getTrackedObjectIds(
+        const std::u16string &name)
+{
+    COM_StringArrayProxy pResult;
+    COM_StringProxy pName(name);
+
+    auto rc = get_IFC()->GetTrackedObjectIds(pName.m_text, COM_ArrayParameterRef(pResult));
+    COM_ERROR_CHECK(rc);
+
+    std::vector<std::u16string> result;
+    pResult.toVector(result);
+    return result;
+}
+#endif

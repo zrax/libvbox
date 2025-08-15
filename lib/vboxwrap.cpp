@@ -42,6 +42,7 @@ static bool isApiCompatible(int sdkVersion, int apiVersion)
 
         { VBox_MAKE_VERSION(7, 0, 0), VBox_MAKE_VERSION(7, 0, 26) },
         { VBox_MAKE_VERSION(7, 1, 0), VBox_MAKE_VERSION(7, 1, 12) },
+        { VBox_MAKE_VERSION(7, 2, 0), VBox_MAKE_VERSION(7, 2, 0) },
     };
 
     if (sdkVersion > apiVersion)
@@ -65,7 +66,12 @@ namespace VBox
         API_Private()
         {
 #if defined(VBOX_XPCOM)
-            nsresult rc = NS_InitXPCOM2(getter_AddRefs(m_serviceManager), nullptr, nullptr);
+            nsresult rc =
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+                NS_InitXPCOM2Ex(getter_AddRefs(m_serviceManager), nullptr, nullptr, 0);
+#else
+                NS_InitXPCOM2(getter_AddRefs(m_serviceManager), nullptr, nullptr);
+#endif
             COM_ERROR_CHECK(rc);
 
             rc = NS_GetMainEventQ(getter_AddRefs(m_eventQueue));

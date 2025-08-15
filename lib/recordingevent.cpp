@@ -25,14 +25,23 @@ COM_WRAP_IFC(IRecordingScreenStateChangedEvent)
 COM_WRAP_IFC(IRecordingChangedEvent)
 #endif
 
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+VBox::RecordingState VBox::IRecordingStateChangedEvent::state() const
+{
+    COM_Enum(::RecordingState) result;
+    COM_GetValue(get_IFC(), State, result);
+    return static_cast<RecordingState>(result);
+}
+#elif VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
 bool VBox::IRecordingStateChangedEvent::enabled() const
 {
     COM_Bool result;
     COM_GetValue(get_IFC(), Enabled, result);
     return static_cast<bool>(result);
 }
+#endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
 VBox::COMPtr<VBox::IVirtualBoxErrorInfo> VBox::IRecordingStateChangedEvent::error() const
 {
     COMPtr<IVirtualBoxErrorInfo> result;

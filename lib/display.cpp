@@ -189,11 +189,13 @@ void VBox::IDisplay::invalidateAndUpdateScreen(uint32_t screenId)
     COM_ERROR_CHECK(rc);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 2, 0)
 void VBox::IDisplay::completeVHWACommand(uint8_t *command)
 {
     auto rc = get_IFC()->CompleteVHWACommand(command);
     COM_ERROR_CHECK(rc);
 }
+#endif
 
 void VBox::IDisplay::viewportChanged(uint32_t screenId, uint32_t x, uint32_t y,
         uint32_t width, uint32_t height)

@@ -110,12 +110,14 @@ uint32_t VBox::IGuestOSType::recommendedVRAM() const
     return static_cast<uint32_t>(result);
 }
 
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 2, 0)
 bool VBox::IGuestOSType::recommended2DVideoAcceleration() const
 {
     COM_Bool result;
     COM_GetValue(get_IFC(), Recommended2DVideoAcceleration, result);
     return static_cast<bool>(result);
 }
+#endif
 
 bool VBox::IGuestOSType::recommended3DAcceleration() const
 {

@@ -55,6 +55,12 @@ namespace VBox
         VBox_PROPERTY_RO(COMPtr<IEventSource>, eventSource)
         VBox_PROPERTY_RO(std::vector<std::u16string>, portForwardRules4)
         VBox_PROPERTY_RO(std::vector<std::u16string>, localMappings)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        VBox_PROPERTY_RW_V(bool, localhostReachable)
+        VBox_PROPERTY_RW_V(bool, forwardBroadcast)
+        VBox_PROPERTY_RW_V(uint32_t, natMTU)
+        VBox_PROPERTY_RW_V(uint32_t, natMRU)
+#endif
         VBox_PROPERTY_RW_V(int32_t, loopbackIp6)
         VBox_PROPERTY_RO(std::vector<std::u16string>, portForwardRules6)
 
@@ -443,6 +449,17 @@ namespace VBox
         COMPtr<IProgress> findProgressById(
                 /* in */ const std::u16string &id);
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        void getTrackedObject(
+                /* in */  const std::u16string &trObjId,
+                /* out */ COMPtr<COMUnknown> *pIface,
+                /* out */ TrackedObjectState *state,
+                /* out */ int64_t *creationTime,
+                /* out */ int64_t *deletionTime);
+
+        std::vector<std::u16string> getTrackedObjectIds(
+                /* in */ const std::u16string &name);
+#endif
     };
 
     class LIBVBOX_API IVFSExplorer : public COMUnknown
@@ -604,6 +621,9 @@ namespace VBox
         VBox_PROPERTY_RW_R(std::u16string, productKey)
         VBox_PROPERTY_RW_R(std::u16string, additionsIsoPath)
         VBox_PROPERTY_RW_V(bool, installGuestAdditions)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        VBox_PROPERTY_RO(bool, productKeyRequired)
+#endif
         VBox_PROPERTY_RW_R(std::u16string, validationKitIsoPath)
         VBox_PROPERTY_RW_V(bool, installTestExecService)
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
@@ -887,12 +907,18 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
         VBox_PROPERTY_RO(COMPtr<IProgress>, progress)
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        VBox_PROPERTY_RW_V(bool, paused)
+#endif
 
         // Methods
         COMPtr<IRecordingScreenSettings> getScreenSettings(
                 /* in */ uint32_t screenId);
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
         COMPtr<IProgress> start();
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        void resume();
 #endif
     };
 #endif
@@ -1071,6 +1097,15 @@ namespace VBox
     {
     public:
         VBox_COM_WRAPPED(::IPlatformARM)
+
+        // Methods
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        bool getCPUProperty(
+                /* in */ CPUPropertyTypeARM property) const;
+        void setCPUProperty(
+                /* in */ CPUPropertyTypeARM property,
+                /* in */ bool value);
+#endif
     };
 #endif
 
@@ -2182,7 +2217,9 @@ namespace VBox
         VBox_PROPERTY_RO(GraphicsControllerType, recommendedGraphicsController)
 #endif
         VBox_PROPERTY_RO(uint32_t, recommendedVRAM)
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 2, 0)
         VBox_PROPERTY_RO(bool, recommended2DVideoAcceleration)
+#endif
         VBox_PROPERTY_RO(bool, recommended3DAcceleration)
         VBox_PROPERTY_RO(int64_t, recommendedHDD)
         VBox_PROPERTY_RO(NetworkAdapterType, adapterType)
@@ -3356,8 +3393,10 @@ namespace VBox
         void invalidateAndUpdate();
         void invalidateAndUpdateScreen(
                 /* in */ uint32_t screenId);
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 2, 0)
         void completeVHWACommand(
                 /* in */ uint8_t *command);
+#endif
         void viewportChanged(
                 /* in */ uint32_t screenId,
                 /* in */ uint32_t x,
@@ -3888,10 +3927,18 @@ namespace VBox
                 /* in */ bool enable);
 #else
         void onRecordingStateChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+                /* in */  RecordingState state,
+#else
                 /* in */  bool enabled,
+#endif
                 /* out */ COMPtr<IProgress> *progress);
         void onRecordingScreenStateChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+                /* in */ RecordingState state,
+#else
                 /* in */ bool enabled,
+#endif
                 /* in */ uint32_t screen);
 #endif
         void onUSBControllerChange();
@@ -4059,6 +4106,12 @@ namespace VBox
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 6)
         VBox_PROPERTY_RW_V(bool, forwardBroadcast)
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        VBox_PROPERTY_RW_V(bool, enableTFTP)
+        VBox_PROPERTY_RW_V(uint32_t, natMRU)
+        VBox_PROPERTY_RW_V(bool, IPv6Enabled)
+        VBox_PROPERTY_RW_R(std::u16string, IPv6Prefix)
 #endif
 
         // Methods
@@ -4883,7 +4936,11 @@ namespace VBox
         VBox_COM_WRAPPED(::IRecordingStateChangedEvent)
 
         // Attributes
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        VBox_PROPERTY_RO(RecordingState, state)
+#else
         VBox_PROPERTY_RO(bool, enabled)
+#endif
         VBox_PROPERTY_RO(COMPtr<IVirtualBoxErrorInfo>, error)
     };
 

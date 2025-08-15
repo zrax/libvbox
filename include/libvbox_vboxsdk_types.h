@@ -362,6 +362,15 @@ namespace VBox
     };
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+    enum class CPUPropertyTypeARM
+    {
+        Null = 0,
+        HWVirt = 1,
+        GICITS = 2,
+    };
+#endif
+
 #if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 1, 0)
     enum class CPUPropertyType
 #else
@@ -851,7 +860,9 @@ namespace VBox
     enum class GraphicsFeature
     {
         None = 0,
+#if VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 2, 0)
         Acceleration2DVideo = 1,
+#endif
         Acceleration3D = 2,
     };
 #endif
@@ -977,6 +988,9 @@ namespace VBox
 
     enum class HostNetworkInterfaceType
     {
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        Invalid = 0,
+#endif
         Bridged = 1,
         HostOnly = 2,
     };
@@ -1206,6 +1220,9 @@ namespace VBox
         WD8003 = 11,
         ELNK2 = 12,
         ELNK1 = 13,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        UsbNet = 14,
 #endif
     };
 
@@ -1609,7 +1626,25 @@ namespace VBox
         Audio = 0x2,
     };
     VBox_ENUM_BITWISE(RecordingFeature)
+#endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+    enum class RecordingState
+    {
+        Unknown = 0,
+        Initializing = 1,
+        Started = 2,
+        Paused = 3,
+        Resumed = 4,
+        Finalizing = 5,
+        Stopped = 6,
+        Canceled = 7,
+        LimitReached = 8,
+        Error = 9,
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(6, 0, 0)
     enum class RecordingVideoCodec
     {
         None = 0,
@@ -1723,6 +1758,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 0)
         v1_20 = 22,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        v1_21 = 23,
+#endif
         Future = 99999,
     };
 
@@ -1813,6 +1851,16 @@ namespace VBox
         v2_0 = 2,
         Host = 3,
         Swtpm = 4,
+    };
+#endif
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+    enum class TrackedObjectState
+    {
+        None = 0,
+        Alive = 1,
+        Deleted = 2,
+        Invalid = 3,
     };
 #endif
 
@@ -2136,6 +2184,9 @@ namespace VBox
         && VirtualBoxSDK_VERSION < VBox_MAKE_VERSION(7, 0, 0))          \
     || VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
         HardDiskControllerNVMe = 61,
+#endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        NVRAM = 0x8000,
 #endif
     };
 

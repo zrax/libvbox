@@ -205,13 +205,28 @@ void VBox::IInternalSessionControl::onRecordingChange(bool enable)
     COM_ERROR_CHECK(rc);
 }
 #else
-void VBox::IInternalSessionControl::onRecordingStateChange(bool enabled,
+void VBox::IInternalSessionControl::onRecordingStateChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        RecordingState state,
+#else
+        bool enabled,
+#endif
         COMPtr<IProgress> *progress)
 {
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+    auto cState = static_cast<COM_Enum(::RecordingState)>(state);
+#else
     auto cEnabled = static_cast<COM_Bool>(enabled);
+#endif
     ::IProgress *cProgress = nullptr;
 
-    auto rc = get_IFC()->OnRecordingStateChange(cEnabled, &cProgress);
+    auto rc = get_IFC()->OnRecordingStateChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+            cState,
+#else
+            cEnabled,
+#endif
+            &cProgress);
     COM_ERROR_CHECK(rc);
 
     if (progress)
@@ -220,13 +235,28 @@ void VBox::IInternalSessionControl::onRecordingStateChange(bool enabled,
         cProgress->Release();
 }
 
-void VBox::IInternalSessionControl::onRecordingScreenStateChange(bool enabled,
+void VBox::IInternalSessionControl::onRecordingScreenStateChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+        RecordingState state,
+#else
+        bool enabled,
+#endif
         uint32_t screen)
 {
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+    auto cState = static_cast<COM_Enum(::RecordingState)>(state);
+#else
     auto cEnabled = static_cast<COM_Bool>(enabled);
+#endif
     auto cScreen = static_cast<COM_ULong>(screen);
 
-    auto rc = get_IFC()->OnRecordingScreenStateChange(cEnabled, cScreen);
+    auto rc = get_IFC()->OnRecordingScreenStateChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+            cState,
+#else
+            cEnabled,
+#endif
+            cScreen);
     COM_ERROR_CHECK(rc);
 }
 #endif
