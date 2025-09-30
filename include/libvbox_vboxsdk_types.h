@@ -1224,6 +1224,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
         UsbNet = 14,
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 2)
+        I82583V = 15,
+#endif
     };
 
     enum class NetworkAttachmentType
