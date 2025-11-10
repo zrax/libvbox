@@ -2188,7 +2188,7 @@ namespace VBox
     || VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 14)
         HardDiskControllerNVMe = 61,
 #endif
-#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 0)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 1, 14)
         NVRAM = 0x8000,
 #endif
     };
