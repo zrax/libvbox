@@ -2033,6 +2033,10 @@ namespace VBox
         uint32_t getMaxInstancesOfUSBControllerType(
                 /* in */ ChipsetType chipset,
                 /* in */ USBControllerType type);
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+        uint32_t getMinGuestRAM(
+                /* in */ FirmwareType firmware);
+#endif
     };
 #endif
 
@@ -3554,6 +3558,9 @@ namespace VBox
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(5, 1, 4)
         VBox_PROPERTY_RO(int64_t, uptime)
 #endif
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+        VBox_PROPERTY_RW_V(bool, recompiledIEMExecution)
+#endif
 
         // Methods
         void dumpGuestCore(
@@ -3879,10 +3886,18 @@ namespace VBox
 #endif
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
         void onHostAudioDeviceChange(
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+                /* in */ COMPtr<IHostAudioDevice> &device,
+#else
                 /* in */ const COMPtr<IHostAudioDevice> &device,
+#endif
                 /* in */ bool isNew,
                 /* in */ AudioDeviceState state,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+                /* in */ COMPtr<IVirtualBoxErrorInfo> &errorInfo);
+#else
                 /* in */ const COMPtr<IVirtualBoxErrorInfo> &errorInfo);
+#endif
 #endif
         void onSerialPortChange(
                 /* in */ const COMPtr<ISerialPort> &serialPort);

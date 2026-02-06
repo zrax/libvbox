@@ -356,4 +356,18 @@ uint32_t VBox::IPlatformProperties::getMaxInstancesOfUSBControllerType(
 
     return static_cast<uint32_t>(cResult);
 }
+
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+uint32_t VBox::IPlatformProperties::getMinGuestRAM(FirmwareType firmware)
+{
+    COM_ULong cResult = 0;
+    auto cFirmware = static_cast<COM_Enum(FirmwareType)>(firmware);
+
+    auto rc = get_IFC()->GetMinGuestRAM(cFirmware, &cResult);
+    COM_ERROR_CHECK(rc);
+
+    return static_cast<uint32_t>(cResult);
+}
+#endif
+
 #endif

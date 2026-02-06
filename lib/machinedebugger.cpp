@@ -240,6 +240,20 @@ int64_t VBox::IMachineDebugger::uptime() const
 }
 #endif
 
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+bool VBox::IMachineDebugger::recompiledIEMExecution() const
+{
+    COM_Bool result;
+    COM_GetValue(get_IFC(), RecompiledIEMExecution, result);
+    return static_cast<bool>(result);
+}
+
+void VBox::IMachineDebugger::set_recompiledIEMExecution(bool value)
+{
+    COM_SetValue(get_IFC(), RecompiledIEMExecution, value);
+}
+#endif
+
 // Methods
 void VBox::IMachineDebugger::dumpGuestCore(const std::u16string &filename,
         const std::u16string &compression)

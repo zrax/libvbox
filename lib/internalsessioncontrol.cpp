@@ -81,8 +81,18 @@ void VBox::IInternalSessionControl::onAudioAdapterChange(
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
 void VBox::IInternalSessionControl::onHostAudioDeviceChange(
-        const COMPtr<IHostAudioDevice> &device, bool isNew,
-        AudioDeviceState state, const COMPtr<IVirtualBoxErrorInfo> &errorInfo)
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+        COMPtr<IHostAudioDevice> &device,
+#else
+        const COMPtr<IHostAudioDevice> &device,
+#endif
+        bool isNew, AudioDeviceState state,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 6)
+        COMPtr<IVirtualBoxErrorInfo> &errorInfo
+#else
+        const COMPtr<IVirtualBoxErrorInfo> &errorInfo
+#endif
+        )
 {
     auto rc = get_IFC()->OnHostAudioDeviceChange(device->get_IFC(), isNew,
                 static_cast<COM_Enum(::AudioDeviceState)>(state), errorInfo->get_IFC());
