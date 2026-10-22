@@ -1017,6 +1017,9 @@ namespace VBox
         KeepAllMACs = 1,
         KeepNATMACs = 2,
         ImportToVDI = 3,
+#if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 2, 18)
+        KeepExtraData = 4,
+#endif
     };
 
 #if VirtualBoxSDK_VERSION >= VBox_MAKE_VERSION(7, 0, 0)
